@@ -1,0 +1,45 @@
+{
+  "name": "reserva",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "start": "vite"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.0",
+    "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-navigation-menu": "^1.2.13",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@tanstack/react-query": "^5.83.0",
+    "animate.css": "^4.1.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
+    "framer-motion": "^12.23.11",
+    "lucide-react": "^0.532.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-hook-form": "^7.61.1",
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^7.7.1",
+    "tailwind-merge": "^3.3.1",
+    "zod": "^4.0.10"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "@types/node": "^24.1.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "globals": "^16.3.0",
+    "tailwindcss": "^4.1.11",
+    "tw-animate-css": "^1.3.6",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4"
+  }
+}

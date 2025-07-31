@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { RequireAuth } from "./RequireAuth";
 import Dashboard from "@/pages/Dashboard/Dashboard";
 import Login from "@/pages/Register/Login";
+import { Profile } from "@/pages/Profile/Profile";
 
 export function AppRoutes() {
   return (
@@ -16,6 +17,12 @@ export function AppRoutes() {
           </RequireAuth>
         }
       />
+      <Route path="/profile" 
+        element={
+        <RequireAuth>
+          <Profile/>
+        </RequireAuth>
+      }/>
       <Route path="*" element={<Login />} />
     </Routes>
   );

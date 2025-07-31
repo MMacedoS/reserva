@@ -1,14 +1,8 @@
-import { Header } from "@/components/layout/Header";
-import { Navbar } from "@/components/layout/Navbar";
-import { useState } from "react";
+import { Sidebar } from "@/components/layout/Sidebar";
 
-function Dashboard() {
-  const [sidebarToggle, setSidebarToggle] = useState(false);
+function Dashboard() {  
   return (
-    <div className="w-full block flex">
-      <Header sidebarToggle={sidebarToggle} setSidebarToggle={setSidebarToggle} />
-      <Navbar sidebarToggle={sidebarToggle} setSidebarToggle={setSidebarToggle}/>
-    </div>
+    <Sidebar/>
   );
 }
 export default Dashboard;

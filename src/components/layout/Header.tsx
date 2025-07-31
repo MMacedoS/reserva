@@ -1,5 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { LucideBadgeDollarSign, LucideBlocks, LucideBox, LucideCalendarDays, LucideCircleDashed, LucideHotel, LucideLayoutDashboard, LucidePersonStanding, LucideReceipt, LucideReceiptText, LucideSettings, LucideUserStar } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface NavbarProps {
   sidebarToggle: boolean;
@@ -18,59 +19,59 @@ export function Header({sidebarToggle, setSidebarToggle}: NavbarProps) {
         <hr />
         <ul className='mt-3 text-white text-sm font-semibold'>
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-                <a href="/dashboard" className='px-3 py-2 text-white flex items-center'>
+                <Link to="/dashboard" className='px-3 py-2 text-white flex items-center'>
                     <LucideBlocks className="inline-block w-6 h-6 mr-2 -mt-2" />
                     Dashboard
-                </a>
+                </Link>
             </li>                    
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-                <a href="/clients" className='px-3 py-2 text-white flex items-center'>
+                <Link to="/clients" className='px-3 py-2 text-white flex items-center'>
                     <LucideUserStar className="inline-block w-6 h-6 mr-2 -mt-2" />
                     Hospedes
-                </a>
+                </Link>
             </li>
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-                <a href="/apartments" className='px-3 py-2 text-white flex items-center'>
+                <Link to="/apartments" className='px-3 py-2 text-white flex items-center'>
                     <LucideHotel className="inline-block w-6 h-6 mr-2 -mt-2" />
                     Apartamentos
-                </a>
+                </Link>
             </li>
             
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-                <a href="/reservations" className='px-3 py-2 text-white flex items-center'>
+                <Link to="/reservations" className='px-3 py-2 text-white flex items-center'>
                     <LucideCalendarDays className="inline-block w-6 h-6 mr-2 -mt-2" />
                     Reservas
-                </a>
+                </Link>
             </li>
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-                <a href="/sales" className='px-3 py-2 text-white flex items-center'>
+                <Link to="/sales" className='px-3 py-2 text-white flex items-center'>
                     <LucideBadgeDollarSign className="inline-block w-6 h-6 mr-2 -mt-2" />
                     Vendas
-                </a>
+                </Link>
             </li>
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-                <a href="/reports" className='px-3 py-2 text-white flex items-center'>
+                <Link to="/reports" className='px-3 py-2 text-white flex items-center'>
                     <LucideReceiptText className="inline-block w-6 h-6 mr-2 -mt-2" />
                     Relatórios
-                </a>
+                </Link>
             </li>
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-                <a href="/invoices" className='px-3 py-2 text-white flex items-center'>
+                <Link to="/invoices" className='px-3 py-2 text-white flex items-center'>
                     <LucideReceipt className="inline-block w-6 h-6 mr-2 -mt-2" />
                     Financeiro
-                </a>
+                </Link>
             </li>    
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-                <a href="/employees" className='px-3 py-2 text-white flex items-center'>
+                <Link to="/employees" className='px-3 py-2 text-white flex items-center'>
                     <LucidePersonStanding className="inline-block w-6 h-6 mr-2 -mt-2" />
                     Funcionarios
-                </a>
+                </Link>
             </li>
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-                <a href="/settings" className='px-3 py-2 text-white flex items-center'>
+                <Link to="/settings" className='px-3 py-2 text-white flex items-center'>
                     <LucideSettings className="inline-block w-6 h-6 mr-2 -mt-2" />
                     Configurações
-                </a>
+                </Link>
             </li>                
         </ul>
       </div>

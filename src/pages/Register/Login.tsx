@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
-  email: z.string().email("Email inválido").min(1, "Email é obrigatório"),
+  email: z.email("Email inválido").min(1, "Email é obrigatório"),
   password: z.string().min(3, "Senha deve ter pelo menos 3 caracteres"),
 });
 

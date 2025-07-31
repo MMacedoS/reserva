@@ -1,18 +1,20 @@
+import type { userResponse } from "@/http/types/profile/userResponse";
 import { createContext, useContext, useState, useEffect } from "react";
-import { set } from "zod";
 
 interface AuthContextType {
-  user: any;
+  user: userResponse | null;
+  token: string | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
+  updateUser: (user: userResponse) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<userResponse | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -26,7 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     setIsLoading(false);
-  }, []);
+  }, []); 
 
   const login = async (email: string, password: string) => {
     const response = await fetch("http://sistemareserva.localhost:8080/api/v1/token", {
@@ -48,14 +50,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = () => {
+    console.log();
     setUser(null);
     setToken(null);
     localStorage.clear();
   };
 
+  const updateUser = (newUser: userResponse) => {
+    setUser(newUser);
+    localStorage.setItem("user", JSON.stringify(newUser));
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isAuthenticated: !!token, isLoading }}
+      value={{ user, token, login, updateUser, logout, isAuthenticated: !!token, isLoading }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,26 +1,25 @@
 import { useMutation } from "@tanstack/react-query";
-import type { profileRequest } from "../types/profile/profileRequest";
 import { useAuth } from "@/contexts/AuthContext";
-import type { userResponse } from "../types/profile/userResponse";
 import { useFetchWithAuth } from "@/hooks/fetchWithAuth";
 import { showAutoDismissAlert } from "@/components/showAutoDismissAlert";
 
-export function UseProfile() {
-    const {user, token, updateUser} = useAuth();
+export function UseProfilePass() {
+    const {user} = useAuth();
 
     const { fetchWithAuth } = useFetchWithAuth();
 
     return useMutation({
-        mutationFn: async (data: profileRequest) => {
-            if (!data?.name) {
-                throw new Error("nome é obrigatorio");
+        mutationFn: async (data: {password: string, password_old: string}) => {
+            if (!data?.password) {
+                throw new Error("senha nova é obrigatoria");
             }
-            if (!data?.email) {
-                throw new Error("email é obrigatorio");
+
+            if (!data?.password_old) {
+                throw new Error("senha atual é obrigatoria");
             }
 
             const response = await fetchWithAuth(
-                `http://sistemareserva.localhost:8080/api/v1/profile/${user?.id}`,
+                `http://sistemareserva.localhost:8080/api/v1/profile/${user?.id}/password`,
                 {
                     method: "PUT",
                     headers: {
@@ -33,8 +32,7 @@ export function UseProfile() {
             const result = await response.json();
             return result;
         },
-        onSuccess: (data: {status:number, data: userResponse}) => {
-            updateUser(data);
+        onSuccess: (res: {status:number, data: any}) => {
             showAutoDismissAlert({
                 message: "Dados salvos com sucesso!",
                 description: "Os dados foram atualizados.",

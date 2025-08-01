@@ -29,7 +29,7 @@ export function Navbar({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                     </div>
                     <div className='relative'>
                         <button className='justify-center text-white hover:bg-gray-400' onClick={toggleDropdown}>
-                            <UserAvatar src="https://github.com/shadcn.png" alt="User Avatar" username="CN"/>
+                            <UserAvatar src={`http://sistemareserva.localhost:8080/Public/${user?.photo}`} alt="User Avatar" username={`${user?.name}`}/>
                         </button>
                         {isOpen && (
                             <div className='z-10 absolute py-1.5 w-40 text-center break-words bg-gray-50 rounded-lg shadow group-focus:block top-full right-0'>

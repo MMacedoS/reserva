@@ -7,6 +7,7 @@ import { UseProfile } from "@/http/profile/useProfile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import { UpdatePass } from "./UpdatePass";
 
 const createProfileSchema = z.object({
     name: z.string()
@@ -78,16 +79,17 @@ export function FormData() {
                                     <FormItem>
                                         <FormLabel>Acesso</FormLabel>
                                         <FormControl>
-                                            <Input {...field} value={user.access}/>
+                                            <Input {...field}/>
                                         </FormControl>
                                     </FormItem>
                                 )}/>
                             </div>
                         </div>
                         <div className="text-end">
+                            <UpdatePass/>
                             <Button
                                 type="submit"
-                                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition ml-2"
                             >
                                 Atualizar dados
                             </Button>

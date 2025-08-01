@@ -8,7 +8,7 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
-  updateUser: (user: userResponse) => void;
+  updateUser: (data: {status:number, data: userResponse}) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -56,9 +56,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.clear();
   };
 
-  const updateUser = (newUser: userResponse) => {
-    setUser(newUser);
-    localStorage.setItem("user", JSON.stringify(newUser));
+  const updateUser = (res: { status: number; data: userResponse }) => {
+    setUser(res.data);
+    localStorage.setItem("user", JSON.stringify(res.data));
   };
 
   return (

@@ -1,5 +1,4 @@
-import { useAuth } from "@/contexts/AuthContext";
-import { LucideBadgeDollarSign, LucideBlocks, LucideBox, LucideCalendarDays, LucideCircleDashed, LucideHotel, LucideLayoutDashboard, LucidePersonStanding, LucideReceipt, LucideReceiptText, LucideSettings, LucideUserStar } from "lucide-react";
+import { LucideBadgeDollarSign, LucideBlocks, LucideCalendarDays, LucideHotel, LucideLayoutDashboard, LucidePersonStanding, LucideReceipt, LucideReceiptText, LucideSettings, LucideUserStar } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface NavbarProps {
@@ -9,7 +8,10 @@ interface NavbarProps {
 
 export function Header({sidebarToggle, setSidebarToggle}: NavbarProps) {
   return (
-    <div className={`${sidebarToggle ? 'hidden' : 'block' } w-50 bg-gray-800 fixed h-full px-4 py-2`}>
+    <div className={`transform 
+        transition-transform duration-1000 
+        ease-in-out w-50 bg-gray-800 fixed h-full px-4 py-2 
+        ${sidebarToggle ? '-translate-x-full' : 'translate-x-0' }`}>
       <div className="my-2 mb-4">
         <div className="flex flex-col items-center text-2x text-white font-bold p-4" 
             onClick={() => setSidebarToggle(!sidebarToggle)}>

@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 import { LoginCard } from "@/components/LoginCard";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const schema = z.object({
   email: z.email("Email inválido").min(1, "Email é obrigatório"),
@@ -33,7 +33,7 @@ export default function Login() {
   const onSubmit = async (data: FormData) => {
     try {
       await login(data.email, data.password);
-      navigate("/dashboard"); // redireciona após login
+      navigate("/dashboard"); 
     } catch (err) {
       setError("Credenciais inválidas.");
     }

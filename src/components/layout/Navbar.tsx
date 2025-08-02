@@ -1,8 +1,9 @@
 import { LucideBell, LucideMenu} from 'lucide-react';
 import { UserAvatar } from '../Avatar';
-import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { environment } from '@/environments/environment';
+import { useAuth } from '@/hooks/useAuth';
 
 interface NavbarProps {
   sidebarToggle: boolean;
@@ -17,7 +18,7 @@ export function Navbar({ sidebarToggle, setSidebarToggle }: NavbarProps) {
     const closeDropdown = () => setIsOpen(false);
 
     return (      
-        <div className={`${sidebarToggle ? '' : 'ml-50'} w-full`}>
+        <div className="w-full">
             <nav className='bg-gray-800 px-4 py-3 flex justify-between'>
                 <div className={`${!sidebarToggle ? 'invisible' : '' }  flex items-center text-xl text-white font-bold`}>
                     <LucideMenu className='text-white me-4 cursor-pointer' 
@@ -29,7 +30,7 @@ export function Navbar({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                     </div>
                     <div className='relative'>
                         <button className='justify-center text-white hover:bg-gray-400' onClick={toggleDropdown}>
-                            <UserAvatar src={`http://sistemareserva.localhost:8080/Public/${user?.photo}`} alt="User Avatar" username={`${user?.name}`}/>
+                            <UserAvatar src={`${environment.apiUrl}/Public${user?.photo}`} alt="User Avatar" username={`${user?.name}`}/>
                         </button>
                         {isOpen && (
                             <div className='z-10 absolute py-1.5 w-40 text-center break-words bg-gray-50 rounded-lg shadow group-focus:block top-full right-0'>

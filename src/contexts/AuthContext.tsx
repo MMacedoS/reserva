@@ -1,17 +1,20 @@
+import { environment } from "@/environments/environment";
 import type { userResponse } from "@/http/types/profile/userResponse";
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 interface AuthContextType {
   user: userResponse | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
+  refreshToken: () => Promise<void>;
   logout: () => void;
+  getToken: () => string | null;
+  updateUser: (data: Partial<userResponse>) => void;
   isAuthenticated: boolean;
   isLoading: boolean;
-  updateUser: (data: {status:number, data: userResponse}) => void;
 }
 
-const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<userResponse | null>(null);
@@ -19,55 +22,88 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
-
-    if (storedUser && storedToken) {
-      setUser(JSON.parse(storedUser));
-      setToken(storedToken);
-    }
-
+    const savedToken = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
+    if (savedToken) setToken(savedToken);
+    if (savedUser) setUser(JSON.parse(savedUser));
     setIsLoading(false);
-  }, []); 
+  }, []);
 
   const login = async (email: string, password: string) => {
-    const response = await fetch("http://sistemareserva.localhost:8080/api/v1/token", {
+    setIsLoading(true);
+    const res = await fetch(`${environment.apiUrl}/${environment.apiVersion}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ email, password }),
     });
 
-    if (!response.ok) {
-      throw new Error("Erro no login");
+    if (!res.ok) {
+      setIsLoading(false);
+      throw new Error("Usuário ou senha inválidos");
     }
 
-    const data = await response.json();
+    const data = await res.json();
 
-    setToken(data.token);
+    setToken(data.access_token);
+    localStorage.setItem("token", data.access_token);
+
     setUser(data.user);
-    localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
+
+    setIsLoading(false);
+  };
+
+  const refreshToken = async () => {
+    const res = await fetch(`${environment.apiUrl}/${environment.apiVersion}/token/refresh`, {
+      credentials: "include",
+    });
+
+    if (!res.ok) throw new Error("Erro ao renovar token");
+
+    const data = await res.json();
+    setToken(data.access_token);
+    localStorage.setItem("token", data.access_token);
+  };
+
+  const updateUser = (data: Partial<userResponse>) => {
+    setUser((prevUser) => {
+      if (!prevUser) throw new Error("Usuário não autenticado");
+
+      const updatedUser: userResponse = {
+        ...prevUser,
+        ...data,
+      };
+
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      return updatedUser;
+    });
   };
 
   const logout = () => {
-    console.log();
-    setUser(null);
     setToken(null);
-    localStorage.clear();
+    setUser(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   };
 
-  const updateUser = (res: { status: number; data: userResponse }) => {
-    setUser(res.data);
-    localStorage.setItem("user", JSON.stringify(res.data));
-  };
+  const getToken = () => token;
 
   return (
     <AuthContext.Provider
-      value={{ user, token, login, updateUser, logout, isAuthenticated: !!token, isLoading }}
+      value={{
+        user,
+        token,
+        login,
+        refreshToken,
+        logout,
+        getToken,
+        updateUser,
+        isAuthenticated: !!token,
+        isLoading,
+      }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => useContext(AuthContext);

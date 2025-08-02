@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/contexts/AuthContext";
 import { UseProfile } from "@/http/profile/useProfile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { UpdatePass } from "./UpdatePass";
+import { useAuth } from "@/hooks/useAuth";
 
 const createProfileSchema = z.object({
     name: z.string()

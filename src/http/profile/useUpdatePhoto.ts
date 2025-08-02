@@ -1,11 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
-import { useAuth } from "@/contexts/AuthContext";
-import { useFetchWithAuth } from "@/hooks/fetchWithAuth";
 import { showAutoDismissAlert } from "@/components/showAutoDismissAlert";
+import { environment } from "@/environments/environment";
+import { useApi } from "@/hooks/useApi";
+import { useAuth } from "@/hooks/useAuth";
 
 export function UseUpdatePhoto() {
-    const { user, token, updateUser } = useAuth();
-    const { fetchWithAuth } = useFetchWithAuth();
+    const { user, updateUser } = useAuth();
+    const { fetchWithAuth } = useApi();
 
     return useMutation({
         mutationFn: async (data: { file: File }) => {
@@ -17,7 +18,7 @@ export function UseUpdatePhoto() {
             formData.append("file", data.file);
 
             const response = await fetchWithAuth(
-                `http://sistemareserva.localhost:8080/api/v1/profile/${user?.id}/photo`,
+                `${environment.apiUrl}/${environment.apiVersion}/profile/${user?.id}/photo`,
                 {
                     method: "POST",
                     body: formData

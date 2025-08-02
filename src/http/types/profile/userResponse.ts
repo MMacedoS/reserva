@@ -1,4 +1,4 @@
-export type userResponse = {
+export interface userResponse {
   id: string;
   name: string;
   photo: string;
@@ -6,7 +6,8 @@ export type userResponse = {
   email: string;
   access: string;
   code: string;
-  active: string;
-  created_at: string;
-  updated_at: string;
+  active: string | number;
+  created_at: string | null;
+  updated_at: string | null;
+  pessoa_fisica: any | null;
 }

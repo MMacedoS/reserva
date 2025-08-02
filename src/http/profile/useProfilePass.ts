@@ -1,12 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
-import { useAuth } from "@/contexts/AuthContext";
-import { useFetchWithAuth } from "@/hooks/fetchWithAuth";
 import { showAutoDismissAlert } from "@/components/showAutoDismissAlert";
+import { environment } from "@/environments/environment";
+import { useApi } from "@/hooks/useApi";
+import { useAuth } from "@/hooks/useAuth";
 
 export function UseProfilePass() {
     const {user} = useAuth();
-
-    const { fetchWithAuth } = useFetchWithAuth();
+    const { fetchWithAuth } = useApi();
 
     return useMutation({
         mutationFn: async (data: {password: string, password_old: string}) => {
@@ -19,7 +19,7 @@ export function UseProfilePass() {
             }
 
             const response = await fetchWithAuth(
-                `http://sistemareserva.localhost:8080/api/v1/profile/${user?.id}/password`,
+                `${environment.apiUrl}/${environment.apiVersion}/profile/${user?.id}/password`,
                 {
                     method: "PUT",
                     headers: {

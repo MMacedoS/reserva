@@ -4,6 +4,7 @@ import { RequireAuth } from "./RequireAuth";
 import Dashboard from "@/pages/Dashboard/Dashboard";
 import Login from "@/pages/Register/Login";
 import { Profile } from "@/pages/Profile/Profile";
+import { Settings } from "@/pages/Settings/Settings";
 
 export function AppRoutes() {
   return (
@@ -21,6 +22,12 @@ export function AppRoutes() {
         element={
         <RequireAuth>
           <Profile/>
+        </RequireAuth>
+      }/>
+       <Route path="/settings" 
+        element={
+        <RequireAuth>
+          <Settings/>
         </RequireAuth>
       }/>
       <Route path="*" element={<Login />} />

@@ -1,32 +1,36 @@
-import { useMutation } from "@tanstack/react-query";
-import type { profileRequest } from "../types/profile/profileRequest";
-import type { userResponse } from "../types/profile/userResponse";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { showAutoDismissAlert } from "@/components/showAutoDismissAlert";
 import { environment } from "@/environments/environment";
 import { useApi } from "@/hooks/useApi";
-import { useAuth } from "@/hooks/useAuth";
+import type { settingResponse } from "../types/settings/settingResponse";
 
-type ApiResponse = { status: number; data: userResponse };
+type ApiResponse = { status: number; data: settingResponse };
 
-export function UseProfile() {
+type CreateSettingFormData = {
+  company_name: string;
+  email: string;
+  cnpj: string;
+  phone: string;
+  address: string;
+  checkin: string;
+  checkout: string;
+  percentage_service_fee: string;
+  cleaning_rate: string;
+  allow_booking_online: string;
+  cancellation_policies: string;
+};
+
+export function updateSettings() {
   const { fetchWithAuth } = useApi();
-  const { user, updateUser } = useAuth();
 
   return useMutation<
     ApiResponse, 
     Error,        
-    profileRequest
+    CreateSettingFormData
   >({
-    mutationFn: async (data: profileRequest) => {
-      if (!data?.name) {
-        throw new Error("Nome é obrigatório");
-      }
-      if (!data?.email) {
-        throw new Error("Email é obrigatório");
-      }
-
+    mutationFn: async (data: CreateSettingFormData) => {      
       const response = await fetchWithAuth(
-        `${environment.apiUrl}/${environment.apiVersion}/profile/${user?.id}`,
+        `${environment.apiUrl}/${environment.apiVersion}/settings`,
         {
           method: "PUT",
           headers: {
@@ -46,7 +50,6 @@ export function UseProfile() {
       return result;
     },
     onSuccess: ({data}) => {
-      updateUser(data);
       showAutoDismissAlert({
         message: "Dados salvos com sucesso!",
         description: "Os dados foram atualizados.",

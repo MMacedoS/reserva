@@ -11,8 +11,4 @@ export type settingResponse = {
   cleaning_rate: number,
   allow_booking_online: number,
   cancellation_policies: string,
-  currency: string,
-  time_zone: string,
-  advance_booking_days: string,
-  display_values_on_dashboard: string
 }

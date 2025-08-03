@@ -21,6 +21,7 @@ export function UseUpdatePhoto() {
                 `${environment.apiUrl}/${environment.apiVersion}/profile/${user?.id}/photo`,
                 {
                     method: "POST",
+                    credentials: "include",
                     body: formData
                 }
             );

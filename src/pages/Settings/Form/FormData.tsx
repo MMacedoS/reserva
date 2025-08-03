@@ -2,7 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { UseProfile } from "@/http/profile/useProfile";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { updateSettings } from "@/http/settings/updateSettings";
 import type { settingResponse } from "@/http/types/settings/settingResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -18,14 +20,10 @@ const createSettingSchema = z.object({
     address: z.string(),
     checkin: z.string(),
     checkout: z.string(),
-    percentage_service_fee: z.number(),
-    cleaning_rate: z.number(),
-    allow_booking_online: z.number(),
-    cancellation_policies: z.string(),
-    currency: z.string(),
-    time_zone: z.string(),
-    advance_booking_days: z.string(),
-    display_values_on_dashboard: z.string()
+    percentage_service_fee: z.string(),
+    cleaning_rate: z.string(),
+    allow_booking_online: z.string(),
+    cancellation_policies: z.string()
 })
 
 type CreateSettingFormData = z.infer<typeof createSettingSchema>;
@@ -34,7 +32,7 @@ type settingProps = { setting: settingResponse };
 
 export function FormData({ setting }: settingProps ) {
         
-    const { mutateAsync: createProfile } = UseProfile();
+    const { mutateAsync: createSettings } = updateSettings();
     const form = useForm<CreateSettingFormData>({
         resolver: zodResolver(createSettingSchema),
         defaultValues: {
@@ -45,19 +43,15 @@ export function FormData({ setting }: settingProps ) {
             address: setting?.address,
             checkin: setting?.checkin,
             checkout: setting?.checkout,
-            percentage_service_fee: setting?.percentage_service_fee,
-            cleaning_rate: setting?.cleaning_rate,
-            allow_booking_online: setting?.allow_booking_online,
-            cancellation_policies: setting?.cancellation_policies,
-            currency: setting?.currency,
-            time_zone: setting?.time_zone,
-            advance_booking_days: setting?.advance_booking_days,
-            display_values_on_dashboard: setting?.display_values_on_dashboard
+            percentage_service_fee: setting?.percentage_service_fee.toString(),
+            cleaning_rate: setting?.cleaning_rate.toString(),
+            allow_booking_online: setting?.allow_booking_online.toString(),
+            cancellation_policies: setting?.cancellation_policies
         }
     })
 
     async function handleCreateForm(data: CreateSettingFormData) {
-        // await createSettings(data);
+        await createSettings(data);
     }
 
     return (
@@ -120,8 +114,8 @@ export function FormData({ setting }: settingProps ) {
                                 )}/>
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols gap-4">
-                            <div className="w-full">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="w-full col-span-2">
                                 <FormField control={form.control}
                                     name="address"
                                     render={({field}) => (
@@ -133,8 +127,31 @@ export function FormData({ setting }: settingProps ) {
                                     </FormItem>
                                 )}/>
                             </div>
+                            <div className="w-full">
+                                <FormField control={form.control}
+                                    name="allow_booking_online"
+                                    render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Categoria</FormLabel>
+                                        <FormControl>
+                                            <Select {...field}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Selecione uma opção" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                    <SelectLabel>Opções</SelectLabel>
+                                                    <SelectItem value="0">Não</SelectItem>
+                                                    <SelectItem value="1">Sim</SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                    </FormItem>
+                                )}/>
+                            </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="w-full">
                                 <FormField control={form.control}
                                     name="checkin"
@@ -173,89 +190,30 @@ export function FormData({ setting }: settingProps ) {
                             </div>
                              <div className="w-full">
                                 <FormField control={form.control}
-                                    name="percentage_service_fee"
+                                    name="cleaning_rate"
                                     render={({field}) => (
                                     <FormItem>
-                                        <FormLabel>Taxa de Serviço</FormLabel>
+                                        <FormLabel>Taxa de Limpeza</FormLabel>
                                         <FormControl>
                                             <Input type="number" step={0.01} {...field}/>
                                         </FormControl>
                                     </FormItem>
                                 )}/>
-                            </div>
-                             <div className="w-full">
+                            </div>                             
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols gap-4">
+                            <div className="w-full">
                                 <FormField control={form.control}
-                                    name="percentage_service_fee"
+                                    name="cancellation_policies"
                                     render={({field}) => (
                                     <FormItem>
-                                        <FormLabel>Taxa de Serviço</FormLabel>
+                                        <FormLabel>Política de Cancelamento</FormLabel>
                                         <FormControl>
-                                            <Input type="number" step={0.01} {...field}/>
+                                            <Textarea {...field} maxLength={500}/>
                                         </FormControl>
                                     </FormItem>
                                 )}/>
                             </div>
-                             <div className="w-full">
-                                <FormField control={form.control}
-                                    name="percentage_service_fee"
-                                    render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>Taxa de Serviço</FormLabel>
-                                        <FormControl>
-                                            <Input type="number" step={0.01} {...field}/>
-                                        </FormControl>
-                                    </FormItem>
-                                )}/>
-                            </div>
-                             <div className="w-full">
-                                <FormField control={form.control}
-                                    name="percentage_service_fee"
-                                    render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>Taxa de Serviço</FormLabel>
-                                        <FormControl>
-                                            <Input type="number" step={0.01} {...field}/>
-                                        </FormControl>
-                                    </FormItem>
-                                )}/>
-                            </div>
-                             <div className="w-full">
-                                <FormField control={form.control}
-                                    name="percentage_service_fee"
-                                    render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>Taxa de Serviço</FormLabel>
-                                        <FormControl>
-                                            <Input type="number" step={0.01} {...field}/>
-                                        </FormControl>
-                                    </FormItem>
-                                )}/>
-                            </div>
-                             <div className="w-full">
-                                <FormField control={form.control}
-                                    name="percentage_service_fee"
-                                    render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>Taxa de Serviço</FormLabel>
-                                        <FormControl>
-                                            <Input type="number" step={0.01} {...field}/>
-                                        </FormControl>
-                                    </FormItem>
-                                )}/>
-                            </div>
-                             <div className="w-full">
-                                <FormField control={form.control}
-                                    name="percentage_service_fee"
-                                    render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>Taxa de Serviço</FormLabel>
-                                        <FormControl>
-                                            <Input type="number" step={0.01} {...field}/>
-                                        </FormControl>
-                                    </FormItem>
-                                )}/>
-                            </div>
-                            
                         </div>
                         <div className="text-end">
                             <Button

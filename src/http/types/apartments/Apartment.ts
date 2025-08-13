@@ -1,11 +1,11 @@
 export type Apartment = {
-  id: number;
-  uuid: string;
+  id?: string;
+  uuid?: string;
   name: string;
   description: string;
   category: string;
-  active: number;
+  active?: string;
   situation: string;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
 };

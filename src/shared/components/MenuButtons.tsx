@@ -3,7 +3,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { MoreHorizontal } from "lucide-react";
 
 type ActionItem = {
-  label: string
+  label: any
   onClick: () => void
 }
 
@@ -22,13 +22,13 @@ export function MenuButtons( { actions }: MenuButtonsProps ) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-center">Ações</DropdownMenuLabel>
             {
-                actions.map((action, index) => (
-                    <DropdownMenuItem key={index} onClick={action.onClick}>
-                    {action.label}
-                    </DropdownMenuItem>
-                ))
+              actions.map((action, index) => (
+                  <DropdownMenuItem  className="justify-center" key={index} onClick={action.onClick}>
+                  {action.label}
+                  </DropdownMenuItem>
+              ))
             }
           </DropdownMenuContent>
         </DropdownMenu>

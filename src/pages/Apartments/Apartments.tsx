@@ -7,20 +7,20 @@ import { useApartments } from "@/http/apartments/useApartments";
 import type { Apartment } from "@/http/types/apartments/Apartment";
 import { MenuButtons } from "@/shared/components/MenuButtons";
 import type { ColumnDef } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FormData } from "./Form/FormData";
-import { LucidePlusCircle } from "lucide-react";
-
-// Props que o componente aceita
-type apartmentsProps = {
-  data: Apartment[]
-}
+import { LucideCookingPot, LucideFolderPen, LucidePlusCircle } from "lucide-react";
+import { AlertDialogDestroy } from "@/components/ui/alertDialogDestroy";
+import { deleteApartment } from "@/http/apartments/deleteApartment";
 
 export function Apartments() {
     const [page, setPage] = useState(1);
-    const limit = 4;
-
+    const limit = 10;
     const { data, isLoading } = useApartments(page, limit); 
+    const {sidebarToggle} = useSidebar();    
+    const [selectedApartment, setSelectedApartment] = useState<Apartment | null>(null);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
     const columns: ColumnDef<Apartment>[] = [
         {
@@ -43,29 +43,33 @@ export function Apartments() {
             const apartment = row.original // pega os dados da linha
                 return <MenuButtons actions={[
                 {
-                    label: "Editar",
+                    label: <LucideFolderPen className="size-6"/>,
                     onClick: () => {
                         setSelectedApartment(apartment);
                         setOpenDialog(true)
                     },
                 },
                 {
-                    label: "Excluir",
-                    onClick: () => console.log("Excluir", apartment.id),
-                },
-                {
-                    label: "Copiar ID",
-                    onClick: () => navigator.clipboard.writeText(apartment.id.toString()),
-                },
+                    label: <LucideCookingPot className="size-6"/>,
+                    onClick: () => {
+                        setSelectedApartment(apartment);
+                        setOpenConfirmDialog(true);
+                    },
+                }
                 ]}/>
             }
         },
     ]
 
-    const {sidebarToggle} = useSidebar();
-    
-    const [selectedApartment, setSelectedApartment] = useState<Apartment | null>(null);
-    const [openDialog, setOpenDialog] = useState(false);
+    const { mutateAsync: destroyApartments } = deleteApartment();
+
+    const handleDelete = async () => {
+        if (!selectedApartment) return;
+
+        await destroyApartments(selectedApartment);
+
+        setOpenConfirmDialog(false);      
+    };
     
     return (
         <div className="col">
@@ -106,6 +110,12 @@ export function Apartments() {
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}
                 apartment={selectedApartment} 
+            />
+            <AlertDialogDestroy
+                open={openConfirmDialog}
+                onClose={() => setOpenConfirmDialog(false)}
+                onConfirm={handleDelete}
+                apartment={selectedApartment}
             />
         </div>
     );

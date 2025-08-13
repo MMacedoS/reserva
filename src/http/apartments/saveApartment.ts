@@ -2,57 +2,55 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { showAutoDismissAlert } from "@/components/showAutoDismissAlert";
 import { environment } from "@/environments/environment";
 import { useApi } from "@/hooks/useApi";
-import type { settingResponse } from "../types/settings/settingResponse";
+import type { Apartment } from "../types/apartments/Apartment";
 
-type ApiResponse = { status: number; data: settingResponse };
+type ApiResponse = { status: number; data: Apartment };
 
-type CreateSettingFormData = {
-  company_name: string;
-  email: string;
-  cnpj: string;
-  phone: string;
-  address: string;
-  checkin: string;
-  checkout: string;
-  percentage_service_fee: string;
-  cleaning_rate: string;
-  allow_booking_online: string;
-  cancellation_policies: string;
-};
-
-export function updateSettings() {
+export function saveApartment() {
   const { fetchWithAuth } = useApi();
+  const queryClient = useQueryClient();
 
   return useMutation<
     ApiResponse, 
     Error,        
-    CreateSettingFormData
+    Apartment
   >({
-    mutationFn: async (data: CreateSettingFormData) => {      
+    mutationFn: async (data: Apartment) => {      
+      const isUpdate = !!data.id;
+      const method = isUpdate ? "PUT" : "POST";
+
+      const { id, ...payload } = data;
+      const url = isUpdate
+        ? `${environment.apiUrl}/${environment.apiVersion}/apartments/${id}`
+        : `${environment.apiUrl}/${environment.apiVersion}/apartments`;
+
       const response = await fetchWithAuth(
-        `${environment.apiUrl}/${environment.apiVersion}/settings`,
+        url,
         {
-          method: "PUT",
+          method: method,
           headers: {
             "Content-Type": "application/json",
           },
           credentials: "include",
-          body: JSON.stringify(data),
+          body: JSON.stringify(payload),
         }
       );
 
       if (!response.ok) {
         const errorBody = await response.text();
-        throw new Error(`Erro ao salvar: ${errorBody || response.statusText}`);
+        throw new Error(`Erro : ${errorBody || response.statusText}`);
       }
 
       const result = await response.json();
       return result;
     },
     onSuccess: ({data}) => {
+      queryClient.invalidateQueries({
+        queryKey: ["apartments"],
+      });
       showAutoDismissAlert({
         message: "Dados salvos com sucesso!",
-        description: "Os dados foram atualizados.",
+        description: "Os dados foram armazenados.",
         duration: 2000,
       });
     },

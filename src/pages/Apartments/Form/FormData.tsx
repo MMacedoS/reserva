@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   AlertDialog,
-  AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -15,19 +14,19 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
-import { LucideMinusSquare, LucidePlusCircle } from "lucide-react";
+import { useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Apartment } from "@/http/types/apartments/Apartment";
+import { saveApartment } from "@/http/apartments/saveApartment";
 
 // Schema com Zod
 const schema = z
   .object({
+    id: z.string(),
     name: z.string(),
     description: z.string(),
     category: z.string(),
-    active: z.string(),
     situation: z.string()
   });
 
@@ -40,7 +39,6 @@ type FormDataProps = {
 };
 
 export function FormData({ open, onClose, apartment }: FormDataProps) {
-  console.log(apartment?.description)
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
   });
@@ -48,6 +46,7 @@ export function FormData({ open, onClose, apartment }: FormDataProps) {
   useEffect(() => {
     if (apartment) {
       form.reset({
+        id: apartment.uuid || '',
         name: apartment.name || "",
         description: apartment.description || "",
         category: apartment.category || "",
@@ -56,6 +55,7 @@ export function FormData({ open, onClose, apartment }: FormDataProps) {
       return;
     }
     form.reset({
+        id: "",
         name: "",
         description: "",
         category: "",
@@ -64,11 +64,11 @@ export function FormData({ open, onClose, apartment }: FormDataProps) {
       return
   }, [apartment]);
 
-  // const { mutateAsync: createPass } = us();
+  const { mutateAsync: save } = saveApartment();
   
   async function onSubmit(data: FormData) {
-        // await createPass(data);
-        onClose;
+        await save(data);
+        onClose();
   }
 
   return (
@@ -86,6 +86,21 @@ export function FormData({ open, onClose, apartment }: FormDataProps) {
             </AlertDialogHeader>
 
             <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-1 hidden">
+                <FormField  
+                  control={form.control}
+                  name="id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Numero</FormLabel>
+                      <FormControl>
+                        <Input type="text" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <div className="col-span-1">
                 <FormField  
                   control={form.control}
@@ -124,7 +139,7 @@ export function FormData({ open, onClose, apartment }: FormDataProps) {
                     <FormItem>
                       <FormLabel>Categoria</FormLabel>
                       <FormControl>
-                        <Select {...field}>
+                        <Select value={field.value} onValueChange={field.onChange}>
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Selecione uma opção" />
                             </SelectTrigger>
@@ -153,7 +168,7 @@ export function FormData({ open, onClose, apartment }: FormDataProps) {
                     <FormItem>
                       <FormLabel>Situação</FormLabel>
                       <FormControl>
-                        <Select {...field}>
+                        <Select value={field.value} onValueChange={field.onChange}>
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Selecione uma opção" />
                             </SelectTrigger>

@@ -6,6 +6,7 @@ import Login from "@/pages/Register/Login";
 import { Profile } from "@/pages/Profile/Profile";
 import { Settings } from "@/pages/Settings/Settings";
 import { Apartments } from "@/pages/Apartments/Apartments";
+import { Employees } from "@/pages/Employees/Employees";
 
 export function AppRoutes() {
   return (
@@ -19,24 +20,38 @@ export function AppRoutes() {
           </RequireAuth>
         }
       />
-      <Route path="/profile" 
+      <Route
+        path="/profile"
         element={
-        <RequireAuth>
-          <Profile/>
-        </RequireAuth>
-      }/>
-      <Route path="/apartments" 
+          <RequireAuth>
+            <Profile />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/apartments"
         element={
-        <RequireAuth>
-          <Apartments/>
-        </RequireAuth>
-      }/>
-       <Route path="/settings" 
+          <RequireAuth>
+            <Apartments />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/settings"
         element={
-        <RequireAuth>
-          <Settings/>
-        </RequireAuth>
-      }/>
+          <RequireAuth>
+            <Settings />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/employees"
+        element={
+          <RequireAuth>
+            <Employees />
+          </RequireAuth>
+        }
+      />
       <Route path="*" element={<Login />} />
     </Routes>
   );

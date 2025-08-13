@@ -5,6 +5,7 @@ import React, { createContext, useState, useEffect } from "react";
 interface AuthContextType {
   user: userResponse | null;
   token: string | null;
+  permissions: string[] | null;
   login: (email: string, password: string) => Promise<void>;
   refreshToken: () => Promise<void>;
   logout: () => void;
@@ -14,29 +15,37 @@ interface AuthContextType {
   isLoading: boolean;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<userResponse | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [permissions, setPermissions] = useState<string[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
+    const savedPermissions = localStorage.getItem("permissions");
     if (savedToken) setToken(savedToken);
     if (savedUser) setUser(JSON.parse(savedUser));
+    if (savedPermissions) setPermissions(JSON.parse(savedPermissions));
     setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
-    const res = await fetch(`${environment.apiUrl}/${environment.apiVersion}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ email, password }),
-    });
+    const res = await fetch(
+      `${environment.apiUrl}/${environment.apiVersion}/login`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      }
+    );
 
     if (!res.ok) {
       setIsLoading(false);
@@ -51,13 +60,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(data.user);
     localStorage.setItem("user", JSON.stringify(data.user));
 
+    if (data.permissions) {
+      setPermissions(data.permissions);
+      localStorage.setItem("permissions", JSON.stringify(data.permissions));
+    }
+
     setIsLoading(false);
   };
 
   const refreshToken = async () => {
-    const res = await fetch(`${environment.apiUrl}/${environment.apiVersion}/token/refresh`, {
-      credentials: "include",
-    });
+    const res = await fetch(
+      `${environment.apiUrl}/${environment.apiVersion}/token/refresh`,
+      {
+        credentials: "include",
+      }
+    );
 
     if (!res.ok) throw new Error("Erro ao renovar token");
 
@@ -83,8 +100,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = () => {
     setToken(null);
     setUser(null);
+    setPermissions(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("permissions");
   };
 
   const getToken = () => token;
@@ -94,6 +113,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       value={{
         user,
         token,
+        permissions,
         login,
         refreshToken,
         logout,

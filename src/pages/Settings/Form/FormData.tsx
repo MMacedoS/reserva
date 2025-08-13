@@ -166,7 +166,7 @@ export function FormData({ setting }: settingProps) {
                   name="allow_booking_online"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Categoria</FormLabel>
+                      <FormLabel>Permitir Reserva Online</FormLabel>
                       <FormControl>
                         <Select
                           value={field.value}

@@ -24,6 +24,8 @@ import type { Employee } from "@/http/types/employees/Employee";
 import type { ColumnDef } from "@tanstack/react-table";
 
 export function Employees() {
+  const [page, setPage] = useState(1);
+  const limit = 2;
   const { sidebarToggle } = useSidebar();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
     null
@@ -31,7 +33,7 @@ export function Employees() {
   const [openDialog, setOpenDialog] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
-  const { data: employees = [], isLoading } = useEmployees();
+  const { data, isLoading } = useEmployees(page, limit);
   const { mutateAsync: destroyEmployee } = useDeleteEmployee();
 
   const getStatusBadge = (active: number | string) => {
@@ -151,9 +153,15 @@ export function Employees() {
               <div className="w-full">
                 <DataTable
                   columns={columns}
-                  data={employees}
+                  data={data?.data || []}
                   filterColumn="name"
                   filterPlaceholder="Filtrar por nome..."
+                  pagination={{
+                    current_page: data?.pagination.current_page,
+                    last_page: data?.pagination.last_page,
+                    total: data?.pagination.total,
+                    onPageChange: setPage,
+                  }}
                 />
               </div>
             )}

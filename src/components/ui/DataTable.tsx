@@ -9,9 +9,9 @@ import {
   type SortingState,
   type ColumnFiltersState,
   type VisibilityState,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
-import * as React from "react"
+import * as React from "react";
 
 import {
   Table,
@@ -20,28 +20,35 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { ChevronDown } from "lucide-react"
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "./pagination"
+} from "@/components/ui/dropdown-menu";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "./pagination";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  filterColumn?: keyof TData
-  filterPlaceholder?: string
-  actionsRender?: (row: TData) => React.ReactNode // Permite adicionar ações por linha
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  filterColumn?: keyof TData;
+  filterPlaceholder?: string;
+  actionsRender?: (row: TData) => React.ReactNode; // Permite adicionar ações por linha
   pagination?: {
     current_page: number;
     last_page: number;
+    total?: number;
     onPageChange: (page: number) => void;
   };
 }
@@ -52,11 +59,14 @@ export function DataTable<TData, TValue>({
   filterColumn,
   filterPlaceholder = "Filtrar...",
   actionsRender,
-  pagination
+  pagination,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
 
   // Criação da instância da tabela com controle de ordenação, filtro e paginação
   const table = useReactTable({
@@ -74,7 +84,7 @@ export function DataTable<TData, TValue>({
       columnFilters,
       columnVisibility,
     },
-  })
+  });
 
   return (
     <div className="w-full">
@@ -83,9 +93,15 @@ export function DataTable<TData, TValue>({
         {filterColumn && (
           <Input
             placeholder={filterPlaceholder}
-            value={(table.getColumn(filterColumn as string)?.getFilterValue() as string) ?? ""}
+            value={
+              (table
+                .getColumn(filterColumn as string)
+                ?.getFilterValue() as string) ?? ""
+            }
             onChange={(event) =>
-              table.getColumn(filterColumn as string)?.setFilterValue(event.target.value)
+              table
+                .getColumn(filterColumn as string)
+                ?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
@@ -125,7 +141,10 @@ export function DataTable<TData, TValue>({
                   <TableHead className="text-center" key={header.id}>
                     {header.isPlaceholder
                       ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
                 {actionsRender && <TableHead>Ações</TableHead>}
@@ -139,16 +158,24 @@ export function DataTable<TData, TValue>({
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell className="text-center" key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                   {/* Renderização de ações personalizadas por linha */}
-                  {actionsRender && <TableCell>{actionsRender(row.original)}</TableCell>}
+                  {actionsRender && (
+                    <TableCell>{actionsRender(row.original)}</TableCell>
+                  )}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length + (actionsRender ? 1 : 0)} className="text-center py-6">
+                <TableCell
+                  colSpan={columns.length + (actionsRender ? 1 : 0)}
+                  className="text-center py-6"
+                >
                   Nenhum resultado encontrado.
                 </TableCell>
               </TableRow>
@@ -157,21 +184,36 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-    {pagination && (
-    <Pagination className="flex justify-end">
-        <PaginationContent>
+      <div className="flex justify-end items-center mt-4">
+        <span className="text-sm text-gray-600">
+          Total de registros: {pagination?.total}
+        </span>
+      </div>
+
+      {pagination && (
+        <Pagination className="flex justify-end mt-4">
+          <PaginationContent>
             <PaginationItem>
-                <PaginationPrevious lang="pt-br" onClick={() => pagination.onPageChange(pagination.current_page - 1)}/>
+              <PaginationPrevious
+                lang="pt-br"
+                onClick={() =>
+                  pagination.onPageChange(pagination.current_page - 1)
+                }
+              />
             </PaginationItem>
             <PaginationItem>
-                 {pagination.current_page} de {pagination.last_page}
+              {pagination.current_page} de {pagination.last_page} Páginas
             </PaginationItem>
             <PaginationItem>
-                <PaginationNext onClick={() => pagination.onPageChange(pagination.current_page + 1)}/>
+              <PaginationNext
+                onClick={() =>
+                  pagination.onPageChange(pagination.current_page + 1)
+                }
+              />
             </PaginationItem>
-        </PaginationContent>        
-    </Pagination>
-    )} 
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
-  )
+  );
 }

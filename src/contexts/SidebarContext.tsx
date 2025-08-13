@@ -1,5 +1,5 @@
 // src/contexts/SidebarContext.tsx
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useCallback } from "react";
 
 interface SidebarContextType {
   sidebarToggle: boolean;
@@ -8,10 +8,17 @@ interface SidebarContextType {
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 
-export const SidebarProvider = ({ children }: { children: React.ReactNode }) => {
+export const SidebarProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [sidebarToggle, setSidebarToggle] = useState(false);
 
-  const toggleSidebar = () => setSidebarToggle((prev) => !prev);
+  const toggleSidebar = useCallback(
+    () => setSidebarToggle((prev) => !prev),
+    []
+  );
 
   return (
     <SidebarContext.Provider value={{ sidebarToggle, toggleSidebar }}>

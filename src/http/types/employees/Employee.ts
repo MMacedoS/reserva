@@ -17,5 +17,5 @@ export interface EmployeeRequest {
   email: string;
   password?: string;
   access: string;
-  active: number;
+  active: string;
 }

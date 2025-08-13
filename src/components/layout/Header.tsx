@@ -82,25 +82,26 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
               Vendas
             </Link>
           </li>
-          <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-            <Link
-              to="/reports"
-              className="px-3 py-2 text-white flex items-center"
-            >
-              <LucideReceiptText className="inline-block w-6 h-6 mr-2 -mt-2" />
-              Relatórios
-            </Link>
-          </li>
-          <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-            <Link
-              to="/invoices"
-              className="px-3 py-2 text-white flex items-center"
-            >
-              <LucideReceipt className="inline-block w-6 h-6 mr-2 -mt-2" />
-              Financeiro
-            </Link>
-          </li>
+
           <PermissionGuard requiredAccess={["administrador", "gerente"]}>
+            <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
+              <Link
+                to="/reports"
+                className="px-3 py-2 text-white flex items-center"
+              >
+                <LucideReceiptText className="inline-block w-6 h-6 mr-2 -mt-2" />
+                Relatórios
+              </Link>
+            </li>
+            <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
+              <Link
+                to="/invoices"
+                className="px-3 py-2 text-white flex items-center"
+              >
+                <LucideReceipt className="inline-block w-6 h-6 mr-2 -mt-2" />
+                Financeiro
+              </Link>
+            </li>
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
               <Link
                 to="/employees"

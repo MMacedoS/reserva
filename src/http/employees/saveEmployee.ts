@@ -17,13 +17,15 @@ export function useSaveEmployee() {
 
       const method = isEdit ? "PUT" : "POST";
 
+      const { id, ...payload } = data;
+
       const response = await fetchWithAuth(url, {
         method,
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -34,7 +36,7 @@ export function useSaveEmployee() {
       }
 
       const result = await response.json();
-      return result;
+      return result.data || result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employees"] });
@@ -44,10 +46,10 @@ export function useSaveEmployee() {
         duration: 2000,
       });
     },
-    onError: (error) => {
+    onError: () => {
       showAutoDismissAlert({
-        message: "Erro ao salvar funcionário",
-        description: error.message,
+        message: "Ops! Não foi possível salvar funcionário",
+        description: "Não foi possível salvar as informações do funcionário.",
         duration: 3000,
       });
     },

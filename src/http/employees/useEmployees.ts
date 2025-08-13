@@ -1,16 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { environment } from "@/environments/environment";
 import { useApi } from "@/hooks/useApi";
-import type { Employee } from "../types/employees/Employee";
 
-export function useEmployees() {
+export function useEmployees(page = 1, limit = 2) {
   const { fetchWithAuth } = useApi();
 
+  const attr = `page=${page < 1 ? 1 : page}&limit=${limit}`;
+
   return useQuery({
-    queryKey: ["employees"],
-    queryFn: async (): Promise<Employee[]> => {
+    queryKey: ["employees", page],
+    queryFn: async () => {
       const response = await fetchWithAuth(
-        `${environment.apiUrl}/${environment.apiVersion}/employees`,
+        `${environment.apiUrl}/${environment.apiVersion}/employees?${attr}`,
         {
           method: "GET",
           credentials: "include",
@@ -21,8 +22,11 @@ export function useEmployees() {
         throw new Error("Erro ao buscar funcionários");
       }
 
-      const result = await response.json();
-      return result.data || result;
+      const json = await response.json();
+      return {
+        data: json.data.funcionarios,
+        pagination: json.data.pagination,
+      };
     },
   });
 }

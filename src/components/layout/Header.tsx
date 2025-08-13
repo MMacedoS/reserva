@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PermissionGuard } from "@/components/PermissionGuard";
+import { CashboxGuard } from "../CashboxGuard";
 
 interface NavbarProps {
   sidebarToggle: boolean;
@@ -73,15 +74,17 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
               Reservas
             </Link>
           </li>
-          <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-            <Link
-              to="/sales"
-              className="px-3 py-2 text-white flex items-center"
-            >
-              <LucideBadgeDollarSign className="inline-block w-6 h-6 mr-2 -mt-2" />
-              Vendas
-            </Link>
-          </li>
+          <CashboxGuard>
+            <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
+              <Link
+                to="/sales"
+                className="px-3 py-2 text-white flex items-center"
+              >
+                <LucideBadgeDollarSign className="inline-block w-6 h-6 mr-2 -mt-2" />
+                Vendas
+              </Link>
+            </li>
+          </CashboxGuard>
 
           <PermissionGuard requiredAccess={["administrador", "gerente"]}>
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">

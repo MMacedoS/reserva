@@ -1,16 +1,19 @@
 import { environment } from "@/environments/environment";
 import type { userResponse } from "@/http/types/profile/userResponse";
+import type { Cashbox } from "@/http/types/cashbox/Cashbox";
 import React, { createContext, useState, useEffect } from "react";
 
 interface AuthContextType {
   user: userResponse | null;
   token: string | null;
   permissions: string[] | null;
+  cashbox: Cashbox | null;
   login: (email: string, password: string) => Promise<void>;
   refreshToken: () => Promise<void>;
   logout: () => void;
   getToken: () => string | null;
   updateUser: (data: Partial<userResponse>) => void;
+  updateCashbox: (cashboxData: Cashbox | null) => void;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -23,15 +26,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<userResponse | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<string[] | null>(null);
+  const [cashbox, setCashbox] = useState<Cashbox | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
     const savedPermissions = localStorage.getItem("permissions");
+    const savedCashbox = localStorage.getItem("cashbox");
     if (savedToken) setToken(savedToken);
     if (savedUser) setUser(JSON.parse(savedUser));
     if (savedPermissions) setPermissions(JSON.parse(savedPermissions));
+    if (savedCashbox) setCashbox(JSON.parse(savedCashbox));
     setIsLoading(false);
   }, []);
 
@@ -63,6 +69,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (data.permissions) {
       setPermissions(data.permissions);
       localStorage.setItem("permissions", JSON.stringify(data.permissions));
+    }
+
+    if (data.cashbox) {
+      setCashbox(data.cashbox);
+      localStorage.setItem("cashbox", JSON.stringify(data.cashbox));
     }
 
     setIsLoading(false);
@@ -97,13 +108,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
+  const updateCashbox = (cashboxData: Cashbox | null) => {
+    setCashbox(cashboxData);
+    if (cashboxData) {
+      localStorage.setItem("cashbox", JSON.stringify(cashboxData));
+    } else {
+      localStorage.removeItem("cashbox");
+    }
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
     setPermissions(null);
+    setCashbox(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("permissions");
+    localStorage.removeItem("cashbox");
   };
 
   const getToken = () => token;
@@ -114,11 +136,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         token,
         permissions,
+        cashbox,
         login,
         refreshToken,
         logout,
         getToken,
         updateUser,
+        updateCashbox,
         isAuthenticated: !!token,
         isLoading,
       }}

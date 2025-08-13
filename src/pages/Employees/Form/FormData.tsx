@@ -7,6 +7,7 @@ import {
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
@@ -29,18 +30,30 @@ import {
 } from "@/components/ui/select";
 import { useSaveEmployee } from "@/http/employees/saveEmployee";
 import type { Employee } from "@/http/types/employees/Employee";
+import { Button } from "@/components/ui/button";
 
-const schema = z.object({
-  id: z.string().optional(),
-  name: z
-    .string()
-    .min(3, "Nome deve ter pelo menos 3 caracteres")
-    .max(100, "Nome não deve ultrapassar 100 caracteres"),
-  email: z.email("Email inválido").min(5, "Email é obrigatório"),
-  password: z.string().optional(),
-  access: z.string().min(1, "Nível de acesso é obrigatório"),
-  active: z.string().min(1, "Status é obrigatório"),
-});
+const schema = z
+  .object({
+    id: z.union([z.string(), z.number()]).optional(),
+    name: z
+      .string()
+      .min(3, "Nome deve ter pelo menos 3 caracteres")
+      .max(100, "Nome não deve ultrapassar 100 caracteres"),
+    email: z.email("Email inválido").min(5, "Email é obrigatório"),
+    password: z.string().optional(),
+    access: z.string().min(1, "Nível de acesso é obrigatório"),
+    active: z.string().min(1, "Status é obrigatório"),
+  })
+  .superRefine((data, ctx) => {
+    const isCreate = typeof data.id === "undefined";
+    if (isCreate && (!data.password || data.password.length < 6)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["password"],
+        message: "Senha deve ter pelo menos 6 caracteres",
+      });
+    }
+  });
 
 type FormData = z.infer<typeof schema>;
 
@@ -53,30 +66,37 @@ type FormDataProps = {
 export function FormData({ open, onClose, employee }: FormDataProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
+    mode: "onChange",
   });
 
   const { mutateAsync: saveEmployee } = useSaveEmployee();
 
   useEffect(() => {
     if (employee) {
-      form.reset({
-        id: employee.id || "",
-        name: employee.name || "",
-        email: employee.email || "",
-        password: "",
-        access: employee.access || "",
-        active: String(employee.active) || "",
-      });
-    } else {
-      form.reset({
-        id: "",
+      form.reset(
+        {
+          id: String(employee.id),
+          name: employee.name || "",
+          email: employee.email || "",
+          password: "",
+          access: employee.access || "",
+          active: String(employee.active ?? ""),
+        },
+        { keepDirty: false, keepTouched: false }
+      );
+      return;
+    }
+
+    form.reset(
+      {
         name: "",
         email: "",
         password: "",
         access: "",
         active: "",
-      });
-    }
+      },
+      { keepDirty: false, keepTouched: false }
+    );
   }, [employee, form]);
 
   const onSubmit = async (data: FormData) => {
@@ -85,7 +105,7 @@ export function FormData({ open, onClose, employee }: FormDataProps) {
         name: data.name,
         email: data.email,
         access: data.access,
-        active: Number(data.active),
+        active: data.active,
         ...(data.password && { password: data.password }),
         ...(employee && { id: employee.id }),
       };
@@ -105,6 +125,11 @@ export function FormData({ open, onClose, employee }: FormDataProps) {
           <AlertDialogTitle>
             {employee ? "Editar Funcionário" : "Novo Funcionário"}
           </AlertDialogTitle>
+          <AlertDialogDescription>
+            {employee
+              ? "Edite as informações do funcionário abaixo."
+              : "Preencha as informações para cadastrar um novo funcionário."}
+          </AlertDialogDescription>
         </AlertDialogHeader>
 
         <Form {...form}>
@@ -178,7 +203,7 @@ export function FormData({ open, onClose, employee }: FormDataProps) {
                     <FormLabel>Nível de Acesso *</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="Selecione o nível" />
                         </SelectTrigger>
                       </FormControl>
@@ -186,7 +211,6 @@ export function FormData({ open, onClose, employee }: FormDataProps) {
                         <SelectItem value="administrador">
                           Administrador
                         </SelectItem>
-                        <SelectItem value="funcionario">Funcionário</SelectItem>
                         <SelectItem value="recepcionista">
                           Recepcionista
                         </SelectItem>
@@ -209,7 +233,7 @@ export function FormData({ open, onClose, employee }: FormDataProps) {
                     <FormLabel>Status *</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="Selecione o status" />
                         </SelectTrigger>
                       </FormControl>
@@ -228,11 +252,18 @@ export function FormData({ open, onClose, employee }: FormDataProps) {
               <AlertDialogCancel type="button" onClick={onClose}>
                 Cancelar
               </AlertDialogCancel>
-              <AlertDialogAction
-                type="submit"
-                disabled={form.formState.isSubmitting}
-              >
-                {form.formState.isSubmitting ? "Salvando..." : "Salvar"}
+              <AlertDialogAction asChild>
+                <Button
+                  type="button"
+                  onClick={form.handleSubmit(onSubmit)}
+                  disabled={
+                    employee
+                      ? !form.formState.isValid
+                      : !(form.formState.isValid && form.formState.isDirty)
+                  }
+                >
+                  Salvar
+                </Button>
               </AlertDialogAction>
             </AlertDialogFooter>
           </form>

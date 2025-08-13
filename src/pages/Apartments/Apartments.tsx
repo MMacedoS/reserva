@@ -9,7 +9,6 @@ import {
 import { DataTable } from "@/components/ui/DataTable";
 import { Spinner } from "@/components/ui/spinner";
 import { useSidebar } from "@/contexts/SidebarContext";
-import { useApartments } from "@/http/apartments/useApartments";
 import type { Apartment } from "@/http/types/apartments/Apartment";
 import { MenuButtons } from "@/shared/components/MenuButtons";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -22,11 +21,12 @@ import {
 } from "lucide-react";
 import { AlertDialogDestroy } from "@/components/ui/alertDialogDestroy";
 import { deleteApartment } from "@/http/apartments/deleteApartment";
+import { getApartments } from "@/http/apartments/getApartments";
 
 export function Apartments() {
   const [page, setPage] = useState(1);
   const limit = 2;
-  const { data, isLoading } = useApartments(page, limit);
+  const { data, isLoading } = getApartments(page, limit);
   const { sidebarToggle } = useSidebar();
   const [selectedApartment, setSelectedApartment] = useState<Apartment | null>(
     null

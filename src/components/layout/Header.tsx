@@ -98,7 +98,7 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
             </li>
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
               <Link
-                to="/invoices"
+                to="/finance"
                 className="px-3 py-2 text-white flex items-center"
               >
                 <LucideReceipt className="inline-block w-6 h-6 mr-2 -mt-2" />

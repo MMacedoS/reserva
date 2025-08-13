@@ -7,6 +7,7 @@ import { Profile } from "@/pages/Profile/Profile";
 import { Settings } from "@/pages/Settings/Settings";
 import { Apartments } from "@/pages/Apartments/Apartments";
 import { Employees } from "@/pages/Employees/Employees";
+import Finance from "@/pages/Finance/Finance";
 
 export function AppRoutes() {
   return (
@@ -49,6 +50,14 @@ export function AppRoutes() {
         element={
           <RequireAuth>
             <Employees />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/finance"
+        element={
+          <RequireAuth>
+            <Finance />
           </RequireAuth>
         }
       />

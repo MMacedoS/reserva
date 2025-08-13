@@ -8,15 +8,11 @@ import { useAuth } from "@/hooks/useAuth";
 
 type ApiResponse = { status: number; data: userResponse };
 
-export function UseProfile() {
+export function getProfile() {
   const { fetchWithAuth } = useApi();
   const { user, updateUser } = useAuth();
 
-  return useMutation<
-    ApiResponse, 
-    Error,        
-    profileRequest
-  >({
+  return useMutation<ApiResponse, Error, profileRequest>({
     mutationFn: async (data: profileRequest) => {
       if (!data?.name) {
         throw new Error("Nome é obrigatório");
@@ -45,7 +41,7 @@ export function UseProfile() {
       const result = await response.json();
       return result;
     },
-    onSuccess: ({data}) => {
+    onSuccess: ({ data }) => {
       updateUser(data);
       showAutoDismissAlert({
         message: "Dados salvos com sucesso!",

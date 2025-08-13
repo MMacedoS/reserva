@@ -15,13 +15,13 @@ import {
 } from "@/components/ui/card";
 import { DataTable } from "@/components/ui/DataTable";
 import { Spinner } from "@/components/ui/spinner";
-import { useEmployees } from "@/http/employees/useEmployees";
 import { useDeleteEmployee } from "@/http/employees/deleteEmployee";
 import { FormData } from "./Form/FormData";
 import { AlertDialogDestroy } from "@/components/ui/alertDialogDestroy";
 import { MenuButtons } from "@/shared/components/MenuButtons";
 import type { Employee } from "@/http/types/employees/Employee";
 import type { ColumnDef } from "@tanstack/react-table";
+import { getEmployees } from "@/http/employees/getEmployees";
 
 export function Employees() {
   const [page, setPage] = useState(1);
@@ -33,7 +33,7 @@ export function Employees() {
   const [openDialog, setOpenDialog] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
-  const { data, isLoading } = useEmployees(page, limit);
+  const { data, isLoading } = getEmployees(page, limit);
   const { mutateAsync: destroyEmployee } = useDeleteEmployee();
 
   const getStatusBadge = (active: number | string) => {

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { environment } from "@/environments/environment";
 import { useApi } from "@/hooks/useApi";
 
-export function getCashbox(page = 1, limit = 2) {
+export function getCashbox(page = 1, limit = 10) {
   const { fetchWithAuth } = useApi();
 
   const attr = `page=${page < 1 ? 1 : page}&limit=${limit}`;

@@ -24,7 +24,12 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import {
+  ChevronDown,
+  LucideListCheck,
+  LucideListCollapse,
+  LucideSearch,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -38,13 +43,21 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "./pagination";
+import { set } from "zod";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   filterColumn?: keyof TData;
   filterPlaceholder?: string;
-  actionsRender?: (row: TData) => React.ReactNode; // Permite adicionar ações por linha
+  multipleFilters?: Array<{
+    column: keyof TData;
+    placeholder: string;
+  }>;
+  actionsRender?: (row: TData) => React.ReactNode;
+  initialFilters?: ColumnFiltersState;
+  filters?: ColumnFiltersState;
+  onFiltersChange?: (filters: ColumnFiltersState) => void;
   pagination?: {
     current_page: number;
     last_page: number;
@@ -58,13 +71,11 @@ export function DataTable<TData, TValue>({
   data,
   filterColumn,
   filterPlaceholder = "Filtrar...",
+  multipleFilters,
   actionsRender,
   pagination,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
 
@@ -77,37 +88,74 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+
     onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
-      columnFilters,
       columnVisibility,
     },
   });
 
+  const [toggleAllColumnsVisibility, setToggleAllColumnsVisibility] =
+    React.useState(false);
+
   return (
     <div className="w-full">
-      {/* Filtro e menu de colunas visíveis */}
-      <div className="flex items-center py-4 gap-2">
-        {filterColumn && (
-          <Input
-            placeholder={filterPlaceholder}
-            value={
-              (table
-                .getColumn(filterColumn as string)
-                ?.getFilterValue() as string) ?? ""
+      <div className="flex items-center py-4 gap-2 flex-wrap">
+        <div className="toggle">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              setToggleAllColumnsVisibility(!toggleAllColumnsVisibility)
             }
-            onChange={(event) =>
-              table
-                .getColumn(filterColumn as string)
-                ?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
-        )}
+          >
+            {toggleAllColumnsVisibility ? (
+              <LucideListCheck className="mr-2 h-4 w-4" />
+            ) : (
+              <LucideListCollapse className="mr-2 h-4 w-4" />
+            )}
+          </Button>
+        </div>
+        {toggleAllColumnsVisibility && (
+          <div className="grid grid-cols-1 md:grid-cols-4 items-end gap-2">
+            {filterColumn && !multipleFilters && (
+              <Input
+                placeholder={filterPlaceholder}
+                value={
+                  (table
+                    .getColumn(filterColumn as string)
+                    ?.getFilterValue() as string) ?? ""
+                }
+                onChange={(event) =>
+                  table
+                    .getColumn(filterColumn as string)
+                    ?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm"
+              />
+            )}
 
-        {/* Dropdown para exibir/esconder colunas dinamicamente */}
+            {multipleFilters &&
+              multipleFilters.map((filter, index) => (
+                <Input
+                  key={`filter-${filter.column as string}-${index}`}
+                  placeholder={filter.placeholder}
+                  value={
+                    (table
+                      .getColumn(filter.column as string)
+                      ?.getFilterValue() as string) ?? ""
+                  }
+                  onChange={(event) =>
+                    table
+                      .getColumn(filter.column as string)
+                      ?.setFilterValue(event.target.value)
+                  }
+                  className="max-w-sm"
+                />
+              ))}
+          </div>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -198,7 +246,9 @@ export function DataTable<TData, TValue>({
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
-                className="text-gray-500 hover:text-gray-700 border"
+                className={`text-gray-500 hover:text-gray-700 border ${
+                  pagination.current_page === 1 ? "hidden" : ""
+                }`}
                 lang="pt-br"
                 onClick={() =>
                   pagination.onPageChange(pagination.current_page - 1)
@@ -206,12 +256,12 @@ export function DataTable<TData, TValue>({
               />
             </PaginationItem>
             <PaginationItem>
-              <b>{pagination.current_page}</b> de <b>{pagination.last_page}</b>{" "}
-              Páginas
-            </PaginationItem>
-            <PaginationItem>
               <PaginationNext
-                className="text-gray-500 hover:text-gray-700 border border-gray-200 pl-4"
+                className={`text-gray-500 hover:text-gray-700 border border-gray-200 pl-4 ${
+                  pagination.current_page === pagination.last_page
+                    ? "hidden"
+                    : ""
+                }`}
                 onClick={() =>
                   pagination.onPageChange(pagination.current_page + 1)
                 }

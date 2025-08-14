@@ -25,7 +25,6 @@ import { getEmployees } from "@/http/employees/getEmployees";
 
 export function Employees() {
   const [page, setPage] = useState(1);
-  const limit = 2;
   const { sidebarToggle } = useSidebar();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
     null
@@ -33,7 +32,7 @@ export function Employees() {
   const [openDialog, setOpenDialog] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
-  const { data, isLoading } = getEmployees(page, limit);
+  const { data, isLoading } = getEmployees(page);
   const { mutateAsync: destroyEmployee } = useDeleteEmployee();
 
   const getStatusBadge = (active: number | string) => {
@@ -154,8 +153,24 @@ export function Employees() {
                 <DataTable
                   columns={columns}
                   data={data?.data || []}
-                  filterColumn="name"
-                  filterPlaceholder="Filtrar por nome..."
+                  multipleFilters={[
+                    {
+                      column: "name",
+                      placeholder: "Filtrar por nome",
+                    },
+                    {
+                      column: "email",
+                      placeholder: "Filtrar por email",
+                    },
+                    {
+                      column: "access",
+                      placeholder: "Filtrar por acesso",
+                    },
+                    {
+                      column: "active",
+                      placeholder: "Filtrar por status",
+                    },
+                  ]}
                   pagination={{
                     current_page: data?.pagination.current_page,
                     last_page: data?.pagination.last_page,

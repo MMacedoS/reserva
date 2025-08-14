@@ -11,6 +11,8 @@ import { Spinner } from "./ui/spinner";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useTransactionDialog } from "@/hooks/useTransactionDialog";
 import { formatDate, formatValueToBRL } from "@/lib/utils";
+import { Button } from "./ui/button";
+import { ArrowUpDown } from "lucide-react";
 
 interface TransactionDialogProps {
   title: string;
@@ -44,29 +46,79 @@ export function TransactionDialog({
   const columns: ColumnDef<Transaction>[] = [
     {
       accessorKey: "description",
-      header: "Descrição",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => column.toggleSorting()}
+        >
+          Descrição
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      enableSorting: true,
     },
     {
       accessorKey: "type",
-      header: "Tipo",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => column.toggleSorting()}
+        >
+          Tipo
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      enableSorting: true,
     },
     {
       accessorKey: "created_at",
-      header: "Data",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => column.toggleSorting()}
+        >
+          Data
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ row }) => {
         return formatDate(row.getValue("created_at"));
       },
+      enableSorting: true,
     },
     {
       accessorKey: "payment_form",
-      header: "Forma de Pagamento",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => column.toggleSorting()}
+        >
+          Forma
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      enableSorting: true,
     },
     {
       accessorKey: "amount",
-      header: "Valor",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => column.toggleSorting()}
+        >
+          Valor
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ row }) => {
         return formatValueToBRL(row.getValue("amount"));
       },
+      enableSorting: true,
     },
   ];
 
@@ -100,6 +152,20 @@ export function TransactionDialog({
             <div className="w-full h-full overflow-auto">
               <DataTable
                 columns={columns}
+                multipleFilters={[
+                  {
+                    column: "description",
+                    placeholder: "Buscar por descrição...",
+                  },
+                  {
+                    column: "type",
+                    placeholder: "Filtrar por tipo...",
+                  },
+                  {
+                    column: "payment_form",
+                    placeholder: "Filtrar por forma de pagamento...",
+                  },
+                ]}
                 data={transactions?.data || []}
                 pagination={{
                   total: transactions?.pagination.total || 0,

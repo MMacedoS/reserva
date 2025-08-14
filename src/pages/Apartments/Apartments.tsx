@@ -25,8 +25,7 @@ import { getApartments } from "@/http/apartments/getApartments";
 
 export function Apartments() {
   const [page, setPage] = useState(1);
-  const limit = 2;
-  const { data, isLoading } = getApartments(page, limit);
+  const { data, isLoading } = getApartments(page);
   const { sidebarToggle } = useSidebar();
   const [selectedApartment, setSelectedApartment] = useState<Apartment | null>(
     null

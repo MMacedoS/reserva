@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +9,7 @@ import {
 import { DataTable } from "./ui/DataTable";
 import { Spinner } from "./ui/spinner";
 import type { ColumnDef } from "@tanstack/react-table";
-import { getTransactionsCashboxByCashboxId } from "@/http/transactions/getTransactionsCashboxByCashboxId";
+import { useTransactionDialog } from "@/hooks/useTransactionDialog";
 import { formatDate, formatValueToBRL } from "@/lib/utils";
 
 interface TransactionDialogProps {
@@ -32,14 +31,15 @@ export function TransactionDialog({
   title,
   cashBoxId,
 }: TransactionDialogProps) {
-  const [page, setPage] = useState(1);
-  const [isOpen, setIsOpen] = useState(false);
-
   const {
-    data: transactions,
+    isOpen,
+    openDialog,
+    setIsOpen,
+    setPage,
+    transactions,
     isLoading,
     error,
-  } = getTransactionsCashboxByCashboxId(cashBoxId, page, 10, isOpen);
+  } = useTransactionDialog({ cashBoxId });
 
   const columns: ColumnDef<Transaction>[] = [
     {
@@ -74,7 +74,7 @@ export function TransactionDialog({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger
         className="border p-3 text-dark rounded-3xl text-muted-foreground font-semibold hover:bg-green-600 hover:text-white focus-visible:ring-green-500"
-        onClick={() => setIsOpen(true)}
+        onClick={openDialog}
       >
         Ver Transações
       </DialogTrigger>

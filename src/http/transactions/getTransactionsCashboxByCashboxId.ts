@@ -2,18 +2,25 @@ import { useQuery } from "@tanstack/react-query";
 import { environment } from "@/environments/environment";
 import { useApi } from "@/hooks/useApi";
 
-export function getTransactionsCashboxByCashboxId(
-  cashBoxId: string,
+interface UseTransactionsOptions {
+  cashBoxId: string;
+  page?: number;
+  limit?: number;
+  enabled?: boolean;
+}
+
+export function useTransactionsByCashboxId({
+  cashBoxId,
   page = 1,
   limit = 10,
-  enabled = true
-) {
+  enabled = true,
+}: UseTransactionsOptions) {
   const { fetchWithAuth } = useApi();
 
   const attr = `page=${page < 1 ? 1 : page}&limit=${limit}`;
 
   return useQuery({
-    queryKey: ["cashbox", cashBoxId, page],
+    queryKey: ["cashbox-transactions", cashBoxId, page],
     queryFn: async () => {
       const response = await fetchWithAuth(
         `${environment.apiUrl}/${environment.apiVersion}/cashbox/${cashBoxId}/transactions?${attr}`,
@@ -37,4 +44,13 @@ export function getTransactionsCashboxByCashboxId(
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
+}
+
+export function getTransactionsCashboxByCashboxId(
+  cashBoxId: string,
+  page = 1,
+  limit = 10,
+  enabled = true
+) {
+  return useTransactionsByCashboxId({ cashBoxId, page, limit, enabled });
 }

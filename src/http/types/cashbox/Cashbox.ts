@@ -6,6 +6,7 @@ export interface Cashbox {
   status?: "aberto" | "fechado";
   opened_at?: string;
   closed_at?: string;
+  transactions?: any[];
   obs?: string;
   created_at?: string;
   updated_at?: string;

@@ -51,23 +51,25 @@ export function FormData({ setting }: settingProps) {
     resolver: zodResolver(createSettingSchema),
     defaultValues: {
       company_name: setting?.company_name ?? "",
-      email: setting?.email ?? "",
-      cnpj: setting?.cnpj ?? "",
-      phone: setting?.phone ?? "",
-      address: setting?.address ?? "",
-      checkin: setting?.checkin ?? "",
-      checkout: setting?.checkout ?? "",
+      email: setting?.company_email ?? "",
+      cnpj: setting?.company_cnpj ?? "",
+      phone: setting?.company_phone ?? "",
+      address: setting?.company_address ?? "",
+      checkin: setting?.company_checkin ?? "",
+      checkout: setting?.company_checkout ?? "",
       percentage_service_fee:
-        setting?.percentage_service_fee != null
-          ? setting.percentage_service_fee.toString()
+        setting?.company_percentage_service_fee != null
+          ? setting.company_percentage_service_fee.toString()
           : "0",
       cleaning_rate:
-        setting?.cleaning_rate != null ? setting.cleaning_rate.toString() : "0",
-      allow_booking_online:
-        setting?.allow_booking_online != null
-          ? setting.allow_booking_online.toString()
+        setting?.company_cleaning_rate != null
+          ? setting.company_cleaning_rate.toString()
           : "0",
-      cancellation_policies: setting?.cancellation_policies ?? "",
+      allow_booking_online:
+        setting?.company_allow_booking_online != null
+          ? setting.company_allow_booking_online.toString()
+          : "0",
+      cancellation_policies: setting?.company_cancellation_policies ?? "",
     },
   });
 

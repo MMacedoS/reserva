@@ -7,6 +7,7 @@ export interface Cashbox {
   opened_at?: string;
   closed_at?: string;
   transactions?: any[];
+  name?: string;
   obs?: string;
   created_at?: string;
   updated_at?: string;

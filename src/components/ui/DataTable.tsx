@@ -189,7 +189,7 @@ export function DataTable<TData, TValue>({
 
       <div className="flex justify-end items-center mt-4">
         <span className="text-sm text-gray-600">
-          Total de registros: {pagination?.total}
+          Total de registros: {pagination?.total || data.length}
         </span>
       </div>
 
@@ -198,6 +198,7 @@ export function DataTable<TData, TValue>({
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
+                className="text-gray-500 hover:text-gray-700 border"
                 lang="pt-br"
                 onClick={() =>
                   pagination.onPageChange(pagination.current_page - 1)
@@ -205,10 +206,12 @@ export function DataTable<TData, TValue>({
               />
             </PaginationItem>
             <PaginationItem>
-              {pagination.current_page} de {pagination.last_page} Páginas
+              <b>{pagination.current_page}</b> de <b>{pagination.last_page}</b>{" "}
+              Páginas
             </PaginationItem>
             <PaginationItem>
               <PaginationNext
+                className="text-gray-500 hover:text-gray-700 border border-gray-200 pl-4"
                 onClick={() =>
                   pagination.onPageChange(pagination.current_page + 1)
                 }

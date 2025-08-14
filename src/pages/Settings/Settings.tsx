@@ -2,6 +2,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { FormData } from "./Form/FormData";
 import { getSettings } from "@/http/settings/getSettings";
+import Footer from "@/components/layout/Footer";
 
 export function Settings() {
   const { sidebarToggle } = useSidebar();
@@ -21,6 +22,7 @@ export function Settings() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { UseUpdatePhoto } from "@/http/profile/useUpdatePhoto";
 import { UploadPhoto } from "./form/UploadPhoto";
 import { environment } from "@/environments/environment";
 import { useAuth } from "@/hooks/useAuth";
+import Footer from "@/components/layout/Footer";
 
 export function Profile() {
   const { sidebarToggle } = useSidebar();
@@ -38,6 +39,7 @@ export function Profile() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

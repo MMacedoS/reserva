@@ -22,6 +22,7 @@ import { MenuButtons } from "@/shared/components/MenuButtons";
 import type { Employee } from "@/http/types/employees/Employee";
 import type { ColumnDef } from "@tanstack/react-table";
 import { getEmployees } from "@/http/employees/getEmployees";
+import Footer from "@/components/layout/Footer";
 
 export function Employees() {
   const [page, setPage] = useState(1);
@@ -194,6 +195,8 @@ export function Employees() {
         onConfirm={handleDelete}
         employee={selectedEmployee}
       />
+
+      <Footer />
     </div>
   );
 }

@@ -13,6 +13,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import Footer from "@/components/layout/Footer";
 
 const Finance = () => {
   const { sidebarToggle } = useSidebar();
@@ -88,6 +89,7 @@ const Finance = () => {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </div>
   );
 };

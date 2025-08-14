@@ -1,9 +1,10 @@
+import Footer from "@/components/layout/Footer";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Dashboard() {  
+function Dashboard() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -16,7 +17,10 @@ function Dashboard() {
   }, [isAuthenticated]);
 
   return (
-    <Sidebar/>
+    <>
+      <Sidebar />
+      <Footer />
+    </>
   );
 }
 export default Dashboard;

@@ -5,7 +5,8 @@ import { useApi } from "@/hooks/useApi";
 export function getTransactionsCashboxByCashboxId(
   cashBoxId: string,
   page = 1,
-  limit = 10
+  limit = 10,
+  enabled = true
 ) {
   const { fetchWithAuth } = useApi();
 
@@ -23,7 +24,7 @@ export function getTransactionsCashboxByCashboxId(
       );
 
       if (!response.ok) {
-        throw new Error("Erro ao buscar funcionários");
+        throw new Error("Erro ao buscar transações");
       }
 
       const json = await response.json();
@@ -32,5 +33,8 @@ export function getTransactionsCashboxByCashboxId(
         pagination: json.data.pagination,
       };
     },
+    enabled: enabled && !!cashBoxId,
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
   });
 }

@@ -7,7 +7,7 @@ import { Settings } from "@/pages/Settings/Settings";
 import { Apartments } from "@/pages/Apartments/Apartments";
 import { Employees } from "@/pages/Employees/Employees";
 import Finance from "@/pages/Finance/Finance";
-import Paid from "@/pages/Finance/Paid/Paid";
+import Releases from "@/pages/Finance/Releases/Releases";
 
 export function AppRoutes() {
   return (
@@ -65,10 +65,10 @@ export function AppRoutes() {
         }
       />
       <Route
-        path="/finance/paid"
+        path="/finance/releases"
         element={
           <RequireAuth>
-            <Paid />
+            <Releases />
           </RequireAuth>
         }
       />

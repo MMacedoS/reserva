@@ -139,11 +139,11 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                 <CashboxGuard>
                   <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
                     <Link
-                      to="/finance/paid"
+                      to="/finance/releases"
                       className="px-3 py-2 text-white flex items-center"
                     >
                       <LucideBadgeDollarSign className="inline-block w-4 h-4 mr-2 -mt-1" />
-                      Retirada
+                      Lançamentos
                     </Link>
                   </li>
                 </CashboxGuard>

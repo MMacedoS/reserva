@@ -33,7 +33,7 @@ import { saveTransactions } from "@/http/finance/transactions/saveTransactions";
 import { showAutoDismissAlert } from "@/components/showAutoDismissAlert";
 import { useAuth } from "@/hooks/useAuth";
 
-const PaidFormDataSchema = z.object({
+const ReleasesFormDataSchema = z.object({
   amount: z.string().min(1, "Valor é obrigatório"),
   description: z
     .string()
@@ -45,7 +45,7 @@ const PaidFormDataSchema = z.object({
   type: z.enum(["entrada", "saida"]),
 });
 
-type PaidFormData = z.infer<typeof PaidFormDataSchema>;
+type ReleasesFormData = z.infer<typeof ReleasesFormDataSchema>;
 
 type Transaction = {
   id: string;
@@ -57,14 +57,14 @@ type Transaction = {
   canceled: string;
 };
 
-const Paid = () => {
+const Releases = () => {
   const { sidebarToggle } = useSidebar();
   const { cashbox } = useAuth();
   const [page, setPage] = useState(1);
   const cashBoxId = cashbox?.id || "";
 
-  const form = useForm<PaidFormData>({
-    resolver: zodResolver(PaidFormDataSchema),
+  const form = useForm<ReleasesFormData>({
+    resolver: zodResolver(ReleasesFormDataSchema),
     defaultValues: {
       amount: "",
       description: "",
@@ -88,7 +88,7 @@ const Paid = () => {
 
   const { mutateAsync: mutateSave } = saveTransactions();
 
-  const onSubmit = async (data: PaidFormData) => {
+  const onSubmit = async (data: ReleasesFormData) => {
     if (!cashBoxId) {
       showAutoDismissAlert({
         message: "Erro - Caixa não encontrado",
@@ -400,4 +400,4 @@ const Paid = () => {
   );
 };
 
-export default Paid;
+export default Releases;

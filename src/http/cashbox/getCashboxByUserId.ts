@@ -9,13 +9,13 @@ type ApiResponse = { status: number; data: Cashbox };
 
 export function getCashboxByUserId() {
   const { fetchWithAuth } = useApi();
-  const { updateCashbox } = useAuth();
+  const { updateCashbox, cashbox } = useAuth();
   const queryClient = useQueryClient();
 
-  return useMutation<ApiResponse, Error, Cashbox>({
-    mutationKey: ["cashbox", "getById"],
+  return useMutation<ApiResponse, Error>({
+    mutationKey: ["cashboxId"],
     mutationFn: async () => {
-      const cashboxId = localStorage.getItem("cashboxId");
+      const cashboxId = cashbox?.id;
 
       if (!cashboxId) {
         throw new Error("Caixa não encontrado");
@@ -38,14 +38,21 @@ export function getCashboxByUserId() {
       }
 
       const result = await response.json();
-      return result;
+      return {
+        status: response.status,
+        data: result.data.cashbox,
+      };
     },
     onSuccess: ({ data }) => {
       updateCashbox(data);
 
       // Invalida as queries relacionadas ao cashbox para força refetch quando necessário
-      queryClient.invalidateQueries({ queryKey: ["cashbox", "getById"] });
+      queryClient.invalidateQueries({ queryKey: ["cashboxId"] });
       queryClient.invalidateQueries({ queryKey: ["cashbox"] });
+
+      // Força atualização do cache com os dados mais recentes
+      queryClient.setQueryData(["cashboxId"], { data });
+      queryClient.setQueryData(["cashbox"], data);
 
       showAutoDismissAlert({
         message: "Dados salvos com sucesso!",

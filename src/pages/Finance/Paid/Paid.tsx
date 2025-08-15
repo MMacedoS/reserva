@@ -31,6 +31,7 @@ import { formatValueToBRL } from "@/lib/utils";
 import { ArrowUpDown } from "lucide-react";
 import { saveTransactions } from "@/http/finance/transactions/saveTransactions";
 import { showAutoDismissAlert } from "@/components/showAutoDismissAlert";
+import { useAuth } from "@/hooks/useAuth";
 
 const PaidFormDataSchema = z.object({
   amount: z.string().min(1, "Valor é obrigatório"),
@@ -58,9 +59,9 @@ type Transaction = {
 
 const Paid = () => {
   const { sidebarToggle } = useSidebar();
+  const { cashbox } = useAuth();
   const [page, setPage] = useState(1);
-  const cashbox = localStorage.getItem("cashbox");
-  const cashBoxId = cashbox ? JSON.parse(cashbox).id : "";
+  const cashBoxId = cashbox?.id || "";
 
   const form = useForm<PaidFormData>({
     resolver: zodResolver(PaidFormDataSchema),
@@ -68,8 +69,9 @@ const Paid = () => {
       amount: "",
       description: "",
       origin: "",
-      payment_form: "",
+      payment_form: "dinheiro",
       type: "entrada",
+      created_at: new Date().toISOString().split("T")[0],
     },
   });
 
@@ -80,7 +82,7 @@ const Paid = () => {
   const { data: transactions } = useTransactionsByCashboxId({
     cashBoxId,
     page,
-    limit: 10,
+    limit: 5,
     enabled: true,
   });
 
@@ -228,7 +230,7 @@ const Paid = () => {
                               <Textarea
                                 {...field}
                                 placeholder="Descreva o lançamento..."
-                                rows={3}
+                                rows={2}
                               />
                             </FormControl>
                             <FormMessage />

@@ -2,15 +2,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { showAutoDismissAlert } from "@/components/showAutoDismissAlert";
 import { environment } from "@/environments/environment";
 import { useApi } from "@/hooks/useApi";
+import { getCashboxByUserId } from "@/http/cashbox/getCashboxByUserId";
 import type { Transaction } from "@/http/types/finance/transaction/Transaction";
 
 export function saveTransactions() {
   const { fetchWithAuth } = useApi();
   const queryClient = useQueryClient();
+  const { mutate: refetchCashbox } = getCashboxByUserId();
 
   return useMutation({
     mutationFn: async (data: Transaction & { id?: string }) => {
-      console.log("Saving transaction data:", data);
       const isEdit = !!data.id;
       const url = isEdit
         ? `${environment.apiUrl}/${environment.apiVersion}/cashbox/${data.cashbox_id}/transactions/${data.id}`
@@ -40,11 +41,13 @@ export function saveTransactions() {
       return result.data || result;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["cashbox"] });
-      queryClient.invalidateQueries({ queryKey: ["cashbox", "getById"] });
+      // Invalida as queries relacionadas às transações
       queryClient.invalidateQueries({
         queryKey: ["cashbox-transactions", variables.cashbox_id],
       });
+
+      // Busca os dados atualizados do cashbox do backend
+      refetchCashbox();
 
       showAutoDismissAlert({
         message: "Transação salva com sucesso!",

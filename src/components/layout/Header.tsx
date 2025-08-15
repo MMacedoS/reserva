@@ -2,6 +2,8 @@ import {
   LucideBadgeDollarSign,
   LucideBlocks,
   LucideCalendarDays,
+  LucideChevronDown,
+  LucideChevronRight,
   LucideHotel,
   LucideLayoutDashboard,
   LucidePersonStanding,
@@ -11,6 +13,7 @@ import {
   LucideUserStar,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { PermissionGuard } from "@/components/PermissionGuard";
 import { CashboxGuard } from "../CashboxGuard";
 
@@ -20,6 +23,12 @@ interface NavbarProps {
 }
 
 export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  const toggleDropdown = (dropdownId: string) => {
+    setOpenDropdown(openDropdown === dropdownId ? null : dropdownId);
+  };
+
   return (
     <div
       className={`transform 
@@ -96,14 +105,49 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                 Relatórios
               </Link>
             </li>
-            <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-              <Link
-                to="/finance"
-                className="px-3 py-2 text-white flex items-center"
+            <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
+              <div
+                onClick={() => toggleDropdown("finance")}
+                className="px-3 py-2 text-white flex items-center justify-between cursor-pointer group"
               >
-                <LucideReceipt className="inline-block w-6 h-6 mr-2 -mt-2" />
-                Financeiro
-              </Link>
+                <div className="flex items-center">
+                  <LucideReceipt className="inline-block w-6 h-6 mr-2 -mt-2" />
+                  Financeiro
+                </div>
+                {openDropdown === "finance" ? (
+                  <LucideChevronDown className="w-4 h-4" />
+                ) : (
+                  <LucideChevronRight className="w-4 h-4" />
+                )}
+              </div>
+              <ul
+                className={`ml-4 mt-2 text-xs transition-all duration-300 ease-in-out overflow-hidden ${
+                  openDropdown === "finance"
+                    ? "max-h-96 opacity-100"
+                    : "max-h-0 opacity-0"
+                }`}
+              >
+                <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
+                  <Link
+                    to="/finance"
+                    className="px-3 py-2 text-white flex items-center"
+                  >
+                    <LucideReceipt className="inline-block w-4 h-4 mr-2 -mt-1" />
+                    Caixas
+                  </Link>
+                </li>
+                <CashboxGuard>
+                  <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
+                    <Link
+                      to="/finance/paid"
+                      className="px-3 py-2 text-white flex items-center"
+                    >
+                      <LucideBadgeDollarSign className="inline-block w-4 h-4 mr-2 -mt-1" />
+                      Retirada
+                    </Link>
+                  </li>
+                </CashboxGuard>
+              </ul>
             </li>
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
               <Link

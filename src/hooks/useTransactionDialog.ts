@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useTransactionsByCashboxId } from "@/http/transactions/getTransactionsCashboxByCashboxId";
+import { useTransactionsByCashboxId } from "@/http/finance/transactions/getTransactionsCashboxByCashboxId";
 
 interface UseTransactionDialogProps {
   cashBoxId: string;

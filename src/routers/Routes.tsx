@@ -1,4 +1,3 @@
-// src/routes/Routes.tsx
 import { Routes, Route } from "react-router-dom";
 import { RequireAuth } from "./RequireAuth";
 import Dashboard from "@/pages/Dashboard/Dashboard";
@@ -8,11 +7,14 @@ import { Settings } from "@/pages/Settings/Settings";
 import { Apartments } from "@/pages/Apartments/Apartments";
 import { Employees } from "@/pages/Employees/Employees";
 import Finance from "@/pages/Finance/Finance";
+import Paid from "@/pages/Finance/Paid/Paid";
 
 export function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+
+      {/* Rotas principais com RequireAuth */}
       <Route
         path="/dashboard"
         element={
@@ -53,6 +55,7 @@ export function AppRoutes() {
           </RequireAuth>
         }
       />
+
       <Route
         path="/finance"
         element={
@@ -61,6 +64,31 @@ export function AppRoutes() {
           </RequireAuth>
         }
       />
+      <Route
+        path="/finance/paid"
+        element={
+          <RequireAuth>
+            <Paid />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/finance/income"
+        element={
+          <RequireAuth>
+            <div>Página de Receitas</div>
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/finance/reports"
+        element={
+          <RequireAuth>
+            <div>Página de Relatórios Financeiros</div>
+          </RequireAuth>
+        }
+      />
+
       <Route path="*" element={<Login />} />
     </Routes>
   );

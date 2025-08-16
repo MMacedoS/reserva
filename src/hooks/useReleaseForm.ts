@@ -25,6 +25,7 @@ export type Transaction = {
   description: string;
   amount: number;
   origin: string;
+  cashbox_id?: string;
   payment_form: string;
   created_at: string;
   canceled: boolean;

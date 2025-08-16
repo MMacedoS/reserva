@@ -1,5 +1,3 @@
-import type { Apartment } from "@/http/types/apartments/Apartment";
-import type { Employee } from "@/http/types/employees/Employee";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,19 +13,18 @@ type AlertDialogDestroyProps = {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  apartment?: Apartment | null;
-  employee?: Employee | null;
+  item: any;
+  type?: "apartment" | "employee" | "transaction";
 };
 
 export function AlertDialogDestroy({
   open,
   onClose,
   onConfirm,
-  apartment,
-  employee,
+  item,
+  type = "apartment",
 }: AlertDialogDestroyProps) {
-  const itemName = apartment?.name || employee?.name;
-  const itemType = apartment ? "apartamento" : "funcionário";
+  const itemName = item?.name || item?.description;
 
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
@@ -35,8 +32,7 @@ export function AlertDialogDestroy({
         <AlertDialogHeader>
           <AlertDialogTitle>Tem certeza que deseja excluir?</AlertDialogTitle>
           <AlertDialogDescription>
-            Você está prestes a excluir o {itemType} {apartment ? "nº" : ""}{" "}
-            {itemName}.
+            Você está prestes a excluir o {type} {itemName}.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

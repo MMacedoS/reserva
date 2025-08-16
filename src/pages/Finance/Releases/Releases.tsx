@@ -8,10 +8,13 @@ import { useState } from "react";
 import { DataTable } from "@/components/ui/DataTable";
 import type { ColumnDef } from "@tanstack/react-table";
 import { formatValueToBRL } from "@/lib/utils";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, LucideTrash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useReleaseForm, type Transaction } from "@/hooks/useReleaseForm";
 import { ReleaseForm } from "@/components/ReleaseForm";
+import { AlertDialogDestroy } from "@/components/ui/alertDialogDestroy";
+import { deleteTransaction } from "@/http/finance/transactions/deleteTransaction";
+import HoverCardToTable from "@/shared/components/HoverCardToTable";
 
 const Releases = () => {
   const { sidebarToggle } = useSidebar();
@@ -19,6 +22,7 @@ const Releases = () => {
   const [page, setPage] = useState(1);
   const cashBoxId = cashbox?.id || "";
   const [release, setRelease] = useState<Transaction | null>(null);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
   const { form, onSubmit, clearForm } = useReleaseForm({
     cashBoxId,
@@ -32,6 +36,15 @@ const Releases = () => {
     limit: 5,
     enabled: true,
   });
+  const { mutateAsync: destroyTransaction } = deleteTransaction();
+  const handleDelete = async () => {
+    if (!release) return;
+
+    release.cashbox_id = cashBoxId;
+    await destroyTransaction(release);
+
+    setOpenConfirmDialog(false);
+  };
 
   const columns: ColumnDef<Transaction>[] = [
     {
@@ -48,9 +61,26 @@ const Releases = () => {
       ),
       cell: ({ row }) => {
         return (
-          <Button variant="link" onClick={() => setRelease(row.original)}>
-            {row.getValue("description")}
-          </Button>
+          <>
+            <div className="space-x-2 justify-baseline flex items-center">
+              <Button
+                variant="link"
+                onClick={() => {
+                  setRelease(row.original);
+                  setOpenConfirmDialog(true);
+                }}
+              >
+                <LucideTrash2 className="text-red-800" />
+              </Button>
+              <Button variant="link" onClick={() => setRelease(row.original)}>
+                <HoverCardToTable
+                  title={row.original.description}
+                  type="transaction"
+                  item={row.original}
+                />
+              </Button>
+            </div>
+          </>
         );
       },
       enableSorting: true,
@@ -165,6 +195,13 @@ const Releases = () => {
           </div>
         </div>
       </div>
+      <AlertDialogDestroy
+        open={openConfirmDialog}
+        onClose={() => setOpenConfirmDialog(false)}
+        onConfirm={handleDelete}
+        item={release}
+        type="transaction"
+      />
       <Footer />
     </>
   );

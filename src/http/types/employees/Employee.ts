@@ -1,4 +1,4 @@
-export interface Employee {
+export type Employee = {
   id: string;
   code: string;
   name: string;
@@ -10,7 +10,7 @@ export interface Employee {
   active: number | string;
   created_at: string | null;
   updated_at: string | null;
-}
+};
 
 export interface EmployeeRequest {
   name: string;

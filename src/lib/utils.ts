@@ -23,3 +23,8 @@ export const formatDate = (date: string | null) => {
   };
   return new Date(date).toLocaleDateString("pt-BR", options);
 };
+
+export const textSlice = (text: string, maxLength: number) => {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + "...";
+};

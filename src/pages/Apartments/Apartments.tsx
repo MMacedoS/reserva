@@ -157,7 +157,8 @@ export function Apartments() {
         open={openConfirmDialog}
         onClose={() => setOpenConfirmDialog(false)}
         onConfirm={handleDelete}
-        apartment={selectedApartment}
+        item={selectedApartment}
+        type="apartment"
       />
       <Footer />
     </div>

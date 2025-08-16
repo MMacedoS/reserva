@@ -193,7 +193,8 @@ export function Employees() {
         open={openConfirmDialog}
         onClose={() => setOpenConfirmDialog(false)}
         onConfirm={handleDelete}
-        employee={selectedEmployee}
+        item={selectedEmployee}
+        type="employee"
       />
 
       <Footer />

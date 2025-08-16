@@ -52,8 +52,41 @@ const CardListCash = ({ cashbox }: { cashbox: Cashbox }) => {
             <span>{formatValueToBRL(cashbox.initial_amount || 0)}</span>
           </div>
           <div className="flex justify-between">
+            <span className="text-sm text-gray-500">Total entradas:</span>
+            <span>{formatValueToBRL(cashbox.total_input || 0)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-sm text-gray-500">Total saídas:</span>
+            <span>{formatValueToBRL(cashbox.total_output || 0)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-sm text-gray-500">Totais:</span>
+            <span>
+              {formatValueToBRL(
+                (cashbox.total_input || 0) +
+                  (cashbox.initial_amount || 0) -
+                  (cashbox.total_output || 0)
+              )}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-sm text-gray-500">Total Sangria:</span>
+            <span>{formatValueToBRL(cashbox.total_bleed_box || 0)}</span>
+          </div>
+
+          <div className="flex justify-between">
             <span className="text-sm text-gray-500">Saldo atual:</span>
             <span>{formatValueToBRL(cashbox.current_balance || 0)}</span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-sm text-gray-500">Fechamento:</span>
+            <span>{formatValueToBRL(cashbox.final_amount || 0)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-sm text-gray-500">Diferença:</span>
+            <span>{formatValueToBRL(cashbox.difference || 0)}</span>
           </div>
         </div>
       </CardContent>

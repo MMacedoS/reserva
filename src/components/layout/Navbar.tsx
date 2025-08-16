@@ -6,6 +6,9 @@ import { environment } from "@/environments/environment";
 import { useAuth } from "@/hooks/useAuth";
 import { CashboxForm } from "../CashboxForm";
 import { formatValueToBRL } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { AlertDialogCashbox } from "@/shared/components/AlertDialogCashbox";
+import { closeCashbox } from "@/http/cashbox/closeCashbox";
 
 interface NavbarProps {
   sidebarToggle: boolean;
@@ -16,6 +19,7 @@ export function Navbar({ sidebarToggle, setSidebarToggle }: NavbarProps) {
   const { user, logout, cashbox } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isCashboxFormOpen, setIsCashboxFormOpen] = useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
   const toggleDropdown = () => setIsOpen((prev) => !prev);
   const closeDropdown = () => setIsOpen(false);
@@ -24,6 +28,12 @@ export function Navbar({ sidebarToggle, setSidebarToggle }: NavbarProps) {
     if (!cashbox) {
       setIsCashboxFormOpen(true);
     }
+  };
+
+  const { mutate: close } = closeCashbox();
+  const handleCloseCashbox = async (finalAmount?: number) => {
+    await close(finalAmount);
+    setOpenConfirmDialog(false);
   };
 
   return (
@@ -44,7 +54,17 @@ export function Navbar({ sidebarToggle, setSidebarToggle }: NavbarProps) {
             {cashbox ? (
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium">Caixa Aberto</span>
+                <span className="text-sm font-medium">
+                  <Button
+                    variant="link"
+                    className="p-0 m-0 hover:underline text-white cursor-pointer"
+                    onClick={() => {
+                      setOpenConfirmDialog(true);
+                    }}
+                  >
+                    Caixa Aberto
+                  </Button>
+                </span>
                 <span className="text-sm font-medium">
                   {formatValueToBRL(cashbox.current_balance)}
                 </span>
@@ -96,6 +116,16 @@ export function Navbar({ sidebarToggle, setSidebarToggle }: NavbarProps) {
       <CashboxForm
         open={isCashboxFormOpen}
         onClose={() => setIsCashboxFormOpen(false)}
+      />
+
+      <AlertDialogCashbox
+        open={openConfirmDialog}
+        onClose={() => setOpenConfirmDialog(false)}
+        onConfirm={(finalAmount) => {
+          handleCloseCashbox(finalAmount);
+        }}
+        item={cashbox}
+        type="Cashbox"
       />
     </div>
   );

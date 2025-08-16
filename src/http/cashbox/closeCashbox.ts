@@ -1,58 +1,51 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { showAutoDismissAlert } from "@/components/showAutoDismissAlert";
 import { environment } from "@/environments/environment";
 import { useApi } from "@/hooks/useApi";
 import { useAuth } from "@/hooks/useAuth";
-import type { Cashbox } from "../types/cashbox/Cashbox";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-type ApiResponse = { status: number; data: Cashbox };
-
-export function getCashboxByUserId() {
-  const { fetchWithAuth } = useApi();
+export function closeCashbox() {
   const { updateCashbox, cashbox } = useAuth();
   const queryClient = useQueryClient();
+  const { fetchWithAuth } = useApi();
 
-  return useMutation<ApiResponse, Error>({
-    mutationKey: ["cashboxId"],
-    mutationFn: async () => {
-      const cashboxId = cashbox?.id;
-
-      if (!cashboxId) {
-        throw new Error("Caixa não encontrado");
+  return useMutation({
+    mutationKey: ["closeCashbox"],
+    mutationFn: async (finalAmount?: number) => {
+      if (!cashbox) {
+        throw new Error("Nenhum caixa encontrado para fechar");
       }
 
+      const body = finalAmount ? { final_amount: finalAmount } : undefined;
+
       const response = await fetchWithAuth(
-        `${environment.apiUrl}/${environment.apiVersion}/cashbox/${cashboxId}`,
+        `${environment.apiUrl}/${environment.apiVersion}/cashbox/${cashbox.id}/close`,
         {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           credentials: "include",
+          body: body ? JSON.stringify(body) : undefined,
         }
       );
 
       if (!response.ok) {
         const errorBody = await response.json();
         throw new Error(
-          `Erro ao salvar: ${errorBody.data.message || response.statusText}`
+          `Erro ao fechar caixa: ${errorBody.data || response.statusText}`
         );
       }
 
       const result = await response.json();
-      return {
-        status: response.status,
-        data: result.data.cashbox,
-      };
+      return result.data;
     },
-    onSuccess: ({ data }) => {
-      updateCashbox(data);
+    onSuccess: (data) => {
+      updateCashbox(null);
 
-      // Invalida as queries relacionadas ao cashbox para força refetch quando necessário
       queryClient.invalidateQueries({ queryKey: ["cashboxId"] });
       queryClient.invalidateQueries({ queryKey: ["cashbox"] });
 
-      // Força atualização do cache com os dados mais recentes
       queryClient.setQueryData(["cashboxId"], { data });
       queryClient.setQueryData(["cashbox"], data);
 
@@ -62,11 +55,11 @@ export function getCashboxByUserId() {
         duration: 2000,
       });
     },
-    onError: (error: Error) => {
+    onError: (error) => {
       showAutoDismissAlert({
-        message: "Erro ao salvar dados",
-        description: error.message || "Erro desconhecido",
-        duration: 4000,
+        message: "Erro ao fechar caixa",
+        description: error.message.toString(),
+        duration: 3000,
       });
     },
   });

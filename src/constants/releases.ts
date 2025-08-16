@@ -10,4 +10,5 @@ export const PAYMENT_FORMS = [
 export const TRANSACTION_TYPES = [
   { value: "entrada", label: "Entrada" },
   { value: "saida", label: "Saída" },
+  { value: "sangria", label: "Sangria" },
 ];

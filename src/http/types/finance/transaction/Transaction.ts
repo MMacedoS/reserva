@@ -6,7 +6,7 @@ export interface Transaction {
   origin: string;
   payment_form: string;
   created_at: string; // Changed from date to created_at
-  type: "entrada" | "saida";
+  type: string;
 }
 
 export type TransactionRequest = Omit<Transaction, "id"> & {

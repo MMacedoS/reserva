@@ -8,6 +8,7 @@ import { Apartments } from "@/pages/Apartments/Apartments";
 import { Employees } from "@/pages/Employees/Employees";
 import Finance from "@/pages/Finance/Finance";
 import Releases from "@/pages/Finance/Releases/Releases";
+import Sales from "@/pages/Sales/Sales";
 
 export function AppRoutes() {
   return (
@@ -36,6 +37,14 @@ export function AppRoutes() {
         element={
           <RequireAuth>
             <Apartments />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/sales"
+        element={
+          <RequireAuth>
+            <Sales />
           </RequireAuth>
         }
       />

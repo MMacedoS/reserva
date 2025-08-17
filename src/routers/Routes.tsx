@@ -10,6 +10,7 @@ import { Permissions } from "@/pages/Permissions/Permissions";
 import Finance from "@/pages/Finance/Finance";
 import Releases from "@/pages/Finance/Releases/Releases";
 import Sales from "@/pages/Sales/Sales";
+import { ReportTransactions } from "@/pages/Reports/TransactionsReport";
 
 export function AppRoutes() {
   return (
@@ -38,6 +39,22 @@ export function AppRoutes() {
         element={
           <RequireAuth>
             <Apartments />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/clients"
+        element={
+          <RequireAuth>
+            <div>Página de Hospedes</div>
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/reservations"
+        element={
+          <RequireAuth>
+            <div>Página de Reservas</div>
           </RequireAuth>
         }
       />
@@ -103,6 +120,14 @@ export function AppRoutes() {
         element={
           <RequireAuth>
             <div>Página de Relatórios Financeiros</div>
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/report-transactions"
+        element={
+          <RequireAuth>
+            <ReportTransactions />
           </RequireAuth>
         }
       />

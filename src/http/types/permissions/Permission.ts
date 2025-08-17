@@ -14,3 +14,8 @@ export interface UserPermissions {
 export interface AssignPermissionRequest {
   permissions: string[];
 }
+
+export interface PermissionRequest {
+  name: string;
+  description?: string;
+}

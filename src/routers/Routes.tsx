@@ -6,6 +6,7 @@ import { Profile } from "@/pages/Profile/Profile";
 import { Settings } from "@/pages/Settings/Settings";
 import { Apartments } from "@/pages/Apartments/Apartments";
 import { Employees } from "@/pages/Employees/Employees";
+import { Permissions } from "@/pages/Permissions/Permissions";
 import Finance from "@/pages/Finance/Finance";
 import Releases from "@/pages/Finance/Releases/Releases";
 import Sales from "@/pages/Sales/Sales";
@@ -61,6 +62,14 @@ export function AppRoutes() {
         element={
           <RequireAuth>
             <Employees />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/permissions"
+        element={
+          <RequireAuth>
+            <Permissions />
           </RequireAuth>
         }
       />

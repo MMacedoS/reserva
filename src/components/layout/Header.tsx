@@ -1,5 +1,6 @@
 import {
   LucideBadgeDollarSign,
+  LucideBanknote,
   LucideBlocks,
   LucideCalendarDays,
   LucideChevronDown,
@@ -10,6 +11,7 @@ import {
   LucideReceipt,
   LucideReceiptText,
   LucideSettings,
+  LucideShieldCheck,
   LucideUserStar,
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -34,6 +36,7 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
       className={`transform 
         transition-transform duration-1000 
         ease-in-out w-50 bg-gray-800 fixed h-full px-4 py-2 
+        overflow-y-auto 
         ${sidebarToggle ? "-translate-x-full" : "translate-x-0"}`}
     >
       <div className="my-2 mb-4">
@@ -105,13 +108,39 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
             ]}
           >
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-              <Link
-                to="/reports"
-                className="px-3 py-2 text-white flex items-center"
+              <div
+                onClick={() => toggleDropdown("reports")}
+                className="px-3 py-2 text-white flex items-center justify-between cursor-pointer group"
               >
-                <LucideReceiptText className="inline-block w-6 h-6 mr-2 -mt-2" />
-                Relatórios
-              </Link>
+                <div className="flex items-center">
+                  <LucideReceiptText className="inline-block w-6 h-6 mr-2 -mt-2" />
+                  Relatórios
+                </div>
+                {openDropdown === "reports" ? (
+                  <LucideChevronDown className="w-4 h-4" />
+                ) : (
+                  <LucideChevronRight className="w-4 h-4" />
+                )}
+              </div>
+              <ul
+                className={`ml-4 mt-2 text-xs transition-all duration-300 ease-in-out overflow-hidden ${
+                  openDropdown === "reports"
+                    ? "max-h-96 opacity-100"
+                    : "max-h-0 opacity-0"
+                }`}
+              >
+                <PermissionGuard requiredPermission={["reports.cashbox"]}>
+                  <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
+                    <Link
+                      to="/reports"
+                      className="px-3 py-2 text-white flex items-center"
+                    >
+                      <LucideBanknote className="inline-block w-6 h-6 mr-2 -mt-2" />
+                      Caixas
+                    </Link>
+                  </li>
+                </PermissionGuard>
+              </ul>
             </li>
             <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
               <div
@@ -185,6 +214,15 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
               >
                 <LucideSettings className="inline-block w-6 h-6 mr-2 -mt-2" />
                 Configurações
+              </Link>
+            </li>
+            <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
+              <Link
+                to="/permissions"
+                className="px-3 py-2 text-white flex items-center"
+              >
+                <LucideShieldCheck className="inline-block w-6 h-6 mr-2 -mt-2" />
+                Permissões
               </Link>
             </li>
           </PermissionGuard>

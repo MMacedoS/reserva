@@ -3,6 +3,7 @@ import {
   LucideFolderPen,
   LucidePlusCircle,
   LucideCookingPot,
+  LucideShield,
 } from "lucide-react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useSidebar } from "@/contexts/SidebarContext";
@@ -19,6 +20,8 @@ import { useDeleteEmployee } from "@/http/employees/deleteEmployee";
 import { FormData } from "./Form/FormData";
 import { AlertDialogDestroy } from "@/components/ui/alertDialogDestroy";
 import { MenuButtons } from "@/shared/components/MenuButtons";
+import { PermissionDialog } from "@/components/PermissionDialog";
+import { PermissionGuard } from "@/components/PermissionGuard";
 import type { Employee } from "@/http/types/employees/Employee";
 import type { ColumnDef } from "@tanstack/react-table";
 import { getEmployees } from "@/http/employees/getEmployees";
@@ -32,6 +35,7 @@ export function Employees() {
   );
   const [openDialog, setOpenDialog] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [openPermissionDialog, setOpenPermissionDialog] = useState(false);
 
   const { data, isLoading } = getEmployees(page);
   const { mutateAsync: destroyEmployee } = useDeleteEmployee();
@@ -94,25 +98,42 @@ export function Employees() {
       enableHiding: false,
       cell: ({ row }) => {
         const employee = row.original;
+
+        const baseActions = [
+          {
+            label: <LucideFolderPen className="size-6" />,
+            onClick: () => {
+              setSelectedEmployee(employee);
+              setOpenDialog(true);
+            },
+          },
+          {
+            label: <LucideCookingPot className="size-6" />,
+            onClick: () => {
+              setSelectedEmployee(employee);
+              setOpenConfirmDialog(true);
+            },
+          },
+        ];
+
         return (
-          <MenuButtons
-            actions={[
-              {
-                label: <LucideFolderPen className="size-6" />,
-                onClick: () => {
-                  setSelectedEmployee(employee);
-                  setOpenDialog(true);
+          <PermissionGuard
+            requiredAccess={["administrador", "gerente"]}
+            fallback={<MenuButtons actions={baseActions} />}
+          >
+            <MenuButtons
+              actions={[
+                ...baseActions,
+                {
+                  label: <LucideShield className="size-6" />,
+                  onClick: () => {
+                    setSelectedEmployee(employee);
+                    setOpenPermissionDialog(true);
+                  },
                 },
-              },
-              {
-                label: <LucideCookingPot className="size-6" />,
-                onClick: () => {
-                  setSelectedEmployee(employee);
-                  setOpenConfirmDialog(true);
-                },
-              },
-            ]}
-          />
+              ]}
+            />
+          </PermissionGuard>
         );
       },
     },
@@ -187,6 +208,11 @@ export function Employees() {
       <FormData
         open={openDialog}
         onClose={() => setOpenDialog(false)}
+        employee={selectedEmployee}
+      />
+      <PermissionDialog
+        open={openPermissionDialog}
+        onClose={() => setOpenPermissionDialog(false)}
         employee={selectedEmployee}
       />
       <AlertDialogDestroy

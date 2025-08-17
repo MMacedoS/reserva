@@ -95,7 +95,15 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
             </li>
           </CashboxGuard>
 
-          <PermissionGuard requiredAccess={["administrador", "gerente"]}>
+          <PermissionGuard
+            requiredAccess={[
+              "administrador",
+              "gerente",
+              "recepcionista",
+              "financeiro",
+              "recepcionista_bar",
+            ]}
+          >
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
               <Link
                 to="/reports"
@@ -127,26 +135,36 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                     : "max-h-0 opacity-0"
                 }`}
               >
-                <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
-                  <Link
-                    to="/finance"
-                    className="px-3 py-2 text-white flex items-center"
-                  >
-                    <LucideReceipt className="inline-block w-4 h-4 mr-2 -mt-1" />
-                    Caixas
-                  </Link>
-                </li>
-                <CashboxGuard>
+                <PermissionGuard
+                  requiredPermission={[
+                    "cashbox.transactions",
+                    "cashbox.view",
+                    "cashbox.open",
+                    "cashbox.close",
+                    "cashbox.transactions",
+                  ]}
+                >
                   <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
                     <Link
-                      to="/finance/releases"
+                      to="/finance"
                       className="px-3 py-2 text-white flex items-center"
                     >
-                      <LucideBadgeDollarSign className="inline-block w-4 h-4 mr-2 -mt-1" />
-                      Lançamentos
+                      <LucideReceipt className="inline-block w-4 h-4 mr-2 -mt-1" />
+                      Caixas
                     </Link>
                   </li>
-                </CashboxGuard>
+                  <CashboxGuard>
+                    <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
+                      <Link
+                        to="/finance/releases"
+                        className="px-3 py-2 text-white flex items-center"
+                      >
+                        <LucideBadgeDollarSign className="inline-block w-4 h-4 mr-2 -mt-1" />
+                        Lançamentos
+                      </Link>
+                    </li>
+                  </CashboxGuard>
+                </PermissionGuard>
               </ul>
             </li>
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">

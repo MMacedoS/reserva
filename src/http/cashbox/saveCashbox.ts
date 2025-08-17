@@ -4,14 +4,12 @@ import { environment } from "@/environments/environment";
 import { useApi } from "@/hooks/useApi";
 import type { Cashbox } from "../types/cashbox/Cashbox";
 import { useAuth } from "@/hooks/useAuth";
-import { getCashboxByUserId } from "./getCashboxByUserId";
 
 type ApiResponse = { status: number; data: Cashbox };
 
 export function saveCashbox() {
   const { updateCashbox } = useAuth();
   const { fetchWithAuth } = useApi();
-  const { mutate: refetchCashbox } = getCashboxByUserId();
 
   return useMutation<ApiResponse, Error, Cashbox>({
     mutationFn: async (data: Cashbox) => {
@@ -44,7 +42,6 @@ export function saveCashbox() {
     },
     onSuccess: ({ data }) => {
       updateCashbox(data);
-      refetchCashbox();
       showAutoDismissAlert({
         message: "Dados salvos com sucesso!",
         description: "Os dados foram armazenados.",

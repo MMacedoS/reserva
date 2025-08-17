@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 interface PermissionGuardProps {
   children: ReactNode;
-  requiredPermission?: string;
+  requiredPermission?: string[];
   requiredAccess?: string[];
   fallback?: ReactNode;
 }
@@ -17,7 +17,9 @@ export function PermissionGuard({
   const { user, permissions } = useAuth();
 
   if (requiredPermission && permissions) {
-    const hasPermission = permissions.includes(requiredPermission);
+    const hasPermission = requiredPermission.every((perm) =>
+      permissions.includes(perm)
+    );
     if (!hasPermission) {
       return <>{fallback}</>;
     }

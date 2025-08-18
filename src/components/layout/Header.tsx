@@ -13,6 +13,9 @@ import {
   LucideSettings,
   LucideShieldCheck,
   LucideUserStar,
+  LucidePackage,
+  LucideTableProperties,
+  LucideCreditCard,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -94,6 +97,33 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
               >
                 <LucideBadgeDollarSign className="inline-block w-6 h-6 mr-2 -mt-2" />
                 Vendas
+              </Link>
+            </li>
+            <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
+              <Link
+                to="/products"
+                className="px-3 py-2 text-white flex items-center"
+              >
+                <LucidePackage className="inline-block w-6 h-6 mr-2 -mt-2" />
+                Produtos
+              </Link>
+            </li>
+            <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
+              <Link
+                to="/tables"
+                className="px-3 py-2 text-white flex items-center"
+              >
+                <LucideTableProperties className="inline-block w-6 h-6 mr-2 -mt-2" />
+                Mesas
+              </Link>
+            </li>
+            <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
+              <Link
+                to="/payments"
+                className="px-3 py-2 text-white flex items-center"
+              >
+                <LucideCreditCard className="inline-block w-6 h-6 mr-2 -mt-2" />
+                Pagamentos
               </Link>
             </li>
           </CashboxGuard>

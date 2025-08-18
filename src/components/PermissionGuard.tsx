@@ -17,8 +17,8 @@ export function PermissionGuard({
   const { user, permissions } = useAuth();
 
   if (requiredPermission && permissions) {
-    const hasPermission = requiredPermission.every((perm) =>
-      permissions.includes(perm)
+    const hasPermission = permissions.some((permission) =>
+      requiredPermission.includes(permission.name)
     );
     if (!hasPermission) {
       return <>{fallback}</>;

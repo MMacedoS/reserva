@@ -346,7 +346,7 @@ export function ReportTransactions() {
           sidebarToggle ? "ml-0" : "ml-50"
         }`}
       >
-        <PermissionGuard requiredPermission={[]}>
+        <PermissionGuard requiredPermission={["financial.reports"]}>
           <div className="container mx-auto p-6 space-y-6 py-20">
             <div className="flex items-center justify-between">
               <h1 className="text-3xl font-bold">Relatório de Transações</h1>

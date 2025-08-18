@@ -129,7 +129,7 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                     : "max-h-0 opacity-0"
                 }`}
               >
-                <PermissionGuard requiredPermission={[]}>
+                <PermissionGuard requiredPermission={["financial.reports"]}>
                   <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
                     <Link
                       to="/report-transactions"

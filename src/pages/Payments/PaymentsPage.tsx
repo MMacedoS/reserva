@@ -43,7 +43,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-const Payments = () => {
+const PaymentsPage = () => {
   const hoje = new Date();
   const dataInicialPadrao = addDays(hoje, -7).toISOString().split("T")[0];
   const dataFinalPadrao = hoje.toISOString().split("T")[0];
@@ -414,16 +414,6 @@ const Payments = () => {
                             <Button size="sm" variant="outline">
                               Ver Detalhes
                             </Button>
-                            {payment.receipt_url && (
-                              <Button size="sm" variant="outline">
-                                Comprovante
-                              </Button>
-                            )}
-                            {payment.status === "pending" && (
-                              <Button size="sm" variant="destructive">
-                                Cancelar
-                              </Button>
-                            )}
                           </div>
                         </div>
                       </Card>
@@ -588,4 +578,4 @@ const Payments = () => {
   );
 };
 
-export default Payments;
+export default PaymentsPage;

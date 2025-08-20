@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Dashboard() {
+function DashboardPage() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -23,4 +23,4 @@ function Dashboard() {
     </>
   );
 }
-export default Dashboard;
+export default DashboardPage;

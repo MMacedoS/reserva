@@ -7,7 +7,7 @@ import { environment } from "@/environments/environment";
 import { useAuth } from "@/hooks/useAuth";
 import Footer from "@/components/layout/Footer";
 
-export function Profile() {
+export function ProfilePage() {
   const { sidebarToggle } = useSidebar();
   const { user } = useAuth();
 

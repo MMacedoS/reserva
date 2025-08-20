@@ -27,7 +27,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { getEmployees } from "@/http/employees/getEmployees";
 import Footer from "@/components/layout/Footer";
 
-export function Employees() {
+export function EmployeesPage() {
   const [page, setPage] = useState(1);
   const { sidebarToggle } = useSidebar();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(

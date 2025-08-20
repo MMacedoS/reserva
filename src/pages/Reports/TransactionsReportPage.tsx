@@ -120,7 +120,7 @@ const chartConfig = {
   },
 };
 
-export function ReportTransactions() {
+export function ReportTransactionsPage() {
   const hoje = new Date();
   const dataInicialPadrao = addDays(hoje, -7).toISOString().split("T")[0];
   const dataFinalPadrao = hoje.toISOString().split("T")[0];

@@ -36,7 +36,7 @@ import { useProductForm } from "./hooks";
 import { DEFAULT_PRODUCT_CATEGORIES } from "@/constants/productCategories";
 import { PermissionGuard } from "@/components/PermissionGuard";
 
-const Products = () => {
+const ProductsPage = () => {
   const { sidebarToggle } = useSidebar();
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -267,4 +267,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default ProductsPage;

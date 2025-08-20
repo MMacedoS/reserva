@@ -18,7 +18,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { getPermissionsPaginated } from "@/http/permissions/getPermissionsPaginated";
 import Footer from "@/components/layout/Footer";
 
-export function Permissions() {
+export function PermissionsPage() {
   const [page, setPage] = useState(1);
   const { sidebarToggle } = useSidebar();
   const [selectedPermission, setSelectedPermission] =

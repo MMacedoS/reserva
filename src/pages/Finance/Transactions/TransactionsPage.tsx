@@ -12,7 +12,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, LucideTrash2 } from "lucide-react";
 import { useState } from "react";
 
-const Transactions = () => {
+const TransactionsPage = () => {
   const { sidebarToggle } = useSidebar();
   const { user } = useAuth();
   const [page, setPage] = useState(1);
@@ -169,4 +169,4 @@ const Transactions = () => {
   );
 };
 
-export default Transactions;
+export default TransactionsPage;

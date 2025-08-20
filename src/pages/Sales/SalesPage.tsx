@@ -30,7 +30,7 @@ import { SaleItemsDialog } from "@/components/SaleItemsDialog";
 import { SaleFormDialog } from "./Form";
 import { useSaleForm } from "./hooks";
 
-const Sales = () => {
+const SalesPage = () => {
   const hoje = new Date();
   const dataInicialPadrao = addDays(hoje, -7).toISOString().split("T")[0];
   const dataFinalPadrao = hoje.toISOString().split("T")[0];
@@ -263,4 +263,4 @@ const Sales = () => {
   );
 };
 
-export default Sales;
+export default SalesPage;

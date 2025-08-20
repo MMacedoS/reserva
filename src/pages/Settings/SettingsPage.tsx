@@ -4,7 +4,7 @@ import { FormData } from "./Form/FormData";
 import { getSettings } from "@/http/settings/getSettings";
 import Footer from "@/components/layout/Footer";
 
-export function Settings() {
+export function SettingsPage() {
   const { sidebarToggle } = useSidebar();
   const { data, isLoading } = getSettings();
 

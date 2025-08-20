@@ -24,7 +24,7 @@ import { deleteApartment } from "@/http/apartments/deleteApartment";
 import { getApartments } from "@/http/apartments/getApartments";
 import Footer from "@/components/layout/Footer";
 
-export function Apartments() {
+export function ApartmentPage() {
   const [page, setPage] = useState(1);
   const { data, isLoading } = getApartments(page);
   const { sidebarToggle } = useSidebar();

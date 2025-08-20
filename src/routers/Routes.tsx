@@ -1,19 +1,20 @@
 import { Routes, Route } from "react-router-dom";
 import { RequireAuth } from "./RequireAuth";
-import Dashboard from "@/pages/Dashboard/Dashboard";
+import DashboardPage from "@/pages/Dashboard/DashboardPage";
 import Login from "@/pages/Register/Login";
-import { Profile } from "@/pages/Profile/Profile";
-import { Settings } from "@/pages/Settings/Settings";
-import { Apartments } from "@/pages/Apartments/Apartments";
-import { Employees } from "@/pages/Employees/Employees";
-import { Permissions } from "@/pages/Permissions/Permissions";
-import Finance from "@/pages/Finance/Finance";
-import Releases from "@/pages/Finance/Releases/Releases";
-import Products from "@/pages/Products/Products";
-import Payments from "@/pages/Payments/Payments";
-import { ReportTransactions } from "@/pages/Reports/TransactionsReport";
-import Sales from "@/pages/Sales";
-import Transactions from "@/pages/Finance/Transactions/Transactions";
+import { ProfilePage } from "@/pages/Profile/ProfilePage";
+import { SettingsPage } from "@/pages/Settings/SettingsPage";
+import { EmployeesPage } from "@/pages/Employees/EmployeesPage";
+import { PermissionsPage } from "@/pages/Permissions/PermissionsPage";
+import FinancePage from "@/pages/Finance/FinancePage";
+import ReleasesPage from "@/pages/Finance/Releases/Releases";
+import ProductsPage from "@/pages/Products/ProductsPage";
+import PaymentsPage from "@/pages/Payments/PaymentsPage";
+import { ReportTransactionsPage } from "@/pages/Reports/TransactionsReportPage";
+import TransactionsPage from "@/pages/Finance/Transactions/TransactionsPage";
+import CustomerPage from "@/pages/Customer/CustomerPage";
+import { ApartmentPage } from "@/pages/Apartments/ApartmentPage";
+import SalesPage from "@/pages/Sales/SalesPage";
 
 export function AppRoutes() {
   return (
@@ -25,7 +26,7 @@ export function AppRoutes() {
         path="/dashboard"
         element={
           <RequireAuth>
-            <Dashboard />
+            <DashboardPage />
           </RequireAuth>
         }
       />
@@ -33,7 +34,7 @@ export function AppRoutes() {
         path="/profile"
         element={
           <RequireAuth>
-            <Profile />
+            <ProfilePage />
           </RequireAuth>
         }
       />
@@ -41,7 +42,7 @@ export function AppRoutes() {
         path="/apartments"
         element={
           <RequireAuth>
-            <Apartments />
+            <ApartmentPage />
           </RequireAuth>
         }
       />
@@ -49,7 +50,7 @@ export function AppRoutes() {
         path="/clients"
         element={
           <RequireAuth>
-            <div>Página de Hospedes</div>
+            <CustomerPage />
           </RequireAuth>
         }
       />
@@ -65,7 +66,7 @@ export function AppRoutes() {
         path="/sales"
         element={
           <RequireAuth>
-            <Sales />
+            <SalesPage />
           </RequireAuth>
         }
       />
@@ -73,7 +74,7 @@ export function AppRoutes() {
         path="/products"
         element={
           <RequireAuth>
-            <Products />
+            <ProductsPage />
           </RequireAuth>
         }
       />
@@ -81,7 +82,7 @@ export function AppRoutes() {
         path="/payments"
         element={
           <RequireAuth>
-            <Payments />
+            <PaymentsPage />
           </RequireAuth>
         }
       />
@@ -89,7 +90,7 @@ export function AppRoutes() {
         path="/settings"
         element={
           <RequireAuth>
-            <Settings />
+            <SettingsPage />
           </RequireAuth>
         }
       />
@@ -97,7 +98,7 @@ export function AppRoutes() {
         path="/employees"
         element={
           <RequireAuth>
-            <Employees />
+            <EmployeesPage />
           </RequireAuth>
         }
       />
@@ -105,7 +106,7 @@ export function AppRoutes() {
         path="/permissions"
         element={
           <RequireAuth>
-            <Permissions />
+            <PermissionsPage />
           </RequireAuth>
         }
       />
@@ -113,7 +114,7 @@ export function AppRoutes() {
         path="/finance"
         element={
           <RequireAuth>
-            <Finance />
+            <FinancePage />
           </RequireAuth>
         }
       />
@@ -121,7 +122,7 @@ export function AppRoutes() {
         path="/finance/releases"
         element={
           <RequireAuth>
-            <Releases />
+            <ReleasesPage />
           </RequireAuth>
         }
       />
@@ -129,7 +130,7 @@ export function AppRoutes() {
         path="/finance/transactions"
         element={
           <RequireAuth>
-            <Transactions />
+            <TransactionsPage />
           </RequireAuth>
         }
       />
@@ -153,7 +154,7 @@ export function AppRoutes() {
         path="/report-transactions"
         element={
           <RequireAuth>
-            <ReportTransactions />
+            <ReportTransactionsPage />
           </RequireAuth>
         }
       />

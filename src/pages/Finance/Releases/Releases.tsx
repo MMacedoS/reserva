@@ -16,7 +16,7 @@ import { AlertDialogDestroy } from "@/components/ui/alertDialogDestroy";
 import { deleteTransaction } from "@/http/finance/transactions/deleteTransaction";
 import HoverCardToTable from "@/shared/components/HoverCardToTable";
 
-const Releases = () => {
+const ReleasesPage = () => {
   const { sidebarToggle } = useSidebar();
   const { cashbox } = useAuth();
   const [page, setPage] = useState(1);
@@ -207,4 +207,4 @@ const Releases = () => {
   );
 };
 
-export default Releases;
+export default ReleasesPage;

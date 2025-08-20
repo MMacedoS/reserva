@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const Finance = () => {
+const FinancePage = () => {
   const hoje = new Date();
   const dataInicialPadrao = addDays(hoje, -7).toISOString().split("T")[0];
   const dataFinalPadrao = hoje.toISOString().split("T")[0];
@@ -211,4 +211,4 @@ const Finance = () => {
   );
 };
 
-export default Finance;
+export default FinancePage;

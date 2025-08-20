@@ -9,8 +9,11 @@ import { Employees } from "@/pages/Employees/Employees";
 import { Permissions } from "@/pages/Permissions/Permissions";
 import Finance from "@/pages/Finance/Finance";
 import Releases from "@/pages/Finance/Releases/Releases";
-import Sales from "@/pages/Sales/Sales";
+import Products from "@/pages/Products/Products";
+import Tables from "@/pages/Tables/Tables";
+import Payments from "@/pages/Payments/Payments";
 import { ReportTransactions } from "@/pages/Reports/TransactionsReport";
+import Sales from "@/pages/Sales";
 
 export function AppRoutes() {
   return (
@@ -63,6 +66,30 @@ export function AppRoutes() {
         element={
           <RequireAuth>
             <Sales />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/products"
+        element={
+          <RequireAuth>
+            <Products />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/tables"
+        element={
+          <RequireAuth>
+            <Tables />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/payments"
+        element={
+          <RequireAuth>
+            <Payments />
           </RequireAuth>
         }
       />

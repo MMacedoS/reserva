@@ -9,6 +9,13 @@ interface UseTransactionsOptions {
   enabled?: boolean;
 }
 
+interface UseTransactionsOptionsWithUserId {
+  userId: string;
+  page?: number;
+  limit?: number;
+  enabled?: boolean;
+}
+
 export function useTransactionsByCashboxId({
   cashBoxId,
   page = 1,
@@ -53,4 +60,50 @@ export function getTransactionsCashboxByCashboxId(
   enabled = true
 ) {
   return useTransactionsByCashboxId({ cashBoxId, page, limit, enabled });
+}
+
+export function useTransactionsByUserId({
+  userId,
+  page = 1,
+  limit = 10,
+  enabled = true,
+}: UseTransactionsOptionsWithUserId) {
+  const { fetchWithAuth } = useApi();
+
+  const attr = `page=${page < 1 ? 1 : page}&limit=${limit}`;
+
+  return useQuery({
+    queryKey: ["user-transactions", userId, page],
+    queryFn: async () => {
+      const response = await fetchWithAuth(
+        `${environment.apiUrl}/${environment.apiVersion}/user/${userId}/transactions?${attr}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Erro ao buscar transações");
+      }
+
+      const json = await response.json();
+      return {
+        data: json.data.transacoes,
+        pagination: json.data.pagination,
+      };
+    },
+    enabled: enabled && !!userId,
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function getTransactionsCashboxByUser(
+  userId: string,
+  page = 1,
+  limit = 10,
+  enabled = true
+) {
+  return useTransactionsByUserId({ userId, page, limit, enabled });
 }

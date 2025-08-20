@@ -39,7 +39,7 @@ export const SaleItemsDialog = ({
       <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            Gerenciar Venda - {sale.sale_name || `Venda ${sale.id}`}
+            Gerenciar Venda - {sale.sale_name || `Venda ${sale.name}`}
           </DialogTitle>
           <DialogDescription>
             Adicione ou remova itens e gerencie os pagamentos desta venda. O

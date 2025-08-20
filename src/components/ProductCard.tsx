@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Product } from "@/http/types/products/Product";
 import { formatValueToBRL } from "@/lib/utils";
+import { PermissionGuard } from "./PermissionGuard";
 
 interface ProductCardProps {
   product: Product;
@@ -78,19 +79,21 @@ export function ProductCard({
 
         <div className="flex justify-between items-center">
           {getAvailabilityBadge()}
-          {!selectable && (
-            <div className="flex gap-1">
-              {onEdit && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => onEdit(product)}
-                >
-                  Editar
-                </Button>
-              )}
-            </div>
-          )}
+          <PermissionGuard requiredPermission={["products.edit"]}>
+            {!selectable && (
+              <div className="flex gap-1">
+                {onEdit && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => onEdit(product)}
+                  >
+                    Editar
+                  </Button>
+                )}
+              </div>
+            )}
+          </PermissionGuard>
         </div>
       </div>
     </Card>

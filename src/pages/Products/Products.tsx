@@ -34,6 +34,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { ProductFormDialog } from "./Form";
 import { useProductForm } from "./hooks";
 import { DEFAULT_PRODUCT_CATEGORIES } from "@/constants/productCategories";
+import { PermissionGuard } from "@/components/PermissionGuard";
 
 const Products = () => {
   const { sidebarToggle } = useSidebar();
@@ -98,13 +99,15 @@ const Products = () => {
           <CardHeader>
             <div className="flex justify-between items-center">
               <CardTitle className="mt-1">Produtos</CardTitle>
-              <Button
-                className="flex items-center gap-2"
-                onClick={handleNewProduct}
-              >
-                <Plus className="h-4 w-4" />
-                Novo Produto
-              </Button>
+              <PermissionGuard requiredPermission={["products.create"]}>
+                <Button
+                  className="flex items-center gap-2"
+                  onClick={handleNewProduct}
+                >
+                  <Plus className="h-4 w-4" />
+                  Novo Produto
+                </Button>
+              </PermissionGuard>
             </div>
           </CardHeader>
           <CardContent className="h-full">

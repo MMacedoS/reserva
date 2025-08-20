@@ -16,6 +16,7 @@ import {
   LucidePackage,
   LucideTableProperties,
   LucideCreditCard,
+  LucideDollarSign,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -89,6 +90,17 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
               Reservas
             </Link>
           </li>
+          <PermissionGuard requiredPermission={["products.view"]}>
+            <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
+              <Link
+                to="/products"
+                className="px-3 py-2 text-white flex items-center"
+              >
+                <LucidePackage className="inline-block w-6 h-6 mr-2 -mt-2" />
+                Produtos
+              </Link>
+            </li>
+          </PermissionGuard>
           <CashboxGuard>
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
               <Link
@@ -99,35 +111,7 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                 Vendas
               </Link>
             </li>
-            <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-              <Link
-                to="/products"
-                className="px-3 py-2 text-white flex items-center"
-              >
-                <LucidePackage className="inline-block w-6 h-6 mr-2 -mt-2" />
-                Produtos
-              </Link>
-            </li>
-            <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-              <Link
-                to="/tables"
-                className="px-3 py-2 text-white flex items-center"
-              >
-                <LucideTableProperties className="inline-block w-6 h-6 mr-2 -mt-2" />
-                Mesas
-              </Link>
-            </li>
-            <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-              <Link
-                to="/payments"
-                className="px-3 py-2 text-white flex items-center"
-              >
-                <LucideCreditCard className="inline-block w-6 h-6 mr-2 -mt-2" />
-                Pagamentos
-              </Link>
-            </li>
           </CashboxGuard>
-
           <PermissionGuard
             requiredAccess={[
               "administrador",
@@ -172,44 +156,57 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                 </PermissionGuard>
               </ul>
             </li>
-            <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
-              <div
-                onClick={() => toggleDropdown("finance")}
-                className="px-3 py-2 text-white flex items-center justify-between cursor-pointer group"
-              >
-                <div className="flex items-center">
-                  <LucideReceipt className="inline-block w-6 h-6 mr-2 -mt-2" />
-                  Financeiro
-                </div>
-                {openDropdown === "finance" ? (
-                  <LucideChevronDown className="w-4 h-4" />
-                ) : (
-                  <LucideChevronRight className="w-4 h-4" />
-                )}
-              </div>
-              <ul
-                className={`ml-4 mt-2 text-xs transition-all duration-300 ease-in-out overflow-hidden ${
-                  openDropdown === "finance"
-                    ? "max-h-96 opacity-100"
-                    : "max-h-0 opacity-0"
-                }`}
-              >
-                <PermissionGuard
-                  requiredPermission={[
-                    "cashbox.transactions",
-                    "cashbox.view",
-                    "cashbox.open",
-                    "cashbox.close",
-                    "cashbox.transactions",
-                  ]}
+            <PermissionGuard
+              requiredPermission={[
+                "cashbox.transactions",
+                "cashbox.view",
+                "cashbox.open",
+                "cashbox.close",
+                "cashbox.transactions",
+              ]}
+            >
+              <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
+                <div
+                  onClick={() => toggleDropdown("finance")}
+                  className="px-3 py-2 text-white flex items-center justify-between cursor-pointer group"
                 >
-                  <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
+                  <div className="flex items-center">
+                    <LucideReceipt className="inline-block w-6 h-6 mr-2 -mt-2" />
+                    Financeiro
+                  </div>
+                  {openDropdown === "finance" ? (
+                    <LucideChevronDown className="w-4 h-4" />
+                  ) : (
+                    <LucideChevronRight className="w-4 h-4" />
+                  )}
+                </div>
+                <ul
+                  className={`ml-4 mt-2 text-xs transition-all duration-300 ease-in-out overflow-hidden ${
+                    openDropdown === "finance"
+                      ? "max-h-96 opacity-100"
+                      : "max-h-0 opacity-0"
+                  }`}
+                >
+                  <PermissionGuard
+                    requiredPermission={["financial.cashbox.reports"]}
+                  >
+                    <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
+                      <Link
+                        to="/finance"
+                        className="px-3 py-2 text-white flex items-center"
+                      >
+                        <LucideReceipt className="inline-block w-4 h-4 mr-2 -mt-1" />
+                        Caixas
+                      </Link>
+                    </li>
+                  </PermissionGuard>
+                  <li>
                     <Link
-                      to="/finance"
+                      to="/finance/transactions"
                       className="px-3 py-2 text-white flex items-center"
                     >
-                      <LucideReceipt className="inline-block w-4 h-4 mr-2 -mt-1" />
-                      Caixas
+                      <LucideDollarSign className="inline-block w-4 h-4 mr-2 -mt-1" />
+                      Meu Histórico
                     </Link>
                   </li>
                   <CashboxGuard>
@@ -223,18 +220,20 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                       </Link>
                     </li>
                   </CashboxGuard>
-                </PermissionGuard>
-              </ul>
-            </li>
-            <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
-              <Link
-                to="/employees"
-                className="px-3 py-2 text-white flex items-center"
-              >
-                <LucidePersonStanding className="inline-block w-6 h-6 mr-2 -mt-2" />
-                Funcionarios
-              </Link>
-            </li>
+                </ul>
+              </li>
+            </PermissionGuard>
+            <PermissionGuard requiredPermission={["employees.view"]}>
+              <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
+                <Link
+                  to="/employees"
+                  className="px-3 py-2 text-white flex items-center"
+                >
+                  <LucidePersonStanding className="inline-block w-6 h-6 mr-2 -mt-2" />
+                  Funcionarios
+                </Link>
+              </li>
+            </PermissionGuard>
           </PermissionGuard>
           <PermissionGuard requiredAccess={["administrador"]}>
             <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">

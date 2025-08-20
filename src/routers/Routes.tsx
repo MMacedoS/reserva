@@ -10,10 +10,10 @@ import { Permissions } from "@/pages/Permissions/Permissions";
 import Finance from "@/pages/Finance/Finance";
 import Releases from "@/pages/Finance/Releases/Releases";
 import Products from "@/pages/Products/Products";
-import Tables from "@/pages/Tables/Tables";
 import Payments from "@/pages/Payments/Payments";
 import { ReportTransactions } from "@/pages/Reports/TransactionsReport";
 import Sales from "@/pages/Sales";
+import Transactions from "@/pages/Finance/Transactions/Transactions";
 
 export function AppRoutes() {
   return (
@@ -78,14 +78,6 @@ export function AppRoutes() {
         }
       />
       <Route
-        path="/tables"
-        element={
-          <RequireAuth>
-            <Tables />
-          </RequireAuth>
-        }
-      />
-      <Route
         path="/payments"
         element={
           <RequireAuth>
@@ -117,7 +109,6 @@ export function AppRoutes() {
           </RequireAuth>
         }
       />
-
       <Route
         path="/finance"
         element={
@@ -131,6 +122,14 @@ export function AppRoutes() {
         element={
           <RequireAuth>
             <Releases />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/finance/transactions"
+        element={
+          <RequireAuth>
+            <Transactions />
           </RequireAuth>
         }
       />

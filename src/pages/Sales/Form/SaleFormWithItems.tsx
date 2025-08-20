@@ -5,13 +5,6 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -31,9 +24,7 @@ import type { Sale, SaleRequest } from "@/http/types/sales/Sale";
 
 const saleSchema = z.object({
   sale_name: z.string().min(1, "Nome do cliente é obrigatório"),
-  payment_type: z.string().optional(),
   reservation_id: z.string().optional(),
-  amount: z.number().min(0, "Valor não pode ser negativo").optional(),
 });
 
 type SaleFormData = z.infer<typeof saleSchema>;
@@ -55,15 +46,12 @@ export const SaleFormDialog = ({
     resolver: zodResolver(saleSchema),
     defaultValues: {
       sale_name: "",
-      payment_type: "",
       reservation_id: "",
-      amount: 0,
     },
   });
 
   useEffect(() => {
     if (editingSale) {
-      // Converter amount para number se for string
       const amount =
         typeof editingSale.amount === "string"
           ? parseFloat(editingSale.amount)
@@ -71,28 +59,22 @@ export const SaleFormDialog = ({
 
       form.reset({
         sale_name: editingSale.sale_name || editingSale.name || "",
-        payment_type: editingSale.payment_type || "",
         reservation_id: editingSale.reservation_id || "",
-        amount: amount,
       });
       return;
     }
 
     form.reset({
       sale_name: "",
-      payment_type: "",
       reservation_id: "",
-      amount: 0,
     });
   }, [editingSale, form]);
 
   const handleSubmit = async (data: SaleFormData) => {
     try {
       const saleRequest: SaleRequest = {
-        name: data.sale_name, // Mapear sale_name para name (campo da API)
-        payment_type: data.payment_type,
+        sale_name: data.sale_name,
         reservation_id: data.reservation_id,
-        amount: data.amount || 0,
       };
 
       await onSubmit(saleRequest);
@@ -132,51 +114,6 @@ export const SaleFormDialog = ({
                     <FormControl>
                       <Input placeholder="Nome do cliente ou mesa" {...field} />
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="amount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Valor Total (opcional)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        placeholder="0.00"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(parseFloat(e.target.value) || 0)
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="payment_type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipo de Pagamento</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o tipo de pagamento" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="cash">Dinheiro</SelectItem>
-                        <SelectItem value="card">Cartão</SelectItem>
-                        <SelectItem value="pix">PIX</SelectItem>
-                      </SelectContent>
-                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

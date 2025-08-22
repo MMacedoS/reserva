@@ -14,7 +14,7 @@ type AlertDialogDestroyProps = {
   onClose: () => void;
   onConfirm: () => void;
   item: any;
-  type?: "apartment" | "employee" | "transaction";
+  type?: "apartment" | "employee" | "transaction" | "customer";
 };
 
 export function AlertDialogDestroy({

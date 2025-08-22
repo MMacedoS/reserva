@@ -1,5 +1,13 @@
+import { id } from "date-fns/locale";
 export interface Customer {
+  id?: string;
   name: string;
+  email?: string;
+  social_name?: string;
+  address?: string;
+  birthday?: string;
+  phone?: string;
+  gender?: string;
   pessoa_fisica_id: string;
   nationality?: string;
   job?: string;
@@ -16,6 +24,7 @@ export interface Customer {
 }
 
 export type CustomerRequest = {
+  id?: string;
   name: string;
   email?: string;
   social_name?: string;

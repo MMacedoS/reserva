@@ -1,62 +1,67 @@
-import { Sidebar } from "@/components/layout/Sidebar";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { useSidebar } from "@/contexts/SidebarContext";
-import type { Customer } from "@/http/types/Customer/Customer";
+import { getCustomers } from "@/http/customers/getCustomers";
 import { MenuButtons } from "@/shared/components/MenuButtons";
-import type { ColumnDef } from "@tanstack/react-table";
-import { LucideCookingPot, LucideFolderPen } from "lucide-react";
+import { DataTable } from "@/components/ui/DataTable";
+import { LucideFolderPen, LucideTrash2, LucidePlusCircle } from "lucide-react";
+import { useState } from "react";
+import { FormData } from "./Form/FormData";
+import { AlertDialogDestroy } from "@/components/ui/alertDialogDestroy";
+import { Sidebar } from "@/components/layout/Sidebar";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useSidebar } from "@/contexts/SidebarContext";
+import Footer from "@/components/layout/Footer";
 
-const CustomerPage = () => {
+export default function CustomerPage() {
+  const [page, setPage] = useState(1);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const { data, refetch } = getCustomers({ page });
   const { sidebarToggle } = useSidebar();
 
-  const getStatusBadge = (access: string) => {
-    const colors = {
-      Disponivel: "bg-green-100 text-green-800",
-      Ocupado: "bg-blue-100 text-blue-800",
-      Impedido: "bg-red-100 text-red-800",
-    };
-
-    return (
-      <span
-        className={`px-2 py-1 rounded-full text-xs font-medium ${
-          colors[access as keyof typeof colors] || "bg-gray-100 text-gray-800"
-        }`}
-      >
-        {access.charAt(0).toUpperCase() + access.slice(1).replace("_", " ")}
-      </span>
-    );
+  const handleDelete = async () => {
+    if (!selectedCustomer) return;
+    setOpenConfirmDialog(false);
+    setSelectedCustomer(null);
+    refetch();
   };
 
-  const columns: ColumnDef<Customer>[] = [
+  const columns = [
     {
       accessorKey: "name",
-      header: "Apartamento",
+      header: "Nome",
     },
     {
-      accessorKey: "category",
-      header: "Categoria",
-    },
-    {
-      accessorKey: "situation",
-      header: "Situação",
-      cell: ({ row }) => getStatusBadge(row.getValue("situation")),
+      accessorKey: "email",
+      header: "E-mail",
     },
     {
       id: "actions",
       header: "Ações",
       enableHiding: false,
-      cell: ({ row }) => {
-        const apartment = row.original; // pega os dados da linha
+      cell: ({ row }: any) => {
+        const customer = row.original;
         return (
           <MenuButtons
             actions={[
               {
                 label: <LucideFolderPen className="size-6" />,
-                onClick: () => {},
+                onClick: () => {
+                  setSelectedCustomer(customer);
+                  setOpenDialog(true);
+                },
               },
               {
-                label: <LucideCookingPot className="size-6" />,
-                onClick: () => {},
+                label: <LucideTrash2 className="size-6" />,
+                onClick: () => {
+                  setSelectedCustomer(customer);
+                  setOpenConfirmDialog(true);
+                },
               },
             ]}
           />
@@ -64,22 +69,63 @@ const CustomerPage = () => {
       },
     },
   ];
+
   return (
     <div className="col">
       <Sidebar />
       <div
         className={`${
           sidebarToggle ? "ml-5" : "ml-55"
-        } py-20 mr-5 transition-all duration-1000 ease-in-out`}
+        } py-20 mr-5  transition-all duration-1000 ease-in-out`}
       >
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>Clientes</CardTitle>
+            <CardTitle className="mt-1">Clientes</CardTitle>
+            <CardAction
+              onClick={() => {
+                setSelectedCustomer(null);
+                setOpenDialog(true);
+              }}
+            >
+              <LucidePlusCircle />
+            </CardAction>
           </CardHeader>
+          <CardContent>
+            <DataTable
+              columns={columns}
+              data={data?.data ?? []}
+              filterColumn="name"
+              filterPlaceholder="Filtrar por nome..."
+              pagination={
+                data && data.pagination
+                  ? {
+                      current_page: data.pagination.current_page ?? page,
+                      last_page: data.pagination.last_page ?? 1,
+                      total: data.pagination.total ?? 0,
+                      onPageChange: setPage,
+                    }
+                  : undefined
+              }
+            />
+          </CardContent>
         </Card>
       </div>
+      <FormData
+        open={openDialog}
+        onClose={() => {
+          setOpenDialog(false);
+          setSelectedCustomer(null);
+        }}
+        customer={selectedCustomer}
+      />
+      <AlertDialogDestroy
+        open={openConfirmDialog}
+        onClose={() => setOpenConfirmDialog(false)}
+        onConfirm={handleDelete}
+        item={selectedCustomer}
+        type="customer"
+      />
+      <Footer />
     </div>
   );
-};
-
-export default CustomerPage;
+}

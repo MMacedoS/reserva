@@ -47,7 +47,7 @@ export function AppRoutes() {
         }
       />
       <Route
-        path="/clients"
+        path="/customers"
         element={
           <RequireAuth>
             <CustomerPage />

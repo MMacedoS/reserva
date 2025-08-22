@@ -28,3 +28,24 @@ export const textSlice = (text: string, maxLength: number) => {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength) + "...";
 };
+
+export const onlyDigits = (value: string) => value.replace(/\D/g, "");
+
+export function isValidCPF(value: string): boolean {
+  const cpf = onlyDigits(value);
+  if (!cpf || cpf.length !== 11) return false;
+  if (/^(\d)\1{10}$/.test(cpf)) return false;
+
+  const calcCheckDigit = (base: string, factor: number) => {
+    let total = 0;
+    for (let i = 0; i < base.length; i++) {
+      total += parseInt(base[i], 10) * factor--;
+    }
+    const rest = total % 11;
+    return rest < 2 ? 0 : 11 - rest;
+  };
+
+  const d1 = calcCheckDigit(cpf.substring(0, 9), 10);
+  const d2 = calcCheckDigit(cpf.substring(0, 10), 11);
+  return cpf[9] === String(d1) && cpf[10] === String(d2);
+}

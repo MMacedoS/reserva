@@ -1,4 +1,3 @@
-import { id } from "date-fns/locale";
 export interface Customer {
   id?: string;
   name: string;

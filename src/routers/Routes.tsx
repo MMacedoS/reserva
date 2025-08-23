@@ -11,6 +11,8 @@ import ReleasesPage from "@/pages/Finance/Releases/Releases";
 import ProductsPage from "@/pages/Products/ProductsPage";
 import PaymentsPage from "@/pages/Payments/PaymentsPage";
 import { ReportTransactionsPage } from "@/pages/Reports/TransactionsReportPage";
+import ReservationsPage from "@/pages/Reservations/ReservationsPage";
+import ReservationsReportPage from "@/pages/Reports/ReservationsReportPage";
 import TransactionsPage from "@/pages/Finance/Transactions/TransactionsPage";
 import CustomerPage from "@/pages/Customer/CustomerPage";
 import { ApartmentPage } from "@/pages/Apartments/ApartmentPage";
@@ -20,8 +22,6 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-
-      {/* Rotas principais com RequireAuth */}
       <Route
         path="/dashboard"
         element={
@@ -58,7 +58,7 @@ export function AppRoutes() {
         path="/reservations"
         element={
           <RequireAuth>
-            <div>Página de Reservas</div>
+            <ReservationsPage />
           </RequireAuth>
         }
       />
@@ -155,6 +155,14 @@ export function AppRoutes() {
         element={
           <RequireAuth>
             <ReportTransactionsPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/report-reservations"
+        element={
+          <RequireAuth>
+            <ReservationsReportPage />
           </RequireAuth>
         }
       />

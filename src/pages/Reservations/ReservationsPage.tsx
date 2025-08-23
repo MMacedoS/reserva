@@ -118,7 +118,7 @@ export default function ReservationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate, setStartDate] = useState(dataInicialPadrao);
   const [endDate, setEndDate] = useState(dataFinalPadrao);
-  const [status, setStatus] = useState("");
+  const [situation, setSituation] = useState("");
   const [type, setType] = useState("");
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -129,7 +129,7 @@ export default function ReservationsPage() {
 
   useEffect(() => {
     setPage(1);
-  }, [startDate, endDate, status, type]);
+  }, [startDate, endDate, situation, type]);
 
   const { data, isLoading } = useGetReservations({
     page,
@@ -137,7 +137,7 @@ export default function ReservationsPage() {
     search: debouncedSearchQuery,
     startDate,
     endDate,
-    status,
+    situation,
     type,
   });
 
@@ -146,13 +146,13 @@ export default function ReservationsPage() {
     setStartDate(dataInicialPadrao);
     setEndDate(dataFinalPadrao);
     setPage(1);
-    setStatus("");
+    setSituation("");
     setType("");
   };
 
   const hasActiveFilters =
     !!searchQuery ||
-    !!status ||
+    !!situation ||
     !!type ||
     startDate !== dataInicialPadrao ||
     endDate !== dataFinalPadrao;
@@ -216,13 +216,13 @@ export default function ReservationsPage() {
                   />
                 </div>
                 <div className="w-full">
-                  <Label className="text-sm">Status:</Label>
+                  <Label className="text-sm">Situação:</Label>
                   <Select
-                    value={status}
-                    onValueChange={(value) => setStatus(value)}
+                    value={situation}
+                    onValueChange={(value) => setSituation(value)}
                   >
                     <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Todos os status" />
+                      <SelectValue placeholder="Todos" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Reservada">Reservada</SelectItem>

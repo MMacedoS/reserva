@@ -9,7 +9,7 @@ type GetReservationsParams = {
   search?: string;
   startDate?: string;
   endDate?: string;
-  status?: string;
+  situation?: string;
   type?: string;
 };
 
@@ -19,7 +19,7 @@ export function useGetReservations({
   search = "",
   startDate = "",
   endDate = "",
-  status = "",
+  situation = "",
   type = "",
 }: GetReservationsParams) {
   const { fetchWithAuth } = useApi();
@@ -28,7 +28,7 @@ export function useGetReservations({
   if (search) attr += `&search=${encodeURIComponent(search)}`;
   if (startDate) attr += `&start_date=${encodeURIComponent(startDate)}`;
   if (endDate) attr += `&end_date=${encodeURIComponent(endDate)}`;
-  if (status) attr += `&status=${encodeURIComponent(status)}`;
+  if (situation) attr += `&situation=${encodeURIComponent(situation)}`;
   if (type) attr += `&type=${encodeURIComponent(type)}`;
 
   return useQuery({

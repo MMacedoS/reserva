@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { formatDate, formatValueToBRL } from "@/lib/utils";
+import { formatDateWithTime, formatValueToBRL } from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -62,7 +62,8 @@ export function AlertDialogCashbox({
                     {item.status}
                   </p>
                   <p className="text-muted-foreground">
-                    <strong>Data Abertura:</strong> {formatDate(item.opened_at)}
+                    <strong>Data Abertura:</strong>{" "}
+                    {formatDateWithTime(item.opened_at)}
                   </p>
                   <p className="text-muted-foreground">
                     <strong>Valor Inicial:</strong>{" "}

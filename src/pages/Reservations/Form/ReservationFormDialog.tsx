@@ -50,6 +50,7 @@ import { getCustomers } from "@/http/customers/getCustomers";
 import { addDays } from "date-fns";
 import { useAvailableApartments } from "@/http/reservations/getAvailableApartments";
 import { useSaveReservationsBatch } from "@/http/reservations/saveReservationsBatch";
+import { formatLocalDateTimeAt } from "@/lib/utils";
 
 const ReservationStatusSchema = z.enum([
   "Reservada",
@@ -65,20 +66,30 @@ const ReservationTypeSchema = z.enum([
   "pacote",
 ] as const);
 
-const schema = z.object({
-  id: z.string().optional(),
-  customer_id: z.string().min(1, "Selecione um hóspede"),
-  apartment_ids: z
-    .array(z.string().min(1))
-    .min(1, "Selecione pelo menos um apartamento"),
-  check_in: z.string().min(1, "Informe a data de check-in"),
-  check_out: z.string().min(1, "Informe a data de check-out"),
-  guests: z.coerce.number().int().min(1, "Pelo menos 1 hóspede"),
-  amount: z.coerce.number().min(0, "Valor inválido").optional(),
-  status: ReservationStatusSchema,
-  type: ReservationTypeSchema,
-  notes: z.string().optional(),
-});
+const schema = z
+  .object({
+    id: z.string().optional(),
+    customer_id: z.string().min(1, "Selecione um hóspede"),
+    apartment_ids: z
+      .array(z.string().min(1))
+      .min(1, "Selecione pelo menos um apartamento"),
+    check_in: z.string().min(1, "Informe a data de check-in"),
+    check_out: z.string().min(1, "Informe a data de check-out"),
+    guests: z.coerce.number().int().min(1, "Pelo menos 1 hóspede"),
+    amount: z.coerce.number().min(0, "Valor inválido").optional(),
+    status: ReservationStatusSchema,
+    type: ReservationTypeSchema,
+    notes: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      if (!data.check_in || !data.check_out) return true;
+      const ci = new Date(data.check_in);
+      const co = new Date(data.check_out);
+      return co > ci;
+    },
+    { path: ["check_out"], message: "Check-out deve ser após o check-in" }
+  );
 
 type FormData = z.infer<typeof schema>;
 
@@ -91,8 +102,9 @@ type Props = {
 export function ReservationFormDialog({ open, onClose, reservation }: Props) {
   const [availableApartments, setAvailableApartments] = useState<any[]>([]);
   const hoje = new Date();
-  const dataInicialPadrao = hoje.toISOString().split("T")[0];
-  const dataFinalPadrao = addDays(hoje, 1).toISOString().split("T")[0];
+
+  const dataInicialPadrao = formatLocalDateTimeAt(hoje, 12, 0);
+  const dataFinalPadrao = formatLocalDateTimeAt(addDays(hoje, 1), 12, 0);
   const form = useForm<FormData>({
     resolver: zodResolver(schema) as any,
     mode: "onChange",
@@ -134,13 +146,27 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
   }, [availableFromApi, isEdit]);
 
   useEffect(() => {
+    if (!checkIn) return;
+    const ci = new Date(checkIn);
+    const co = checkOut ? new Date(checkOut) : null;
+    if (!co || co <= ci) {
+      const novoCheckout = formatLocalDateTimeAt(addDays(ci, 1), 12, 0);
+      form.setValue("check_out", novoCheckout, { shouldValidate: true });
+    }
+  }, [checkIn]);
+
+  useEffect(() => {
     if (reservation) {
       form.reset({
         id: reservation.id,
         customer_id: reservation.customer?.id || "",
         apartment_ids: reservation.apartment ? [reservation.apartment.id] : [],
-        check_in: reservation.checkin?.slice(0, 10) || "",
-        check_out: reservation.checkout?.slice(0, 10) || "",
+        check_in: reservation.checkin
+          ? formatLocalDateTimeAt(new Date(reservation.checkin), 12, 0)
+          : "",
+        check_out: reservation.checkout
+          ? formatLocalDateTimeAt(new Date(reservation.checkout), 12, 0)
+          : "",
         amount: reservation.amount || 0,
         status: reservation.situation,
         type: reservation.type || "diaria",
@@ -223,7 +249,21 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                   <FormItem>
                     <FormLabel>Check-in</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input
+                        type="datetime-local"
+                        step={900}
+                        min={dataInicialPadrao}
+                        value={field.value}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          const d = new Date(v);
+                          if (!isNaN(d.getTime())) {
+                            field.onChange(formatLocalDateTimeAt(d, 12, 0));
+                          } else {
+                            field.onChange(v);
+                          }
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -236,7 +276,21 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                   <FormItem>
                     <FormLabel>Check-out</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input
+                        type="datetime-local"
+                        step={900}
+                        min={checkIn || dataInicialPadrao}
+                        value={field.value}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          const d = new Date(v);
+                          if (!isNaN(d.getTime())) {
+                            field.onChange(formatLocalDateTimeAt(d, 12, 0));
+                          } else {
+                            field.onChange(v);
+                          }
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

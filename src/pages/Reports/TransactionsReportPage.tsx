@@ -39,7 +39,7 @@ import {
   LucideDroplet,
   LucideDollarSign,
 } from "lucide-react";
-import { formatDate, formatValueToBRL } from "@/lib/utils";
+import { formatDateWithTime, formatValueToBRL } from "@/lib/utils";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useSidebar } from "@/contexts/SidebarContext";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -90,7 +90,7 @@ const columns: ColumnDef<Transaction>[] = [
       const date = row.getValue("created_at") as string;
       return (
         <div className="text-sm text-gray-600">
-          {date ? formatDate(date) : "N/A"}
+          {date ? formatDateWithTime(date) : "N/A"}
         </div>
       );
     },

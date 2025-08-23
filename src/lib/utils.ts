@@ -12,7 +12,7 @@ export const formatValueToBRL = (value: number | string = 0) => {
   }).format(Number(value));
 };
 
-export const formatDate = (date: string | null) => {
+export const formatDateWithTime = (date: string | null) => {
   if (!date) return "N/A";
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
@@ -22,6 +22,32 @@ export const formatDate = (date: string | null) => {
     minute: "2-digit",
   };
   return new Date(date).toLocaleDateString("pt-BR", options);
+};
+
+export const formatDate = (date: string | null) => {
+  if (!date) return "N/A";
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  };
+  return new Date(date).toLocaleDateString("pt-BR", options);
+};
+
+export const formatLocalDateTime = (date: Date) => {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const y = date.getFullYear();
+  const m = pad(date.getMonth() + 1);
+  const d = pad(date.getDate());
+  const hh = pad(date.getHours());
+  const mm = pad(date.getMinutes());
+  return `${y}-${m}-${d}T${hh}:${mm}`;
+};
+
+export const formatLocalDateTimeAt = (date: Date, hours = 12, minutes = 0) => {
+  const d = new Date(date);
+  d.setHours(hours, minutes, 0, 0);
+  return formatLocalDateTime(d);
 };
 
 export const textSlice = (text: string, maxLength: number) => {

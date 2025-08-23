@@ -6,7 +6,7 @@ import { useSidebar } from "@/contexts/SidebarContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useTransactionsByUserId } from "@/http/finance/transactions/getTransactionsCashboxByCashboxId";
 import type { Transaction } from "@/http/types/finance/transaction/Transaction";
-import { formatDate, formatValueToBRL } from "@/lib/utils";
+import { formatDateWithTime, formatValueToBRL } from "@/lib/utils";
 import HoverCardToTable from "@/shared/components/HoverCardToTable";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, LucideTrash2 } from "lucide-react";
@@ -71,7 +71,7 @@ const TransactionsPage = () => {
         </Button>
       ),
       cell: ({ row }) => {
-        return formatDate(row.getValue("created_at"));
+        return formatDateWithTime(row.getValue("created_at"));
       },
     },
     {

@@ -10,7 +10,7 @@ import { DataTable } from "./ui/DataTable";
 import { Spinner } from "./ui/spinner";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useTransactionDialog } from "@/hooks/useTransactionDialog";
-import { formatDate, formatValueToBRL } from "@/lib/utils";
+import { formatDateWithTime, formatValueToBRL } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { ArrowUpDown } from "lucide-react";
 
@@ -85,7 +85,7 @@ export function TransactionDialog({
         </Button>
       ),
       cell: ({ row }) => {
-        return formatDate(row.getValue("created_at"));
+        return formatDateWithTime(row.getValue("created_at"));
       },
       enableSorting: true,
     },

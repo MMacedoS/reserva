@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { formatDate, formatValueToBRL } from "@/lib/utils";
+import { formatDateWithTime, formatValueToBRL } from "@/lib/utils";
 import { TransactionDialog } from "./TransactionDialog";
 
 const CardListCash = ({ cashbox }: { cashbox: Cashbox }) => {
@@ -41,11 +41,11 @@ const CardListCash = ({ cashbox }: { cashbox: Cashbox }) => {
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-500">Abertura:</span>
-            <span>{formatDate(cashbox.opened_at || "")}</span>
+            <span>{formatDateWithTime(cashbox.opened_at || "")}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-500">Fechamento:</span>
-            <span>{formatDate(cashbox.closed_at || "")}</span>
+            <span>{formatDateWithTime(cashbox.closed_at || "")}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-500">Valor inicial:</span>

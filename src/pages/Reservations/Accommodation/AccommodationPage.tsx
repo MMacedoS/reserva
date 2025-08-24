@@ -6,8 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { useAccommodations } from "@/http/reservations/accommodations/getAccommodations";
 import { useCheckinReservation } from "@/http/reservations/checkinReservation";
+import { useCheckoutReservation } from "@/http/reservations/checkoutReservation";
 import { formatDateWithTime } from "@/lib/utils";
-import { Loader2, LogIn } from "lucide-react";
+import {
+  Loader2,
+  LogIn,
+  LucideDollarSign,
+  LucideEdit2,
+  LucideLogOut,
+  LucideShoppingBasket,
+} from "lucide-react";
 import { useState } from "react";
 import {
   AlertDialog,
@@ -19,18 +27,41 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ReservationFormDialog } from "@/pages/Reservations/Form/ReservationFormDialog";
 
 const AccommodationPage = () => {
   const { sidebarToggle } = useSidebar();
   const { data: accommodations, isLoading } = useAccommodations();
   const { mutateAsync: doCheckin, isPending: doingCheckin } =
     useCheckinReservation();
+  const { mutateAsync: doCheckout, isPending: doingCheckout } =
+    useCheckoutReservation();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selected, setSelected] = useState<{
     id: number | string;
     aptName: string;
     dt_checkin?: string;
   } | null>(null);
+  const [confirmCheckoutOpen, setConfirmCheckoutOpen] = useState(false);
+  const [selectedCheckout, setSelectedCheckout] = useState<{
+    id: number | string;
+    aptName: string;
+  } | null>(null);
+
+  // Modais simples (placeholders) para consumo/pagamento e edição
+  const [consumptionOpen, setConsumptionOpen] = useState(false);
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editingReservation, setEditingReservation] = useState<any | null>(
+    null
+  );
 
   // Helper para obter cor de status
   const getSituationBadge = (situation?: string) => {
@@ -77,6 +108,21 @@ const AccommodationPage = () => {
     await doCheckin(selected.id);
     setConfirmOpen(false);
     setSelected(null);
+  };
+
+  const openCheckoutConfirm = (payload: {
+    id: number | string;
+    aptName: string;
+  }) => {
+    setSelectedCheckout(payload);
+    setConfirmCheckoutOpen(true);
+  };
+
+  const confirmCheckout = async () => {
+    if (!selectedCheckout) return;
+    await doCheckout(selectedCheckout.id);
+    setConfirmCheckoutOpen(false);
+    setSelectedCheckout(null);
   };
 
   return (
@@ -140,64 +186,125 @@ const AccommodationPage = () => {
                       </CardHeader>
                       <CardContent className="space-y-2">
                         {hasReservation ? (
-                          <div className="text-sm space-y-1">
-                            {customerName ? (
+                          <>
+                            <div className="text-sm space-y-1">
+                              {customerName ? (
+                                <div className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">
+                                    Hóspede:
+                                  </span>
+                                  <span className="truncate max-w-[55%] text-right">
+                                    {customerName}
+                                  </span>
+                                </div>
+                              ) : null}
                               <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">
-                                  Hóspede:
-                                </span>
-                                <span className="truncate max-w-[55%] text-right">
-                                  {customerName}
-                                </span>
-                              </div>
-                            ) : null}
-                            <div className="flex items-center justify-between">
-                              <span className="text-muted-foreground">
-                                Entrada:
-                              </span>
-                              <span>
-                                {formatDateWithTime(reservation.dt_checkin)}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-muted-foreground">
-                                Saída:
-                              </span>
-                              <span>
-                                {formatDateWithTime(reservation.dt_checkout)}
-                              </span>
-                            </div>
-                            {reservation.amount ? (
-                              <div className="flex items-center justify-between">
-                                <span className="text-muted-foreground">
-                                  Valor:
+                                  Entrada:
                                 </span>
                                 <span>
-                                  R$ {Number(reservation.amount).toFixed(2)}
+                                  {formatDateWithTime(reservation.checkin)}
                                 </span>
                               </div>
-                            ) : null}
+                              <div className="flex items-center justify-between">
+                                <span className="text-muted-foreground">
+                                  Saída:
+                                </span>
+                                <span>
+                                  {formatDateWithTime(reservation.checkout)}
+                                </span>
+                              </div>
+                              {reservation.amount ? (
+                                <div className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">
+                                    Valor:
+                                  </span>
+                                  <span>
+                                    R$ {Number(reservation.amount).toFixed(2)}
+                                  </span>
+                                </div>
+                              ) : null}
 
-                            {canCheckin ? (
-                              <Button
-                                size="sm"
-                                className="mt-2 w-full"
-                                onClick={() =>
-                                  openConfirm({
-                                    id: reservation.id,
-                                    aptName: apt.name,
-                                    dt_checkin: reservation.dt_checkin,
-                                  })
-                                }
-                                disabled={doingCheckin}
-                              >
-                                <LogIn className="w-4 h-4 mr-2" />
-                                {doingCheckin
-                                  ? "Processando..."
-                                  : "Fazer check-in"}
-                              </Button>
-                            ) : null}
-                          </div>
+                              {canCheckin ? (
+                                <Button
+                                  size="sm"
+                                  className="mt-2 w-full"
+                                  onClick={() =>
+                                    openConfirm({
+                                      id: reservation.id,
+                                      aptName: apt.name,
+                                      dt_checkin: reservation.dt_checkin,
+                                    })
+                                  }
+                                  disabled={doingCheckin}
+                                >
+                                  <LogIn className="w-4 h-4 mr-2" />
+                                  {doingCheckin
+                                    ? "Processando..."
+                                    : "Fazer check-in"}
+                                </Button>
+                              ) : null}
+                            </div>
+                            {status === "Hospedada" && (
+                              <div className="pt-3 mt-3 border-t flex flex-wrap gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setConsumptionOpen(true)}
+                                >
+                                  <LucideShoppingBasket />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setPaymentOpen(true)}
+                                >
+                                  <LucideDollarSign />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="secondary"
+                                  onClick={() => {
+                                    setEditingReservation({
+                                      id:
+                                        reservation.uuid ||
+                                        String(reservation.id),
+                                      customer: { name: customerName || "" },
+                                      apartment: {
+                                        id: String(apt.id),
+                                        name: apt.name,
+                                      },
+                                      checkin: reservation.dt_checkin,
+                                      checkout: reservation.dt_checkout,
+                                      amount: reservation.amount,
+                                      situation: status,
+                                      type: reservation.type || "diaria",
+                                    });
+                                    setEditOpen(true);
+                                  }}
+                                >
+                                  <LucideEdit2 />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() =>
+                                    openCheckoutConfirm({
+                                      id: reservation.id,
+                                      aptName: apt.name,
+                                    })
+                                  }
+                                  disabled={doingCheckout}
+                                >
+                                  {doingCheckout ? (
+                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                  ) : (
+                                    <LucideLogOut />
+                                  )}
+                                </Button>
+                              </div>
+                            )}
+                          </>
                         ) : (
                           <div className="text-sm text-muted-foreground">
                             Sem reserva ativa.
@@ -236,6 +343,65 @@ const AccommodationPage = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AlertDialog
+        open={confirmCheckoutOpen}
+        onOpenChange={setConfirmCheckoutOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar check-out</AlertDialogTitle>
+            <AlertDialogDescription>
+              Deseja confirmar o check-out do apartamento{" "}
+              {selectedCheckout?.aptName}?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmCheckout}
+              disabled={doingCheckout}
+            >
+              {doingCheckout ? "Processando..." : "Confirmar"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Dialogs placeholders */}
+      <Dialog open={consumptionOpen} onOpenChange={setConsumptionOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Adicionar consumo</DialogTitle>
+            <DialogDescription>
+              Registre consumos da hospedagem selecionada.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="text-sm text-muted-foreground">
+            Em breve: formulário de consumos vinculado à reserva.
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={paymentOpen} onOpenChange={setPaymentOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Adicionar pagamento</DialogTitle>
+            <DialogDescription>
+              Registre um pagamento para esta hospedagem.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="text-sm text-muted-foreground">
+            Em breve: formulário de pagamentos vinculado à reserva.
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <ReservationFormDialog
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        reservation={editingReservation}
+      />
     </div>
   );
 };

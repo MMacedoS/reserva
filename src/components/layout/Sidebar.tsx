@@ -15,7 +15,7 @@ export function Sidebar() {
   }, [isMobile]);
 
   return (
-    <div className="w-full flex fixed">
+    <div className="w-full flex fixed z-50">
       <Header sidebarToggle={sidebarToggle} setSidebarToggle={toggleSidebar} />
       <Navbar sidebarToggle={sidebarToggle} setSidebarToggle={toggleSidebar} />
     </div>

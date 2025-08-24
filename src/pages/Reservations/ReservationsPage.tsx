@@ -211,7 +211,6 @@ export default function ReservationsPage() {
                     className="mt-1"
                     value={endDate}
                     min={startDate}
-                    max={new Date().toISOString().split("T")[0]}
                     onChange={(e) => setEndDate(e.target.value)}
                   />
                 </div>

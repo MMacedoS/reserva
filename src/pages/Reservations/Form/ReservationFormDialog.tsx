@@ -188,7 +188,8 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
   }, [reservation, form]);
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    if (data.apartment_ids.length > 1) {
+    // Somente criação em lote quando NÃO está editando
+    if (!isEdit && data.apartment_ids.length > 1) {
       await saveBatchReservations({
         customer_id: data.customer_id,
         apartment_ids: data.apartment_ids,
@@ -207,7 +208,8 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
     const payload: ReservationRequest = {
       ...(data.id ? { id: data.id } : {}),
       customer_id: data.customer_id,
-      apartment_id: data.apartment_ids[0],
+      // Em edição, garanta apenas um apartamento; em criação, use o primeiro selecionado
+      apartment_id: (data.apartment_ids && data.apartment_ids[0]) as string,
       check_in: data.check_in,
       check_out: data.check_out,
       guests: data.guests,
@@ -222,308 +224,354 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
 
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
-      <AlertDialogContent>
-        <Form {...form}>
-          <form
-            className="space-y-4"
-            onSubmit={form.handleSubmit(onSubmit as any)}
-          >
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {reservation ? "Atualizar Reserva" : "Cadastrar Reserva"}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                Preencha e confirme os dados da reserva.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
+      <AlertDialogContent className="max-w-3xl max-h-[90vh]">
+        <div className="max-h-[80vh] overflow-y-auto">
+          <Form {...form}>
+            <form
+              className="space-y-4"
+              onSubmit={form.handleSubmit(onSubmit as any)}
+            >
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {reservation ? "Atualizar Reserva" : "Cadastrar Reserva"}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  Preencha e confirme os dados da reserva.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
 
-            <FormField
-              name="id"
-              render={({ field }) => <input type="hidden" {...field} />}
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
-                name="check_in"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Check-in</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="datetime-local"
-                        step={900}
-                        min={dataInicialPadrao}
-                        value={field.value}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          const d = new Date(v);
-                          if (!isNaN(d.getTime())) {
-                            field.onChange(formatLocalDateTimeAt(d, 12, 0));
-                          } else {
-                            field.onChange(v);
-                          }
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                name="id"
+                render={({ field }) => <input type="hidden" {...field} />}
               />
 
-              <FormField
-                name="check_out"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Check-out</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="datetime-local"
-                        step={900}
-                        min={checkIn || dataInicialPadrao}
-                        value={field.value}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          const d = new Date(v);
-                          if (!isNaN(d.getTime())) {
-                            field.onChange(formatLocalDateTimeAt(d, 12, 0));
-                          } else {
-                            field.onChange(v);
-                          }
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  name="check_in"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Check-in</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="datetime-local"
+                          step={900}
+                          min={dataInicialPadrao}
+                          value={field.value}
+                          onChange={(e) => {
+                            const v = e.target.value;
+                            const d = new Date(v);
+                            if (!isNaN(d.getTime())) {
+                              field.onChange(formatLocalDateTimeAt(d, 12, 0));
+                            } else {
+                              field.onChange(v);
+                            }
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                name="customer_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Hóspede</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione o hóspede" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Hóspedes</SelectLabel>
-                            {customers?.data?.map((c) => (
-                              <SelectItem key={c.id} value={String(c.id)}>
-                                {c.name}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  name="check_out"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Check-out</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="datetime-local"
+                          step={900}
+                          min={checkIn || dataInicialPadrao}
+                          value={field.value}
+                          onChange={(e) => {
+                            const v = e.target.value;
+                            const d = new Date(v);
+                            if (!isNaN(d.getTime())) {
+                              field.onChange(formatLocalDateTimeAt(d, 12, 0));
+                            } else {
+                              field.onChange(v);
+                            }
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                name="apartment_ids"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Apartamentos</FormLabel>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="w-full justify-between"
+                <FormField
+                  name="customer_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Hóspede</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
                         >
-                          {field.value?.length
-                            ? `${field.value.length} Apt(s) selecionado(s)`
-                            : "Selecione os apartamentos"}
-                          <span className="opacity-50">▾</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-[var(--radix-select-trigger-width)] max-h-64 overflow-auto">
-                        <DropdownMenuLabel>
-                          Selecionar apartamentos
-                        </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        {loadingApartments ? (
-                          <div className="p-2 text-sm text-muted-foreground">
-                            Carregando apartamentos...
-                          </div>
-                        ) : availableApartments.length === 0 ? (
-                          <div className="p-2 text-sm text-muted-foreground">
-                            Nenhum apartamento disponível
-                          </div>
-                        ) : (
-                          availableApartments.map((a: any, index: number) => {
-                            const value = String(
-                              a.uuid || a.id || `${a.name}-${index}`
-                            );
-                            const checked = (field.value || []).includes(value);
-                            return (
-                              <DropdownMenuCheckboxItem
-                                key={value}
-                                checked={checked}
-                                onCheckedChange={(isChecked) => {
-                                  const current: string[] = Array.isArray(
-                                    field.value
-                                  )
-                                    ? field.value
-                                    : [];
-                                  if (isChecked) {
-                                    if (!current.includes(value))
-                                      field.onChange([...current, value]);
-                                  } else {
-                                    field.onChange(
-                                      current.filter((v) => v !== value)
-                                    );
-                                  }
-                                }}
-                              >
-                                {a.name} - {a.category}
-                              </DropdownMenuCheckboxItem>
-                            );
-                          })
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione o hóspede" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Hóspedes</SelectLabel>
+                              {customers?.data?.map((c) => (
+                                <SelectItem key={c.id} value={String(c.id)}>
+                                  {c.name}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                name="guests"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Hóspedes</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min={1}
-                        value={field.value ?? 1}
-                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  name="apartment_ids"
+                  render={({ field }) => {
+                    // Rótulo e texto do botão: em edição, exibe apto selecionado; caso contrário, contagem
+                    const selectedFirst = (field.value || [])[0];
+                    const selectedApt = availableApartments.find(
+                      (a: any) =>
+                        String(a.uuid || a.id) === String(selectedFirst)
+                    );
+                    const buttonText = isEdit
+                      ? selectedApt?.name || "Selecione o apartamento"
+                      : field.value?.length
+                      ? `${field.value.length} Apt(s) selecionado(s)`
+                      : "Selecione os apartamentos";
 
-              <FormField
-                name="amount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Valor Total (R$)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        min={0}
-                        value={field.value ?? 0}
-                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    return (
+                      <FormItem>
+                        <FormLabel>
+                          {isEdit ? "Apartamento" : "Apartamentos"}
+                        </FormLabel>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="w-full justify-between"
+                            >
+                              {buttonText}
+                              <span className="opacity-50">▾</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="w-[var(--radix-select-trigger-width)] max-h-64 overflow-auto">
+                            <DropdownMenuLabel>
+                              {isEdit
+                                ? "Selecionar apartamento"
+                                : "Selecionar apartamentos"}
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {loadingApartments ? (
+                              <div className="p-2 text-sm text-muted-foreground">
+                                Carregando apartamentos...
+                              </div>
+                            ) : availableApartments.length === 0 ? (
+                              <div className="p-2 text-sm text-muted-foreground">
+                                Nenhum apartamento disponível
+                              </div>
+                            ) : (
+                              availableApartments.map(
+                                (a: any, index: number) => {
+                                  const value = String(
+                                    a.uuid || a.id || `${a.name}-${index}`
+                                  );
+                                  const checked = (field.value || []).includes(
+                                    value
+                                  );
+                                  return (
+                                    <DropdownMenuCheckboxItem
+                                      key={value}
+                                      checked={checked}
+                                      onCheckedChange={(isChecked) => {
+                                        const current: string[] = Array.isArray(
+                                          field.value
+                                        )
+                                          ? field.value
+                                          : [];
+                                        if (isEdit) {
+                                          // No modo edição, restringe a seleção a apenas 1 apartamento
+                                          if (isChecked) {
+                                            field.onChange([value]);
+                                          } else {
+                                            field.onChange([]);
+                                          }
+                                        } else {
+                                          if (isChecked) {
+                                            if (!current.includes(value))
+                                              field.onChange([
+                                                ...current,
+                                                value,
+                                              ]);
+                                          } else {
+                                            field.onChange(
+                                              current.filter((v) => v !== value)
+                                            );
+                                          }
+                                        }
+                                      }}
+                                    >
+                                      {a.name} - {a.category}
+                                    </DropdownMenuCheckboxItem>
+                                  );
+                                }
+                              )
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
 
-              <FormField
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione o status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Status</SelectLabel>
-                            <SelectItem value="Reservada">Reservada</SelectItem>
-                            <SelectItem value="Confirmada">
-                              Confirmada
-                            </SelectItem>
-                            <SelectItem value="Hospedada">Hospedada</SelectItem>
-                            <SelectItem value="Finalizada">
-                              Finalizada
-                            </SelectItem>
-                            <SelectItem value="Cancelada">Cancelada</SelectItem>
-                            <SelectItem value="Apagada">Apagada</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  name="guests"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Hóspedes</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min={1}
+                          value={field.value ?? 1}
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber)
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipo</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione o tipo" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Tipo</SelectLabel>
-                            <SelectItem value="promocional">
-                              Promocional
-                            </SelectItem>
-                            <SelectItem value="diaria">Diária</SelectItem>
-                            <SelectItem value="pacote">Pacote</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  name="amount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Valor Total (R$)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          min={0}
+                          value={field.value ?? 0}
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber)
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                name="notes"
-                render={({ field }) => (
-                  <FormItem className="md:col-span-2">
-                    <FormLabel>Observações</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                <FormField
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione o status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Status</SelectLabel>
+                              <SelectItem value="Reservada">
+                                Reservada
+                              </SelectItem>
+                              <SelectItem value="Confirmada">
+                                Confirmada
+                              </SelectItem>
+                              <SelectItem value="Hospedada">
+                                Hospedada
+                              </SelectItem>
+                              <SelectItem value="Finalizada">
+                                Finalizada
+                              </SelectItem>
+                              <SelectItem value="Cancelada">
+                                Cancelada
+                              </SelectItem>
+                              <SelectItem value="Apagada">Apagada</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={onClose}>Cancelar</AlertDialogCancel>
-              <AlertDialogAction asChild>
-                <Button
-                  type="submit"
-                  disabled={saving || (!isEdit && !form.formState.isValid)}
-                >
-                  Salvar
-                </Button>
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </form>
-        </Form>
+                <FormField
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tipo</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione o tipo" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Tipo</SelectLabel>
+                              <SelectItem value="promocional">
+                                Promocional
+                              </SelectItem>
+                              <SelectItem value="diaria">Diária</SelectItem>
+                              <SelectItem value="pacote">Pacote</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Observações</FormLabel>
+                      <FormControl>
+                        <Input type="text" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={onClose}>
+                  Cancelar
+                </AlertDialogCancel>
+                <AlertDialogAction asChild>
+                  <Button
+                    type="submit"
+                    disabled={saving || (!isEdit && !form.formState.isValid)}
+                  >
+                    Salvar
+                  </Button>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </form>
+          </Form>
+        </div>
       </AlertDialogContent>
     </AlertDialog>
   );

@@ -55,7 +55,6 @@ const AccommodationPage = () => {
     aptName: string;
   } | null>(null);
 
-  // Modais simples (placeholders) para consumo/pagamento e edição
   const [consumptionOpen, setConsumptionOpen] = useState(false);
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -63,7 +62,6 @@ const AccommodationPage = () => {
     null
   );
 
-  // Helper para obter cor de status
   const getSituationBadge = (situation?: string) => {
     const map: Record<
       string,
@@ -150,7 +148,7 @@ const AccommodationPage = () => {
                   const status = reservation?.situation || apt.situation;
                   const badge = getSituationBadge(status);
                   const todayReservation =
-                    hasReservation && isToday(reservation?.dt_checkin);
+                    hasReservation && isToday(reservation?.checkin);
                   const canCheckin =
                     todayReservation &&
                     ["Reservada", "Confirmada"].includes(status);
@@ -233,7 +231,7 @@ const AccommodationPage = () => {
                                     openConfirm({
                                       id: reservation.id,
                                       aptName: apt.name,
-                                      dt_checkin: reservation.dt_checkin,
+                                      dt_checkin: reservation.checkin,
                                     })
                                   }
                                   disabled={doingCheckin}
@@ -266,19 +264,7 @@ const AccommodationPage = () => {
                                   variant="secondary"
                                   onClick={() => {
                                     setEditingReservation({
-                                      id:
-                                        reservation.uuid ||
-                                        String(reservation.id),
-                                      customer: { name: customerName || "" },
-                                      apartment: {
-                                        id: String(apt.id),
-                                        name: apt.name,
-                                      },
-                                      checkin: reservation.dt_checkin,
-                                      checkout: reservation.dt_checkout,
-                                      amount: reservation.amount,
-                                      situation: status,
-                                      type: reservation.type || "diaria",
+                                      ...reservation,
                                     });
                                     setEditOpen(true);
                                   }}
@@ -368,7 +354,6 @@ const AccommodationPage = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Dialogs placeholders */}
       <Dialog open={consumptionOpen} onOpenChange={setConsumptionOpen}>
         <DialogContent>
           <DialogHeader>

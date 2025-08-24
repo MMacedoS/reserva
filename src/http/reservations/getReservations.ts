@@ -39,7 +39,7 @@ export function useGetReservations({
       search,
       startDate,
       endDate,
-      status,
+      situation,
       type,
     ],
     queryFn: async () => {

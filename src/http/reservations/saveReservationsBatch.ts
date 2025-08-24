@@ -44,6 +44,7 @@ export function useSaveReservationsBatch() {
     onSuccess: () => {
       showAutoDismissAlert({ message: "Reservas criadas com sucesso!" });
       queryClient.invalidateQueries({ queryKey: ["reservations"] });
+      queryClient.invalidateQueries({ queryKey: ["accommodations"] });
     },
     onError: (error) => {
       showAutoDismissAlert({ message: error.message });

@@ -11,6 +11,7 @@ import { formatDateWithTime } from "@/lib/utils";
 import {
   Loader2,
   LogIn,
+  LucideCalendarDays,
   LucideDollarSign,
   LucideEdit2,
   LucideLogOut,
@@ -47,6 +48,7 @@ const AccommodationPage = () => {
   const [selected, setSelected] = useState<{
     id: number | string;
     aptName: string;
+    customerName: string;
     dt_checkin?: string;
   } | null>(null);
   const [confirmCheckoutOpen, setConfirmCheckoutOpen] = useState(false);
@@ -95,6 +97,7 @@ const AccommodationPage = () => {
   const openConfirm = (payload: {
     id: number | string;
     aptName: string;
+    customerName: string;
     dt_checkin?: string;
   }) => {
     setSelected(payload);
@@ -231,6 +234,7 @@ const AccommodationPage = () => {
                                     openConfirm({
                                       id: reservation.id,
                                       aptName: apt.name,
+                                      customerName: customerName,
                                       dt_checkin: reservation.checkin,
                                     })
                                   }
@@ -251,6 +255,13 @@ const AccommodationPage = () => {
                                   onClick={() => setConsumptionOpen(true)}
                                 >
                                   <LucideShoppingBasket />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setConsumptionOpen(true)}
+                                >
+                                  <LucideCalendarDays />
                                 </Button>
                                 <Button
                                   size="sm"
@@ -317,6 +328,8 @@ const AccommodationPage = () => {
                 <>
                   <br />
                   Entrada: {formatDateWithTime(selected.dt_checkin)}
+                  <br />
+                  Hospede: {selected.customerName}
                 </>
               )}
             </AlertDialogDescription>

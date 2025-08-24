@@ -3,10 +3,6 @@ import { environment } from "@/environments/environment";
 import { useApi } from "@/hooks/useApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-/**
- * Realiza o check-in de uma reserva específica.
- * Segue o padrão de endpoints com ação (ex.: cashbox/{id}/close).
- */
 export function useCheckinReservation() {
   const { fetchWithAuth } = useApi();
   const queryClient = useQueryClient();
@@ -15,7 +11,7 @@ export function useCheckinReservation() {
     mutationKey: ["reservations", "checkin"],
     mutationFn: async (reservationId: number | string) => {
       const response = await fetchWithAuth(
-        `${environment.apiUrl}/${environment.apiVersion}/reservations/${reservationId}/checkin`,
+        `${environment.apiUrl}/${environment.apiVersion}/reservations/${reservationId}/check-in`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -31,7 +27,6 @@ export function useCheckinReservation() {
       return response.json();
     },
     onSuccess: () => {
-      // Recarrega listas relacionadas
       queryClient.invalidateQueries({ queryKey: ["accommodations"] });
       queryClient.invalidateQueries({ queryKey: ["reservations"] });
 

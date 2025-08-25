@@ -200,7 +200,7 @@ const ReleasesPage = () => {
         onClose={() => setOpenConfirmDialog(false)}
         onConfirm={handleDelete}
         item={release}
-        type="transaction"
+        type="transação"
       />
       <Footer />
     </>

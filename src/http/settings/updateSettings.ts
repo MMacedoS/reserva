@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { showAutoDismissAlert } from "@/components/showAutoDismissAlert";
 import { environment } from "@/environments/environment";
 import { useApi } from "@/hooks/useApi";
@@ -23,12 +23,8 @@ type CreateSettingFormData = {
 export function updateSettings() {
   const { fetchWithAuth } = useApi();
 
-  return useMutation<
-    ApiResponse, 
-    Error,        
-    CreateSettingFormData
-  >({
-    mutationFn: async (data: CreateSettingFormData) => {      
+  return useMutation<ApiResponse, Error, CreateSettingFormData>({
+    mutationFn: async (data: CreateSettingFormData) => {
       const response = await fetchWithAuth(
         `${environment.apiUrl}/${environment.apiVersion}/settings`,
         {
@@ -49,7 +45,7 @@ export function updateSettings() {
       const result = await response.json();
       return result;
     },
-    onSuccess: ({data}) => {
+    onSuccess: () => {
       showAutoDismissAlert({
         message: "Dados salvos com sucesso!",
         description: "Os dados foram atualizados.",

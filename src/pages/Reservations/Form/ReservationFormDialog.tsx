@@ -208,7 +208,6 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
     const payload: ReservationRequest = {
       ...(data.id ? { id: data.id } : {}),
       customer_id: data.customer_id,
-      // Em edição, garanta apenas um apartamento; em criação, use o primeiro selecionado
       apartment_id: (data.apartment_ids && data.apartment_ids[0]) as string,
       check_in: data.check_in,
       check_out: data.check_out,

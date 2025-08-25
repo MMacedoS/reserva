@@ -220,7 +220,7 @@ export function EmployeesPage() {
         onClose={() => setOpenConfirmDialog(false)}
         onConfirm={handleDelete}
         item={selectedEmployee}
-        type="employee"
+        type="empregado"
       />
 
       <Footer />

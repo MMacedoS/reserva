@@ -10,25 +10,18 @@ export function deleteApartment() {
   const { fetchWithAuth } = useApi();
   const queryClient = useQueryClient();
 
-  return useMutation<
-    ApiResponse, 
-    Error,        
-    Apartment
-  >({
-    mutationFn: async (data: Apartment) => {      
+  return useMutation<ApiResponse, Error, Apartment>({
+    mutationFn: async (data: Apartment) => {
       const { uuid } = data;
       const url = `${environment.apiUrl}/${environment.apiVersion}/apartments/${uuid}`;
 
-      const response = await fetchWithAuth(
-        url,
-        {
-          method: 'DELETE',
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include"
-        }
-      );
+      const response = await fetchWithAuth(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
       const result = await response.json();
 
@@ -38,7 +31,7 @@ export function deleteApartment() {
 
       return result;
     },
-    onSuccess: ({data}) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["apartments"],
       });

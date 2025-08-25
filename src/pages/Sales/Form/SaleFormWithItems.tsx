@@ -52,11 +52,6 @@ export const SaleFormDialog = ({
 
   useEffect(() => {
     if (editingSale) {
-      const amount =
-        typeof editingSale.amount === "string"
-          ? parseFloat(editingSale.amount)
-          : editingSale.amount || 0;
-
       form.reset({
         sale_name: editingSale.sale_name || editingSale.name || "",
         reservation_id: editingSale.reservation_id || "",

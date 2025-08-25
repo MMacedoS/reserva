@@ -1,4 +1,3 @@
-// src/contexts/SidebarContext.tsx
 import { createContext, useContext, useState, useCallback } from "react";
 
 interface SidebarContextType {

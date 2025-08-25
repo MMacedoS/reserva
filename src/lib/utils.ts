@@ -26,12 +26,8 @@ export const formatDateWithTime = (date: string | null) => {
 
 export const formatDate = (date: string | null) => {
   if (!date) return "N/A";
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  };
-  return new Date(date).toLocaleDateString("pt-BR", options);
+  const date_split = date.split("-");
+  return `${date_split[2]}/${date_split[1]}/${date_split[0]}`;
 };
 
 export const formatLocalDateTime = (date: Date) => {

@@ -123,7 +123,7 @@ export default function CustomerPage() {
         onClose={() => setOpenConfirmDialog(false)}
         onConfirm={handleDelete}
         item={selectedCustomer}
-        type="customer"
+        type="cliente"
       />
       <Footer />
     </div>

@@ -144,7 +144,7 @@ export function PaymentCard({
               Comprovante
             </Button>
           )}
-          {payment.status === "pending" && onCancel && (
+          {payment.status === "Pendente" && onCancel && (
             <Button
               size="sm"
               variant="destructive"

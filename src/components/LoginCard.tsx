@@ -1,4 +1,3 @@
-// src/components/LoginCard.tsx
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 
@@ -16,7 +15,9 @@ export function LoginCard({ children }: Props) {
     >
       <Card className="w-full max-w-sm shadow-lg">
         <CardHeader>
-          <CardTitle className="text-center text-2xl">Acessar o Sistema</CardTitle>
+          <CardTitle className="text-center text-2xl">
+            Acessar o Sistema
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">{children}</CardContent>
       </Card>

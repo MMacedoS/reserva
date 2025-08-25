@@ -24,12 +24,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  ChevronDown,
-  LucideListCheck,
-  LucideListCollapse,
-  LucideSearch,
-} from "lucide-react";
+import { ChevronDown, LucideListCheck, LucideListCollapse } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -43,7 +38,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "./pagination";
-import { set } from "zod";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -79,7 +73,6 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
 
-  // Criação da instância da tabela com controle de ordenação, filtro e paginação
   const table = useReactTable({
     data,
     columns,

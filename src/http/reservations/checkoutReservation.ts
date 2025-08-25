@@ -3,9 +3,6 @@ import { environment } from "@/environments/environment";
 import { useApi } from "@/hooks/useApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-/**
- * Realiza o check-out de uma reserva específica.
- */
 export function useCheckoutReservation() {
   const { fetchWithAuth } = useApi();
   const queryClient = useQueryClient();

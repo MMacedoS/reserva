@@ -11,32 +11,54 @@ import {
 
 type AlertDialogDestroyProps = {
   open: boolean;
-  onClose: () => void;
+  onCloseDestroy?: () => void;
   onConfirm: () => void;
   item: any;
-  type?: "apartment" | "employee" | "transaction" | "customer";
+  type?:
+    | "apartamento"
+    | "empregado"
+    | "transação"
+    | "cliente"
+    | "reserva"
+    | "diaria"
+    | "consumo"
+    | "pagamento"
+    | "usuario"
+    | "papel"
+    | "permissao"
+    | "servico"
+    | "produto"
+    | "categoria"
+    | "fornecedor"
+    | "pedido"
+    | "fatura"
+    | "relatório"
+    | "configuração"
+    | "outro";
 };
 
 export function AlertDialogDestroy({
   open,
-  onClose,
+  onCloseDestroy,
   onConfirm,
   item,
-  type = "apartment",
+  type = "apartamento",
 }: AlertDialogDestroyProps) {
   const itemName = item?.name || item?.description;
 
   return (
-    <AlertDialog open={open} onOpenChange={onClose}>
+    <AlertDialog open={open} onOpenChange={onCloseDestroy}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Tem certeza que deseja excluir?</AlertDialogTitle>
           <AlertDialogDescription>
-            Você está prestes a excluir o {type} {itemName}.
+            Você está prestes a excluir o {type} {itemName || "Item"}.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onClose}>Cancelar</AlertDialogCancel>
+          <AlertDialogCancel onClick={onCloseDestroy}>
+            Cancelar
+          </AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm}>Confirmar</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

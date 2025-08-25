@@ -4,10 +4,10 @@ export const useApi = () => {
   const { getToken, refreshToken, logout } = useAuth();
 
   const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-    // Garante que headers são sempre um objeto mutável
-    const originalHeaders = options.headers instanceof Headers
-      ? Object.fromEntries(options.headers.entries())
-      : options.headers ?? {};
+    const originalHeaders =
+      options.headers instanceof Headers
+        ? Object.fromEntries(options.headers.entries())
+        : options.headers ?? {};
 
     let headers = {
       ...originalHeaders,

@@ -10,12 +10,8 @@ export function saveApartment() {
   const { fetchWithAuth } = useApi();
   const queryClient = useQueryClient();
 
-  return useMutation<
-    ApiResponse, 
-    Error,        
-    Apartment
-  >({
-    mutationFn: async (data: Apartment) => {      
+  return useMutation<ApiResponse, Error, Apartment>({
+    mutationFn: async (data: Apartment) => {
       const isUpdate = !!data.id;
       const method = isUpdate ? "PUT" : "POST";
 
@@ -24,17 +20,14 @@ export function saveApartment() {
         ? `${environment.apiUrl}/${environment.apiVersion}/apartments/${id}`
         : `${environment.apiUrl}/${environment.apiVersion}/apartments`;
 
-      const response = await fetchWithAuth(
-        url,
-        {
-          method: method,
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await fetchWithAuth(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
 
       if (!response.ok) {
         const errorBody = await response.text();
@@ -44,7 +37,7 @@ export function saveApartment() {
       const result = await response.json();
       return result;
     },
-    onSuccess: ({data}) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["apartments"],
       });

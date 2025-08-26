@@ -39,6 +39,15 @@ export function useProcessPayment() {
       queryClient.invalidateQueries({
         queryKey: ["cashbox", variables.cashbox_id],
       });
+
+      if (variables.reservation_id) {
+        queryClient.invalidateQueries({
+          queryKey: ["reservations", variables.reservation_id, "payments"],
+        });
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["accommodations"] });
+
       refetchCashbox();
     },
   });

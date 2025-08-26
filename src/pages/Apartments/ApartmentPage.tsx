@@ -155,7 +155,7 @@ export function ApartmentPage() {
       />
       <AlertDialogDestroy
         open={openConfirmDialog}
-        onClose={() => setOpenConfirmDialog(false)}
+        onCloseDestroy={() => setOpenConfirmDialog(false)}
         onConfirm={handleDelete}
         item={selectedApartment}
         type="apartamento"

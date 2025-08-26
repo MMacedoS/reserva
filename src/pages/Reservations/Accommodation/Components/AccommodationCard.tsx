@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDateWithTime } from "@/lib/utils";
+import { formatDateWithTime, formatValueToBRL } from "@/lib/utils";
 import {
   LogIn,
   LucideCalendarDays,
@@ -97,20 +97,38 @@ export function AccommodationCard({
                   </span>
                 </div>
               ) : null}
+
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Entrada:</span>
                 <span>{formatDateWithTime(reservation.checkin)}</span>
               </div>
+
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Saída:</span>
                 <span>{formatDateWithTime(reservation.checkout)}</span>
               </div>
+
               {reservation.amount ? (
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Valor:</span>
-                  <span>R$ {Number(reservation.amount).toFixed(2)}</span>
+                  <span>{formatValueToBRL(reservation.amount)}</span>
                 </div>
               ) : null}
+
+              {reservation.estimated_value ? (
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Valor estimado:</span>
+                  <span>{formatValueToBRL(reservation.estimated_value)}</span>
+                </div>
+              ) : null}
+
+              {reservation.paid_amount ? (
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Valor pago:</span>
+                  <span>{formatValueToBRL(reservation.paid_amount)}</span>
+                </div>
+              ) : null}
+
               {canCheckin ? (
                 <Button
                   size="sm"
@@ -123,20 +141,25 @@ export function AccommodationCard({
                 </Button>
               ) : null}
             </div>
+
             {status === "Hospedada" && (
-              <div className="pt-3 mt-3 border-t flex flex-wrap gap-2">
+              <div className="pt-3 mt-3 border-t flex flex-wrap gap-2 justify-center">
                 <Button size="sm" variant="outline" onClick={onAddConsumption}>
                   <LucideShoppingBasket />
                 </Button>
+
                 <Button size="sm" variant="outline" onClick={onAddPayment}>
                   <LucideDollarSign />
                 </Button>
+
                 <Button size="sm" variant="outline" onClick={onAddPerDiem}>
                   <LucideCalendarDays />
                 </Button>
+
                 <Button size="sm" variant="outline" onClick={onEdit}>
                   <LucideEdit2 />
                 </Button>
+
                 <Button size="sm" variant="destructive" onClick={onCheckout}>
                   <LucideLogOut />
                 </Button>

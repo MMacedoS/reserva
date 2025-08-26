@@ -25,6 +25,7 @@ import { useCancelPayment } from "@/http/payments/cancelPayment";
 import type { Payment } from "@/http/types/payments/Payment";
 import { formatValueToBRL } from "@/lib/utils";
 import { useCashbox } from "@/hooks/useCashbox";
+import { paymentMethods } from "@/constants/payments";
 
 interface SalePaymentsManagerProps {
   saleId: string;
@@ -67,15 +68,6 @@ export const SalePaymentsManager = ({
 
   const remainingAmount = saleAmount - totalPaid;
 
-  const paymentMethods = [
-    { value: "cash", label: "Dinheiro" },
-    { value: "debit_card", label: "Cartão de Débito" },
-    { value: "credit_card", label: "Cartão de Crédito" },
-    { value: "pix", label: "PIX" },
-    { value: "transfer", label: "Transferência" },
-    { value: "other", label: "Outro" },
-  ];
-
   const addPayment = async () => {
     if (!newPayment.method || newPayment.amount <= 0) {
       return;
@@ -108,7 +100,7 @@ export const SalePaymentsManager = ({
 
   const cancelPayment = async (paymentId: string) => {
     try {
-      await cancelPaymentMutation.mutateAsync(paymentId);
+      await cancelPaymentMutation.mutateAsync({ id: paymentId });
     } catch (error) {}
   };
 

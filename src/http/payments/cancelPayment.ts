@@ -1,13 +1,21 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { environment } from "@/environments/environment";
 import { useApi } from "@/hooks/useApi";
+import { getCashboxByUserId } from "../cashbox/getCashboxByUserId";
+
+type cancelPaymentProps = {
+  id: string;
+  reference?: string;
+};
 
 export function useCancelPayment() {
   const { fetchWithAuth } = useApi();
   const queryClient = useQueryClient();
 
+  const { mutate: refetchCashbox } = getCashboxByUserId();
+
   return useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async ({ id }: cancelPaymentProps) => {
       const response = await fetchWithAuth(
         `${environment.apiUrl}/${environment.apiVersion}/payments/${id}/cancel`,
         {
@@ -23,9 +31,15 @@ export function useCancelPayment() {
 
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["payments"] });
       queryClient.invalidateQueries({ queryKey: ["sales"] });
+
+      queryClient.invalidateQueries({
+        queryKey: ["reservations", variables.reference, "payments"],
+      });
+
+      refetchCashbox();
     },
   });
 }

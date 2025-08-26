@@ -20,6 +20,8 @@ export interface Reservation {
   checkout: string;
   amount?: number;
   user?: string;
+  estimated_value: number;
+  paid_value: number;
   situation: ReservationStatus;
   type?: ReservationType;
   created_at?: string;

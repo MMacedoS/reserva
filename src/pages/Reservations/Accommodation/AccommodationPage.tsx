@@ -235,13 +235,14 @@ const AccommodationPage = () => {
         onClose={() => setConsumptionOpen(false)}
         reservation={activeReservationUuid}
       />
-      <PaymentsDialog
-        open={paymentOpen}
-        onClose={() => setPaymentOpen(false)}
-        reservation={activeReservationUuid}
-      /> */}
+       */}
       {activeReservation && (
         <>
+          <PaymentsDialog
+            open={paymentOpen}
+            onClose={() => setPaymentOpen(false)}
+            reservation={activeReservation}
+          />
           <PerDiemsDialog
             open={perDiemOpen}
             onClose={() => setPerDiemOpen(false)}

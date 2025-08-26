@@ -44,7 +44,7 @@ export function PerDiemsDialog({ open, onClose, reservation }: Props) {
   const { data, isLoading } = useGetReservationPerDiems(
     reservation.id,
     page,
-    3,
+    10,
     open
   );
 
@@ -156,7 +156,7 @@ export function PerDiemsDialog({ open, onClose, reservation }: Props) {
                         Cancelar
                       </Button>
                       <Button type="submit" disabled={isPending}>
-                        Salvar
+                        Adicionar
                       </Button>
                     </div>
                   </form>

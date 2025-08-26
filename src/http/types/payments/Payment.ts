@@ -22,10 +22,11 @@ export interface Payment {
 }
 
 export interface PaymentRequest {
-  sale_id: string;
+  sale_id?: string;
   amount: number;
   method: "cash" | "debit_card" | "credit_card" | "pix" | "transfer" | "other";
   installments?: number;
+  reservation_id?: string;
   reference?: string;
   notes?: string;
   cashbox_id?: string;

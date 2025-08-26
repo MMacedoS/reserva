@@ -17,7 +17,7 @@ export function useGetReservationPayments(
       );
       if (!response.ok) throw new Error("Erro ao buscar pagamentos");
       const json = await response.json();
-      return json?.data?.items || json?.data || [];
+      return json?.data?.payments || json?.data || [];
     },
   });
 }

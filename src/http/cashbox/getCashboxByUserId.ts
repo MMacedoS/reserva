@@ -48,11 +48,9 @@ export function getCashboxByUserId() {
     onSuccess: ({ data }) => {
       updateCashbox(data);
 
-      // Invalida as queries relacionadas ao cashbox para força refetch quando necessário
       queryClient.invalidateQueries({ queryKey: ["cashboxId"] });
       queryClient.invalidateQueries({ queryKey: ["cashbox"] });
 
-      // Força atualização do cache com os dados mais recentes
       queryClient.setQueryData(["cashboxId"], { data });
       queryClient.setQueryData(["cashbox"], data);
 

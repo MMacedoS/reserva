@@ -58,6 +58,7 @@ interface DataTableProps<TData, TValue> {
     total?: number;
     onPageChange: (page: number) => void;
   };
+  height?: string | number;
 }
 
 export function DataTable<TData, TValue>({
@@ -68,6 +69,7 @@ export function DataTable<TData, TValue>({
   multipleFilters,
   actionsRender,
   pagination,
+  height,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
@@ -173,7 +175,10 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Tabela com headers e corpo */}
-      <div className="rounded-md border">
+      <div
+        className="rounded-md border"
+        style={{ height: height || "auto", overflowY: "auto" }}
+      >
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

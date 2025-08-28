@@ -34,6 +34,12 @@ export const ReleaseForm = ({
   onClear,
   release,
 }: ReleaseFormProps) => {
+  const isSangria = form.watch("type")?.toLowerCase() === "sangria";
+
+  const paymentOptions = isSangria
+    ? PAYMENT_FORMS.filter((option) => option.value === "cash")
+    : PAYMENT_FORMS;
+
   return (
     <Card>
       <CardHeader>
@@ -48,7 +54,34 @@ export const ReleaseForm = ({
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 grid grid-cols-2 gap-4"
+          >
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel>Tipo</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {TRANSACTION_TYPES.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="amount"
@@ -71,17 +104,24 @@ export const ReleaseForm = ({
 
             <FormField
               control={form.control}
-              name="description"
+              name="payment_form"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Descrição</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder="Descreva o lançamento..."
-                      rows={2}
-                    />
-                  </FormControl>
+                  <FormLabel>Forma de Pagamento</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Selecione a forma de pagamento" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {paymentOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -104,32 +144,7 @@ export const ReleaseForm = ({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="payment_form"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Forma de Pagamento</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Selecione a forma de pagamento" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {PAYMENT_FORMS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex gap-2 space-x-2">
+            <div className="col-span-2 space-y-6">
               <FormField
                 control={form.control}
                 name="created_at"
@@ -146,31 +161,24 @@ export const ReleaseForm = ({
 
               <FormField
                 control={form.control}
-                name="type"
+                name="description"
                 render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>Tipo</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {TRANSACTION_TYPES.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  <FormItem>
+                    <FormLabel>Descrição</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="Descreva o lançamento..."
+                        rows={2}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
 
-            <div className="flex gap-2 pt-4">
+            <div className="flex gap-2 pt-4 col-span-2">
               <Button
                 type="button"
                 variant="outline"

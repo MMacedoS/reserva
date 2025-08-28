@@ -144,7 +144,7 @@ const ReleasesPage = () => {
           <h1 className="text-2xl font-bold">Lançamentos Financeiros</h1>
         </div>
         <div className="mt-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
             <div className="col-span-1">
               <ReleaseForm
                 form={form}
@@ -153,7 +153,7 @@ const ReleasesPage = () => {
                 release={release}
               />
             </div>
-            <div className="col-span-1">
+            <div className="col-span-2">
               <Card>
                 <CardHeader>
                   <CardTitle>Últimos Lançamentos</CardTitle>
@@ -197,7 +197,7 @@ const ReleasesPage = () => {
       </div>
       <AlertDialogDestroy
         open={openConfirmDialog}
-        onClose={() => setOpenConfirmDialog(false)}
+        onCloseDestroy={() => setOpenConfirmDialog(false)}
         onConfirm={handleDelete}
         item={release}
         type="transação"

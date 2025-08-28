@@ -1,10 +1,10 @@
 export const PAYMENT_FORMS = [
-  { value: "Dinheiro", label: "Dinheiro" },
-  { value: "PIX", label: "PIX" },
-  { value: "Cartão de Crédito", label: "Cartão de Crédito" },
-  { value: "Cartão de Débito", label: "Cartão de Débito" },
-  { value: "Transferência Bancária", label: "Transferência Bancária" },
-  { value: "Boleto", label: "Boleto" },
+  { value: "cash", label: "Dinheiro" },
+  { value: "pix", label: "PIX" },
+  { value: "credit_card", label: "Cartão de Crédito" },
+  { value: "debit_card", label: "Cartão de Débito" },
+  { value: "bank_transfer", label: "Transferência Bancária" },
+  { value: "boleto", label: "Boleto" },
 ];
 
 export const TRANSACTION_TYPES = [

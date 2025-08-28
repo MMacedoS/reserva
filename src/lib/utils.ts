@@ -1,3 +1,4 @@
+import { PAYMENT_FORMS } from "@/constants/releases";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -71,3 +72,6 @@ export function isValidCPF(value: string): boolean {
   const d2 = calcCheckDigit(cpf.substring(0, 10), 11);
   return cpf[9] === String(d1) && cpf[10] === String(d2);
 }
+
+export const filterOptionsPayment = (value: string) =>
+  PAYMENT_FORMS.filter((option) => option.value === value);

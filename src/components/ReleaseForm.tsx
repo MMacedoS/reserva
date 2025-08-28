@@ -20,6 +20,7 @@ import {
 import type { UseFormReturn } from "react-hook-form";
 import type { ReleasesFormData, Transaction } from "@/hooks/useReleaseForm";
 import { PAYMENT_FORMS, TRANSACTION_TYPES } from "@/constants/releases";
+import { filterOptionsPayment } from "@/lib/utils";
 
 interface ReleaseFormProps {
   form: UseFormReturn<ReleasesFormData>;
@@ -37,7 +38,7 @@ export const ReleaseForm = ({
   const isSangria = form.watch("type")?.toLowerCase() === "sangria";
 
   const paymentOptions = isSangria
-    ? PAYMENT_FORMS.filter((option) => option.value === "cash")
+    ? filterOptionsPayment("cash")
     : PAYMENT_FORMS;
 
   return (

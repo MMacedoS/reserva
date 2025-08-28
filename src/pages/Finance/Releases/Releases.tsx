@@ -7,7 +7,7 @@ import { useTransactionsByCashboxId } from "@/http/finance/transactions/getTrans
 import { useState } from "react";
 import { DataTable } from "@/components/ui/DataTable";
 import type { ColumnDef } from "@tanstack/react-table";
-import { formatValueToBRL } from "@/lib/utils";
+import { filterOptionsPayment, formatValueToBRL } from "@/lib/utils";
 import { ArrowUpDown, LucideTrash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useReleaseForm, type Transaction } from "@/hooks/useReleaseForm";
@@ -111,6 +111,10 @@ const ReleasesPage = () => {
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
+      cell: ({ row }) => {
+        return filterOptionsPayment(row.getValue("payment_form") as string)[0]
+          .label;
+      },
       enableSorting: true,
     },
     {

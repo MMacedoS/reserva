@@ -17,7 +17,7 @@ import { addDays } from "date-fns";
 import { Loader2, LucidePencil, LucidePlus, LucideTrash2 } from "lucide-react";
 import { DataTable } from "@/components/ui/DataTable";
 import type { ColumnDef } from "@tanstack/react-table";
-import { formatDate, formatValueToBRL } from "@/lib/utils";
+import { formatDate, formatDateWithTime, formatValueToBRL } from "@/lib/utils";
 import { useGetReservations } from "@/http/reservations/getReservations";
 import type { Reservation } from "@/http/types/reservations/Reservation";
 import { MenuButtons } from "@/shared/components/MenuButtons";
@@ -52,12 +52,16 @@ export default function ReservationsPage() {
       {
         accessorKey: "checkin",
         header: "Check-in",
-        cell: ({ row }) => <span>{formatDate(row.getValue("checkin"))}</span>,
+        cell: ({ row }) => (
+          <span>{formatDateWithTime(row.getValue("checkin"))}</span>
+        ),
       },
       {
         accessorKey: "checkout",
         header: "Check-out",
-        cell: ({ row }) => <span>{formatDate(row.getValue("checkout"))}</span>,
+        cell: ({ row }) => (
+          <span>{formatDateWithTime(row.getValue("checkout"))}</span>
+        ),
       },
       {
         accessorKey: "amount",

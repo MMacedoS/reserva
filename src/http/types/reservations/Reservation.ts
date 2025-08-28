@@ -21,6 +21,7 @@ export interface Reservation {
   amount?: number;
   user?: string;
   estimated_value: number;
+  consumption_value: number;
   paid_value: number;
   situation: ReservationStatus;
   type?: ReservationType;

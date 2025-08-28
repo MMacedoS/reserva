@@ -118,7 +118,12 @@ export function AccommodationCard({
               {reservation.estimated_value ? (
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Valor estimado:</span>
-                  <span>{formatValueToBRL(reservation.estimated_value)}</span>
+                  <span>
+                    {formatValueToBRL(
+                      reservation.estimated_value +
+                        reservation.consumption_value
+                    )}
+                  </span>
                 </div>
               ) : null}
 

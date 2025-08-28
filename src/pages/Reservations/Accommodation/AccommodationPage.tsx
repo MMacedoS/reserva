@@ -230,14 +230,13 @@ const AccommodationPage = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* <ConsumptionDialog
-        open={consumptionOpen}
-        onClose={() => setConsumptionOpen(false)}
-        reservation={activeReservationUuid}
-      />
-       */}
       {activeReservation && (
         <>
+          <ConsumptionDialog
+            open={consumptionOpen}
+            onClose={() => setConsumptionOpen(false)}
+            reservation={activeReservation}
+          />
           <PaymentsDialog
             open={paymentOpen}
             onClose={() => setPaymentOpen(false)}

@@ -30,7 +30,6 @@ export const useSaleForm = () => {
 
     try {
       if (editingSale && editingSale.id) {
-        // Atualizar venda existente
         await updateSale(editingSale.id, formData);
 
         showAutoDismissAlert({
@@ -39,8 +38,8 @@ export const useSaleForm = () => {
             formData.sale_name || editingSale.id
           }" atualizada com sucesso!`,
         });
-      } else {
-        // Criar nova venda
+      }
+      if (!editingSale || !editingSale.id) {
         await createSale(formData);
 
         showAutoDismissAlert({

@@ -26,7 +26,6 @@ import { saveCashbox } from "@/http/cashbox/saveCashbox";
 const schema = z.object({
   initial_amount: z
     .number()
-    .min(1, "Valor inicial é obrigatório")
     .refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
       message: "Valor deve ser um número válido e não negativo",
     }),
@@ -43,9 +42,7 @@ type CashboxFormProps = {
 export function CashboxForm({ open, onClose }: CashboxFormProps) {
   const form = useForm<CashboxFormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      initial_amount: 0,
-    },
+    mode: "onChange",
   });
 
   const { mutateAsync: save } = saveCashbox();
@@ -90,7 +87,7 @@ export function CashboxForm({ open, onClose }: CashboxFormProps) {
                       step="0.01"
                       min="0"
                       placeholder="0.00"
-                      autoComplete="off"
+                      onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
                   <FormMessage />

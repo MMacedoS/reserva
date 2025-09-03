@@ -18,7 +18,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import Footer from "@/components/layout/Footer";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Label } from "@/components/ui/label";
@@ -88,8 +87,7 @@ const ProductsPage = () => {
     searchQuery || categoryId !== "all" || status !== "all" || lowStock;
 
   return (
-    <div className="col">
-      <Sidebar />
+    <Sidebar>
       <div
         className={`${
           sidebarToggle ? "ml-5" : "ml-55"
@@ -255,7 +253,6 @@ const ProductsPage = () => {
           </CardContent>
         </Card>
       </div>
-      <Footer />
 
       <ProductFormDialog
         isOpen={isFormOpen}
@@ -263,7 +260,7 @@ const ProductsPage = () => {
         editingProduct={editingProduct}
         onSubmit={handleSubmit}
       />
-    </div>
+    </Sidebar>
   );
 };
 

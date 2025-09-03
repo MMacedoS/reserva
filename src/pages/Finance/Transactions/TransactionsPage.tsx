@@ -121,8 +121,7 @@ const TransactionsPage = () => {
     },
   ];
   return (
-    <div className="col">
-      <Sidebar />
+    <Sidebar>
       <div
         className={`${
           sidebarToggle ? "ml-5" : "ml-55"
@@ -165,7 +164,7 @@ const TransactionsPage = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </Sidebar>
   );
 };
 

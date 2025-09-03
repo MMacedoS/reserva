@@ -5,7 +5,6 @@ import { UseUpdatePhoto } from "@/http/profile/useUpdatePhoto";
 import { UploadPhoto } from "./form/UploadPhoto";
 import { environment } from "@/environments/environment";
 import { useAuth } from "@/hooks/useAuth";
-import Footer from "@/components/layout/Footer";
 
 export function ProfilePage() {
   const { sidebarToggle } = useSidebar();
@@ -20,8 +19,7 @@ export function ProfilePage() {
   }
 
   return (
-    <div className="col">
-      <Sidebar />
+    <Sidebar>
       <div
         className={`${
           sidebarToggle ? "ml-5" : "ml-55"
@@ -39,7 +37,6 @@ export function ProfilePage() {
           </div>
         </div>
       </div>
-      <Footer />
-    </div>
+    </Sidebar>
   );
 }

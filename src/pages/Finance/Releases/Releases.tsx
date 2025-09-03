@@ -1,4 +1,3 @@
-import Footer from "@/components/layout/Footer";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -137,8 +136,7 @@ const ReleasesPage = () => {
   ];
 
   return (
-    <>
-      <Sidebar />
+    <Sidebar>
       <div
         className={`${
           sidebarToggle ? "ml-5" : "ml-55"
@@ -206,8 +204,7 @@ const ReleasesPage = () => {
         item={release}
         type="transação"
       />
-      <Footer />
-    </>
+    </Sidebar>
   );
 };
 

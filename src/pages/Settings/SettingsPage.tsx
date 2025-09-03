@@ -2,15 +2,13 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { FormData } from "./Form/FormData";
 import { getSettings } from "@/http/settings/getSettings";
-import Footer from "@/components/layout/Footer";
 
 export function SettingsPage() {
   const { sidebarToggle } = useSidebar();
   const { data, isLoading } = getSettings();
 
   return (
-    <div className="col">
-      <Sidebar />
+    <Sidebar>
       <div
         className={`${
           sidebarToggle ? "ml-5" : "ml-55"
@@ -22,7 +20,6 @@ export function SettingsPage() {
           </div>
         </div>
       </div>
-      <Footer />
-    </div>
+    </Sidebar>
   );
 }

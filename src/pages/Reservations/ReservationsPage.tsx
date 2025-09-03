@@ -162,8 +162,7 @@ export default function ReservationsPage() {
     endDate !== dataFinalPadrao;
 
   return (
-    <div className="col">
-      <Sidebar />
+    <Sidebar>
       <div
         className={`${
           sidebarToggle ? "ml-5" : "ml-55"
@@ -295,13 +294,12 @@ export default function ReservationsPage() {
           </CardContent>
         </Card>
       </div>
-      <Footer />
 
       <ReservationFormDialog
         open={formOpen}
         reservation={editing}
         onClose={() => setFormOpen(false)}
       />
-    </div>
+    </Sidebar>
   );
 }

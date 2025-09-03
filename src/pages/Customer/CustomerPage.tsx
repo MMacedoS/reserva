@@ -14,7 +14,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useSidebar } from "@/contexts/SidebarContext";
-import Footer from "@/components/layout/Footer";
 
 export default function CustomerPage() {
   const [page, setPage] = useState(1);
@@ -71,8 +70,7 @@ export default function CustomerPage() {
   ];
 
   return (
-    <div className="col">
-      <Sidebar />
+    <Sidebar>
       <div
         className={`${
           sidebarToggle ? "ml-5" : "ml-55"
@@ -120,12 +118,11 @@ export default function CustomerPage() {
       />
       <AlertDialogDestroy
         open={openConfirmDialog}
-        onClose={() => setOpenConfirmDialog(false)}
+        onCloseDestroy={() => setOpenConfirmDialog(false)}
         onConfirm={handleDelete}
         item={selectedCustomer}
         type="cliente"
       />
-      <Footer />
-    </div>
+    </Sidebar>
   );
 }

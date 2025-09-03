@@ -16,7 +16,6 @@ import { PermissionGuard } from "@/components/PermissionGuard";
 import type { Permission } from "@/http/types/permissions/Permission";
 import type { ColumnDef } from "@tanstack/react-table";
 import { getPermissionsPaginated } from "@/http/permissions/getPermissionsPaginated";
-import Footer from "@/components/layout/Footer";
 
 export function PermissionsPage() {
   const [page, setPage] = useState(1);
@@ -97,8 +96,7 @@ export function PermissionsPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+    <Sidebar>
       <div
         className={`flex-1 transition-all duration-300 ${
           sidebarToggle ? "ml-0" : "ml-50"
@@ -153,7 +151,6 @@ export function PermissionsPage() {
             </Card>
           </div>
         </div>
-        <Footer />
       </div>
 
       <FormData
@@ -161,6 +158,6 @@ export function PermissionsPage() {
         onClose={handleCloseDialog}
         permission={selectedPermission}
       />
-    </div>
+    </Sidebar>
   );
 }

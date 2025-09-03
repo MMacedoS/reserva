@@ -25,7 +25,6 @@ import { PermissionGuard } from "@/components/PermissionGuard";
 import type { Employee } from "@/http/types/employees/Employee";
 import type { ColumnDef } from "@tanstack/react-table";
 import { getEmployees } from "@/http/employees/getEmployees";
-import Footer from "@/components/layout/Footer";
 
 export function EmployeesPage() {
   const [page, setPage] = useState(1);
@@ -148,8 +147,7 @@ export function EmployeesPage() {
   };
 
   return (
-    <div className="col">
-      <Sidebar />
+    <Sidebar>
       <div
         className={`${
           sidebarToggle ? "ml-5" : "ml-55"
@@ -222,8 +220,6 @@ export function EmployeesPage() {
         item={selectedEmployee}
         type="empregado"
       />
-
-      <Footer />
-    </div>
+    </Sidebar>
   );
 }

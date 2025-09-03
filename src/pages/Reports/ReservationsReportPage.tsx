@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
-import Footer from "@/components/layout/Footer";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -172,8 +171,7 @@ export default function ReservationsReportPage() {
   }));
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+    <Sidebar>
       <div
         className={`flex-1 transition-all duration-300 ${
           sidebarToggle ? "ml-0" : "ml-50"
@@ -334,7 +332,6 @@ export default function ReservationsReportPage() {
           </div>
         </div>
       </div>
-      <Footer />
-    </div>
+    </Sidebar>
   );
 }

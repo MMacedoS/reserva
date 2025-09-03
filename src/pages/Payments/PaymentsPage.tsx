@@ -20,7 +20,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import Footer from "@/components/layout/Footer";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Label } from "@/components/ui/label";
@@ -224,8 +223,7 @@ const PaymentsPage = () => {
   };
 
   return (
-    <div className="col">
-      <Sidebar />
+    <Sidebar>
       <div
         className={`${
           sidebarToggle ? "ml-5" : "ml-55"
@@ -572,9 +570,7 @@ const PaymentsPage = () => {
           </form>
         </DialogContent>
       </Dialog>
-
-      <Footer />
-    </div>
+    </Sidebar>
   );
 };
 

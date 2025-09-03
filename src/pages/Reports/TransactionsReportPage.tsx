@@ -44,7 +44,6 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { useSidebar } from "@/contexts/SidebarContext";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { Transaction } from "@/http/types/finance/transaction/Transaction";
-import Footer from "@/components/layout/Footer";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
@@ -339,8 +338,7 @@ export function ReportTransactionsPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+    <Sidebar>
       <div
         className={`flex-1 transition-all duration-300 ${
           sidebarToggle ? "ml-0" : "ml-50"
@@ -637,7 +635,6 @@ export function ReportTransactionsPage() {
           </div>
         </PermissionGuard>
       </div>
-      <Footer />
-    </div>
+    </Sidebar>
   );
 }

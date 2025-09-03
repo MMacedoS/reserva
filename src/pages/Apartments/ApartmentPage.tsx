@@ -22,7 +22,6 @@ import {
 import { AlertDialogDestroy } from "@/components/ui/alertDialogDestroy";
 import { deleteApartment } from "@/http/apartments/deleteApartment";
 import { getApartments } from "@/http/apartments/getApartments";
-import Footer from "@/components/layout/Footer";
 
 export function ApartmentPage() {
   const [page, setPage] = useState(1);
@@ -107,8 +106,7 @@ export function ApartmentPage() {
   };
 
   return (
-    <div className="col">
-      <Sidebar />
+    <Sidebar>
       <div
         className={`${
           sidebarToggle ? "ml-5" : "ml-55"
@@ -160,7 +158,6 @@ export function ApartmentPage() {
         item={selectedApartment}
         type="apartamento"
       />
-      <Footer />
-    </div>
+    </Sidebar>
   );
 }

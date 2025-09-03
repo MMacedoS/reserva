@@ -17,7 +17,7 @@ import { addDays } from "date-fns";
 import { Loader2, LucidePencil, LucidePlus, LucideTrash2 } from "lucide-react";
 import { DataTable } from "@/components/ui/DataTable";
 import type { ColumnDef } from "@tanstack/react-table";
-import { formatDate, formatDateWithTime, formatValueToBRL } from "@/lib/utils";
+import { formatDateWithTime, formatValueToBRL } from "@/lib/utils";
 import { useGetReservations } from "@/http/reservations/getReservations";
 import type { Reservation } from "@/http/types/reservations/Reservation";
 import { MenuButtons } from "@/shared/components/MenuButtons";

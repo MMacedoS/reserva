@@ -217,7 +217,7 @@ export function EmployeesPage() {
       />
       <AlertDialogDestroy
         open={openConfirmDialog}
-        onClose={() => setOpenConfirmDialog(false)}
+        onCloseDestroy={() => setOpenConfirmDialog(false)}
         onConfirm={handleDelete}
         item={selectedEmployee}
         type="empregado"

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useSidebar } from "@/contexts/SidebarContext";
 import { getSales } from "@/http/sales/getSales";
 import type { Sale } from "@/http/types/sales/Sale";
 import { Loader2, LucideTrash2, Plus, ShoppingCart } from "lucide-react";
@@ -34,7 +33,6 @@ const SalesPage = () => {
   const dataInicialPadrao = addDays(hoje, -7).toISOString().split("T")[0];
   const dataFinalPadrao = hoje.toISOString().split("T")[0];
 
-  const { sidebarToggle } = useSidebar();
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate, setStartDate] = useState(dataInicialPadrao);
@@ -101,149 +99,139 @@ const SalesPage = () => {
 
   return (
     <Sidebar>
-      <div
-        className={`${
-          sidebarToggle ? "ml-5" : "ml-55"
-        } py-20 mr-5 transition-all duration-1000 ease-in-out`}
-      >
-        <Card>
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle className="mt-1">Vendas</CardTitle>
-              <Button
-                className="flex items-center gap-2"
-                onClick={handleNewSale}
-              >
-                <Plus className="h-4 w-4" />
-                Nova Venda
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="h-full">
-            {isLoading ? (
-              <Loader2 className="animate-spin size-6 text-gray-500 items-center" />
-            ) : (
-              <>
-                <div className="filter mb-4 space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-                    <div className="lg:col-span-2 xl:col-span-2">
-                      <Label className="text-sm">Cliente/Mesa:</Label>
-                      <Input
-                        type="text"
-                        placeholder="Buscar venda..."
-                        className="mt-1"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                      />
-                    </div>
-                    <div className="w-full">
-                      <Label className="text-sm">Data inicial:</Label>
-                      <Input
-                        type="date"
-                        className="mt-1"
-                        value={startDate}
-                        max={endDate || new Date().toISOString().split("T")[0]}
-                        onChange={(e) => setStartDate(e.target.value)}
-                      />
-                    </div>
-                    <div className="w-full">
-                      <Label className="text-sm">Data final:</Label>
-                      <Input
-                        type="date"
-                        className="mt-1"
-                        value={endDate}
-                        min={startDate}
-                        max={new Date().toISOString().split("T")[0]}
-                        onChange={(e) => setEndDate(e.target.value)}
-                      />
-                    </div>
-                    <div className="w-full">
-                      <Label className="text-sm">Status:</Label>
-                      <Select
-                        value={status}
-                        onValueChange={(value) => setStatus(value)}
-                      >
-                        <SelectTrigger className="mt-1">
-                          <SelectValue placeholder="Todos os status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">Todos</SelectItem>
-                          <SelectItem value="Pendente">Pendente</SelectItem>
-                          <SelectItem value="Finalizada">Finalizada</SelectItem>
-                          <SelectItem value="Cancelada">Cancelada</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    {hasActiveFilters && (
-                      <div className="flex items-end">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={clearFilters}
-                          className="flex items-center gap-2 mt-1"
-                          title="Limpar filtros"
-                        >
-                          <LucideTrash2 className="h-4 w-4" />
-                          <span className="hidden sm:inline">Limpar</span>
-                        </Button>
-                      </div>
-                    )}
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <CardTitle className="mt-1">Vendas</CardTitle>
+            <Button className="flex items-center gap-2" onClick={handleNewSale}>
+              <Plus className="h-4 w-4" />
+              Nova Venda
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="h-full">
+          {isLoading ? (
+            <Loader2 className="animate-spin size-6 text-gray-500 items-center" />
+          ) : (
+            <>
+              <div className="filter mb-4 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                  <div className="lg:col-span-2 xl:col-span-2">
+                    <Label className="text-sm">Cliente/Mesa:</Label>
+                    <Input
+                      type="text"
+                      placeholder="Buscar venda..."
+                      className="mt-1"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                   </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3  gap-4">
-                  {sales && sales.length > 0 ? (
-                    sales.map((sale: Sale) => (
-                      <SaleCard
-                        key={sale.id}
-                        sale={sale}
-                        onEdit={handleEditSale}
-                        onClose={handleCloseSale}
-                        onCancel={handleCancelSale}
-                        onManageItems={handleManageItems}
-                      />
-                    ))
-                  ) : (
-                    <div className="col-span-full text-center py-8">
-                      <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p>Nenhuma venda encontrada.</p>
+                  <div className="w-full">
+                    <Label className="text-sm">Data inicial:</Label>
+                    <Input
+                      type="date"
+                      className="mt-1"
+                      value={startDate}
+                      max={endDate || new Date().toISOString().split("T")[0]}
+                      onChange={(e) => setStartDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="w-full">
+                    <Label className="text-sm">Data final:</Label>
+                    <Input
+                      type="date"
+                      className="mt-1"
+                      value={endDate}
+                      min={startDate}
+                      max={new Date().toISOString().split("T")[0]}
+                      onChange={(e) => setEndDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="w-full">
+                    <Label className="text-sm">Status:</Label>
+                    <Select
+                      value={status}
+                      onValueChange={(value) => setStatus(value)}
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Todos os status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Todos</SelectItem>
+                        <SelectItem value="Pendente">Pendente</SelectItem>
+                        <SelectItem value="Finalizada">Finalizada</SelectItem>
+                        <SelectItem value="Cancelada">Cancelada</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {hasActiveFilters && (
+                    <div className="flex items-end">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={clearFilters}
+                        className="flex items-center gap-2 mt-1"
+                        title="Limpar filtros"
+                      >
+                        <LucideTrash2 className="h-4 w-4" />
+                        <span className="hidden sm:inline">Limpar</span>
+                      </Button>
                     </div>
                   )}
                 </div>
-                <div className="flex justify-end items-center mt-4">
-                  <span className="text-sm text-gray-600">
-                    Total de registros: {pagination?.total || 0}
-                  </span>
-                </div>
-                {pagination && (
-                  <Pagination className="flex justify-end mt-4">
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious
-                          className={`text-gray-500 hover:text-gray-700 border ${
-                            pagination.current_page === 1 ? "hidden" : ""
-                          }`}
-                          onClick={() => setPage(pagination.current_page - 1)}
-                        />
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationNext
-                          className={`text-gray-500 hover:text-gray-700 border border-gray-200 pl-4 ${
-                            pagination.current_page === pagination.last_page
-                              ? "hidden"
-                              : ""
-                          }`}
-                          onClick={() => setPage(pagination.current_page + 1)}
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3  gap-4">
+                {sales && sales.length > 0 ? (
+                  sales.map((sale: Sale) => (
+                    <SaleCard
+                      key={sale.id}
+                      sale={sale}
+                      onEdit={handleEditSale}
+                      onClose={handleCloseSale}
+                      onCancel={handleCancelSale}
+                      onManageItems={handleManageItems}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-8">
+                    <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p>Nenhuma venda encontrada.</p>
+                  </div>
                 )}
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
+              </div>
+              <div className="flex justify-end items-center mt-4">
+                <span className="text-sm text-gray-600">
+                  Total de registros: {pagination?.total || 0}
+                </span>
+              </div>
+              {pagination && (
+                <Pagination className="flex justify-end mt-4">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        className={`text-gray-500 hover:text-gray-700 border ${
+                          pagination.current_page === 1 ? "hidden" : ""
+                        }`}
+                        onClick={() => setPage(pagination.current_page - 1)}
+                      />
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationNext
+                        className={`text-gray-500 hover:text-gray-700 border border-gray-200 pl-4 ${
+                          pagination.current_page === pagination.last_page
+                            ? "hidden"
+                            : ""
+                        }`}
+                        onClick={() => setPage(pagination.current_page + 1)}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              )}
+            </>
+          )}
+        </CardContent>
+      </Card>
       <SaleFormDialog
         isOpen={isFormOpen}
         onClose={handleCloseForm}

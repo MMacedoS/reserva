@@ -27,8 +27,14 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
           setSidebarToggle={toggleSidebar}
         />
       </div>
-      {children}
 
+      <div
+        className={`${
+          sidebarToggle ? "ml-5" : "ml-55"
+        } py-20 transition-all duration-1000 ease-in-out px-5`}
+      >
+        {children}
+      </div>
       <Footer />
     </div>
   );

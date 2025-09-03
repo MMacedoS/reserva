@@ -2,7 +2,6 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DataTable } from "@/components/ui/DataTable";
-import { useSidebar } from "@/contexts/SidebarContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useTransactionsByUserId } from "@/http/finance/transactions/getTransactionsCashboxByCashboxId";
 import type { Transaction } from "@/http/types/finance/transaction/Transaction";
@@ -13,7 +12,6 @@ import { ArrowUpDown, LucideTrash2 } from "lucide-react";
 import { useState } from "react";
 
 const TransactionsPage = () => {
-  const { sidebarToggle } = useSidebar();
   const { user } = useAuth();
   const [page, setPage] = useState(1);
   const userId = user?.id || "";
@@ -122,48 +120,42 @@ const TransactionsPage = () => {
   ];
   return (
     <Sidebar>
-      <div
-        className={`${
-          sidebarToggle ? "ml-5" : "ml-55"
-        } py-20 mr-5 transition-all duration-1000 ease-in-out`}
-      >
-        <Card>
-          <CardHeader>
-            <CardTitle className="mt-1">Histórico de Transações</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground">
-              Aqui serão exibidos os últimos lançamentos financeiros.
-            </p>
-            <div className="w-full h-full overflow-auto">
-              <DataTable
-                columns={columns}
-                multipleFilters={[
-                  {
-                    column: "description",
-                    placeholder: "Buscar por descrição...",
-                  },
-                  {
-                    column: "type",
-                    placeholder: "Filtrar por tipo...",
-                  },
-                  {
-                    column: "payment_form",
-                    placeholder: "Filtrar por forma de pagamento...",
-                  },
-                ]}
-                data={transactions?.data || []}
-                pagination={{
-                  total: transactions?.pagination.total || 0,
-                  current_page: transactions?.pagination.current_page || 0,
-                  last_page: transactions?.pagination.last_page || 0,
-                  onPageChange: setPage,
-                }}
-              />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="mt-1">Histórico de Transações</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-muted-foreground">
+            Aqui serão exibidos os últimos lançamentos financeiros.
+          </p>
+          <div className="w-full h-full overflow-auto">
+            <DataTable
+              columns={columns}
+              multipleFilters={[
+                {
+                  column: "description",
+                  placeholder: "Buscar por descrição...",
+                },
+                {
+                  column: "type",
+                  placeholder: "Filtrar por tipo...",
+                },
+                {
+                  column: "payment_form",
+                  placeholder: "Filtrar por forma de pagamento...",
+                },
+              ]}
+              data={transactions?.data || []}
+              pagination={{
+                total: transactions?.pagination.total || 0,
+                current_page: transactions?.pagination.current_page || 0,
+                last_page: transactions?.pagination.last_page || 0,
+                onPageChange: setPage,
+              }}
+            />
+          </div>
+        </CardContent>
+      </Card>
     </Sidebar>
   );
 };

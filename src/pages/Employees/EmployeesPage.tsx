@@ -6,7 +6,6 @@ import {
   LucideShield,
 } from "lucide-react";
 import { Sidebar } from "@/components/layout/Sidebar";
-import { useSidebar } from "@/contexts/SidebarContext";
 import {
   Card,
   CardAction,
@@ -28,7 +27,6 @@ import { getEmployees } from "@/http/employees/getEmployees";
 
 export function EmployeesPage() {
   const [page, setPage] = useState(1);
-  const { sidebarToggle } = useSidebar();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
     null
   );
@@ -148,61 +146,55 @@ export function EmployeesPage() {
 
   return (
     <Sidebar>
-      <div
-        className={`${
-          sidebarToggle ? "ml-5" : "ml-55"
-        } py-20 mr-5 transition-all duration-1000 ease-in-out`}
-      >
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle className="mt-1">Funcionários</CardTitle>
-            <CardAction
-              onClick={() => {
-                setSelectedEmployee(null);
-                setOpenDialog(true);
-              }}
-            >
-              <LucidePlusCircle />
-            </CardAction>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <Spinner />
-            ) : (
-              <div className="w-full">
-                <DataTable
-                  columns={columns}
-                  data={data?.data || []}
-                  multipleFilters={[
-                    {
-                      column: "name",
-                      placeholder: "Filtrar por nome",
-                    },
-                    {
-                      column: "email",
-                      placeholder: "Filtrar por email",
-                    },
-                    {
-                      column: "access",
-                      placeholder: "Filtrar por acesso",
-                    },
-                    {
-                      column: "active",
-                      placeholder: "Filtrar por status",
-                    },
-                  ]}
-                  pagination={{
-                    current_page: data?.pagination.current_page,
-                    last_page: data?.pagination.last_page,
-                    total: data?.pagination.total,
-                    onPageChange: setPage,
-                  }}
-                />
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="mt-1">Funcionários</CardTitle>
+          <CardAction
+            onClick={() => {
+              setSelectedEmployee(null);
+              setOpenDialog(true);
+            }}
+          >
+            <LucidePlusCircle />
+          </CardAction>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            <div className="w-full">
+              <DataTable
+                columns={columns}
+                data={data?.data || []}
+                multipleFilters={[
+                  {
+                    column: "name",
+                    placeholder: "Filtrar por nome",
+                  },
+                  {
+                    column: "email",
+                    placeholder: "Filtrar por email",
+                  },
+                  {
+                    column: "access",
+                    placeholder: "Filtrar por acesso",
+                  },
+                  {
+                    column: "active",
+                    placeholder: "Filtrar por status",
+                  },
+                ]}
+                pagination={{
+                  current_page: data?.pagination.current_page,
+                  last_page: data?.pagination.last_page,
+                  total: data?.pagination.total,
+                  onPageChange: setPage,
+                }}
+              />
+            </div>
+          )}
+        </CardContent>
+      </Card>
       <FormData
         open={openDialog}
         onClose={() => setOpenDialog(false)}

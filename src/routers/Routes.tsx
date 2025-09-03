@@ -9,7 +9,6 @@ import { PermissionsPage } from "@/pages/Permissions/PermissionsPage";
 import FinancePage from "@/pages/Finance/FinancePage";
 import ReleasesPage from "@/pages/Finance/Releases/Releases";
 import ProductsPage from "@/pages/Products/ProductsPage";
-import PaymentsPage from "@/pages/Payments/PaymentsPage";
 import { ReportTransactionsPage } from "@/pages/Reports/TransactionsReportPage";
 import ReservationsPage from "@/pages/Reservations/ReservationsPage";
 import ReservationsReportPage from "@/pages/Reports/ReservationsReportPage";
@@ -85,14 +84,6 @@ export function AppRoutes() {
         element={
           <RequireAuth>
             <ProductsPage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/payments"
-        element={
-          <RequireAuth>
-            <PaymentsPage />
           </RequireAuth>
         }
       />

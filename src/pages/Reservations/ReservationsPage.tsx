@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
-import Footer from "@/components/layout/Footer";
 import {
   Card,
   CardAction,
@@ -163,137 +162,128 @@ export default function ReservationsPage() {
 
   return (
     <Sidebar>
-      <div
-        className={`${
-          sidebarToggle ? "ml-5" : "ml-55"
-        } py-20 mr-5 transition-all duration-1000 ease-in-out`}
-      >
-        <Card>
-          <CardHeader>
-            <CardTitle className="mt-1">Reservas</CardTitle>
-            <CardAction>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => {
-                  setEditing(null);
-                  setFormOpen(true);
-                }}
-              >
-                <LucidePlus className="w-4 h-4" />
-              </Button>
-            </CardAction>
-          </CardHeader>
-          <CardContent className="h-full">
-            <div className="filter mb-4 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                <div className="lg:col-span-2 xl:col-span-1">
-                  <Label className="text-sm">Buscar:</Label>
-                  <Input
-                    type="text"
-                    placeholder="Buscar por cliente, código..."
-                    className="mt-1"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-                <div className="min-w-[150px]">
-                  <Label className="text-sm">Data inicial:</Label>
-                  <Input
-                    type="date"
-                    className="mt-1"
-                    value={startDate}
-                    max={endDate || new Date().toISOString().split("T")[0]}
-                    onChange={(e) => setStartDate(e.target.value)}
-                  />
-                </div>
-                <div className="min-w-[150px]">
-                  <Label className="text-sm">Data final:</Label>
-                  <Input
-                    type="date"
-                    className="mt-1"
-                    value={endDate}
-                    min={startDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                  />
-                </div>
-                <div className="w-full">
-                  <Label className="text-sm">Situação:</Label>
-                  <Select
-                    value={situation}
-                    onValueChange={(value) => setSituation(value)}
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Todos" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Reservada">Reservada</SelectItem>
-                      <SelectItem value="Confirmada">Confirmada</SelectItem>
-                      <SelectItem value="Hospedada">Hospedada</SelectItem>
-                      <SelectItem value="Finalizada">Finalizada</SelectItem>
-                      <SelectItem value="Cancelada">Cancelada</SelectItem>
-                      <SelectItem value="Apagada">Apagada</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="w-full">
-                  <Label className="text-sm">Tipo:</Label>
-                  <Select
-                    value={type}
-                    onValueChange={(value) => setType(value)}
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Todos os tipos" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="promocional">Promocional</SelectItem>
-                      <SelectItem value="diaria">Diária</SelectItem>
-                      <SelectItem value="pacote">Pacote</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {hasActiveFilters && (
-                  <div className="flex items-end">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={clearFilters}
-                      className="flex items-center gap-2 mt-1"
-                      title="Limpar filtros"
-                    >
-                      <LucideTrash2 className="h-4 w-4" />
-                      <span className="hidden sm:inline">Limpar</span>
-                    </Button>
-                  </div>
-                )}
+      <Card>
+        <CardHeader>
+          <CardTitle className="mt-1">Reservas</CardTitle>
+          <CardAction>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                setEditing(null);
+                setFormOpen(true);
+              }}
+            >
+              <LucidePlus className="w-4 h-4" />
+            </Button>
+          </CardAction>
+        </CardHeader>
+        <CardContent className="h-full">
+          <div className="filter mb-4 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              <div className="lg:col-span-2 xl:col-span-1">
+                <Label className="text-sm">Buscar:</Label>
+                <Input
+                  type="text"
+                  placeholder="Buscar por cliente, código..."
+                  className="mt-1"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
+              <div className="min-w-[150px]">
+                <Label className="text-sm">Data inicial:</Label>
+                <Input
+                  type="date"
+                  className="mt-1"
+                  value={startDate}
+                  max={endDate || new Date().toISOString().split("T")[0]}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </div>
+              <div className="min-w-[150px]">
+                <Label className="text-sm">Data final:</Label>
+                <Input
+                  type="date"
+                  className="mt-1"
+                  value={endDate}
+                  min={startDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </div>
+              <div className="w-full">
+                <Label className="text-sm">Situação:</Label>
+                <Select
+                  value={situation}
+                  onValueChange={(value) => setSituation(value)}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Todos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Reservada">Reservada</SelectItem>
+                    <SelectItem value="Confirmada">Confirmada</SelectItem>
+                    <SelectItem value="Hospedada">Hospedada</SelectItem>
+                    <SelectItem value="Finalizada">Finalizada</SelectItem>
+                    <SelectItem value="Cancelada">Cancelada</SelectItem>
+                    <SelectItem value="Apagada">Apagada</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="w-full">
+                <Label className="text-sm">Tipo:</Label>
+                <Select value={type} onValueChange={(value) => setType(value)}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Todos os tipos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="promocional">Promocional</SelectItem>
+                    <SelectItem value="diaria">Diária</SelectItem>
+                    <SelectItem value="pacote">Pacote</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {hasActiveFilters && (
+                <div className="flex items-end">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={clearFilters}
+                    className="flex items-center gap-2 mt-1"
+                    title="Limpar filtros"
+                  >
+                    <LucideTrash2 className="h-4 w-4" />
+                    <span className="hidden sm:inline">Limpar</span>
+                  </Button>
+                </div>
+              )}
             </div>
+          </div>
 
-            <Card className="mt-4">
-              <CardContent className="pt-6">
-                {isLoading ? (
-                  <div className="flex justify-center">
-                    <Loader2 />
-                  </div>
-                ) : (
-                  <DataTable
-                    columns={columns}
-                    data={data?.data || []}
-                    pagination={
-                      data?.pagination && {
-                        current_page: data.pagination.current_page,
-                        last_page: data.pagination.last_page,
-                        total: data.pagination.total,
-                        onPageChange: setPage,
-                      }
+          <Card className="mt-4">
+            <CardContent className="pt-6">
+              {isLoading ? (
+                <div className="flex justify-center">
+                  <Loader2 />
+                </div>
+              ) : (
+                <DataTable
+                  columns={columns}
+                  data={data?.data || []}
+                  pagination={
+                    data?.pagination && {
+                      current_page: data.pagination.current_page,
+                      last_page: data.pagination.last_page,
+                      total: data.pagination.total,
+                      onPageChange: setPage,
                     }
-                  />
-                )}
-              </CardContent>
-            </Card>
-          </CardContent>
-        </Card>
-      </div>
+                  }
+                />
+              )}
+            </CardContent>
+          </Card>
+        </CardContent>
+      </Card>
 
       <ReservationFormDialog
         open={formOpen}

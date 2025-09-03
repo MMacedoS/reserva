@@ -1,7 +1,5 @@
-import Footer from "@/components/layout/Footer";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useSidebar } from "@/contexts/SidebarContext";
 import { useAccommodations } from "@/http/reservations/accommodations/getAccommodations";
 import { useCheckinReservation } from "@/http/reservations/checkinReservation";
 import { useCheckoutReservation } from "@/http/reservations/checkoutReservation";
@@ -26,8 +24,6 @@ import { ReservationFormDialog } from "@/pages/Reservations/Form/ReservationForm
 import type { Reservation } from "@/http/types/reservations/Reservation";
 
 const AccommodationPage = () => {
-  const { sidebarToggle } = useSidebar();
-
   const { data: accommodations, isLoading } = useAccommodations();
 
   const { mutateAsync: doCheckin, isPending: doingCheckin } =
@@ -105,81 +101,73 @@ const AccommodationPage = () => {
   };
 
   return (
-    <div className="col">
-      <Sidebar />
-      <div
-        className={`${
-          sidebarToggle ? "ml-5" : "ml-55"
-        } py-20 mr-5 transition-all duration-1000 ease-in-out`}
-      >
-        <Card>
-          <CardHeader>
-            <CardTitle className="mt-1">Acomodações</CardTitle>
-          </CardHeader>
-          <CardContent className="h-full">
-            {isLoading ? (
-              <div className="flex justify-center py-10">
-                <Loader2 className="animate-spin size-6 text-gray-500" />
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {(accommodations || []).map((apt: any) => {
-                  const reservation = apt.reservation;
-                  const hasReservation = !!reservation;
-                  const status = reservation?.situation || apt.situation;
-                  const todayReservation =
-                    hasReservation && isToday(reservation?.checkin);
-                  const canCheckin =
-                    todayReservation &&
-                    ["Reservada", "Confirmada"].includes(status);
-                  return (
-                    <AccommodationCard
-                      key={apt.id}
-                      apt={apt}
-                      doingCheckin={doingCheckin}
-                      canCheckin={canCheckin}
-                      todayReservation={todayReservation}
-                      onCheckin={() =>
-                        openConfirm({
-                          id: reservation.id,
-                          aptName: apt.name,
-                          customerName:
-                            reservation?.customer?.name ||
-                            reservation?.customer_name,
-                          dt_checkin: reservation.checkin,
-                        })
-                      }
-                      onAddConsumption={() => {
-                        setActiveReservation(reservation);
-                        setConsumptionOpen(true);
-                      }}
-                      onAddPayment={() => {
-                        setActiveReservation(reservation);
-                        setPaymentOpen(true);
-                      }}
-                      onEdit={() => {
-                        setEditingReservation({ ...reservation });
-                        setEditOpen(true);
-                      }}
-                      onAddPerDiem={() => {
-                        setActiveReservation(reservation);
-                        setPerDiemOpen(true);
-                      }}
-                      onCheckout={() =>
-                        openCheckoutConfirm({
-                          id: reservation.id,
-                          aptName: apt.name,
-                        })
-                      }
-                    />
-                  );
-                })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-      <Footer />
+    <Sidebar>
+      <Card>
+        <CardHeader>
+          <CardTitle className="mt-1">Acomodações</CardTitle>
+        </CardHeader>
+        <CardContent className="h-full">
+          {isLoading ? (
+            <div className="flex justify-center py-10">
+              <Loader2 className="animate-spin size-6 text-gray-500" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {(accommodations || []).map((apt: any) => {
+                const reservation = apt.reservation;
+                const hasReservation = !!reservation;
+                const status = reservation?.situation || apt.situation;
+                const todayReservation =
+                  hasReservation && isToday(reservation?.checkin);
+                const canCheckin =
+                  todayReservation &&
+                  ["Reservada", "Confirmada"].includes(status);
+                return (
+                  <AccommodationCard
+                    key={apt.id}
+                    apt={apt}
+                    doingCheckin={doingCheckin}
+                    canCheckin={canCheckin}
+                    todayReservation={todayReservation}
+                    onCheckin={() =>
+                      openConfirm({
+                        id: reservation.id,
+                        aptName: apt.name,
+                        customerName:
+                          reservation?.customer?.name ||
+                          reservation?.customer_name,
+                        dt_checkin: reservation.checkin,
+                      })
+                    }
+                    onAddConsumption={() => {
+                      setActiveReservation(reservation);
+                      setConsumptionOpen(true);
+                    }}
+                    onAddPayment={() => {
+                      setActiveReservation(reservation);
+                      setPaymentOpen(true);
+                    }}
+                    onEdit={() => {
+                      setEditingReservation({ ...reservation });
+                      setEditOpen(true);
+                    }}
+                    onAddPerDiem={() => {
+                      setActiveReservation(reservation);
+                      setPerDiemOpen(true);
+                    }}
+                    onCheckout={() =>
+                      openCheckoutConfirm({
+                        id: reservation.id,
+                        aptName: apt.name,
+                      })
+                    }
+                  />
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
@@ -255,7 +243,7 @@ const AccommodationPage = () => {
         onClose={() => setEditOpen(false)}
         reservation={editingReservation}
       />
-    </div>
+    </Sidebar>
   );
 };
 

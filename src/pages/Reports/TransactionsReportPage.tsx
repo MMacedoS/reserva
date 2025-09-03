@@ -41,7 +41,6 @@ import {
 } from "lucide-react";
 import { formatDateWithTime, formatValueToBRL } from "@/lib/utils";
 import { Sidebar } from "@/components/layout/Sidebar";
-import { useSidebar } from "@/contexts/SidebarContext";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { Transaction } from "@/http/types/finance/transaction/Transaction";
 import jsPDF from "jspdf";
@@ -121,14 +120,18 @@ const chartConfig = {
 
 export function ReportTransactionsPage() {
   const hoje = new Date();
+
   const dataInicialPadrao = addDays(hoje, -7).toISOString().split("T")[0];
+
   const dataFinalPadrao = hoje.toISOString().split("T")[0];
+
   const [startDate, setStartDate] = useState(dataInicialPadrao);
+
   const [endDate, setEndDate] = useState(dataFinalPadrao);
+
   const [typeFilter, setTypeFilter] = useState<
     "entrada" | "saida" | "sangria" | "todos"
   >("todos");
-  const { sidebarToggle } = useSidebar();
 
   const { data, isLoading, error } = useTransactionsReport({
     startDate,
@@ -339,302 +342,288 @@ export function ReportTransactionsPage() {
 
   return (
     <Sidebar>
-      <div
-        className={`flex-1 transition-all duration-300 ${
-          sidebarToggle ? "ml-0" : "ml-50"
-        }`}
-      >
-        <PermissionGuard requiredPermission={["financial.reports"]}>
-          <div className="container mx-auto p-6 space-y-6 py-20">
-            <div className="flex items-center justify-between">
-              <h1 className="text-3xl font-bold">Relatório de Transações</h1>
-            </div>
+      <PermissionGuard requiredPermission={["financial.reports"]}>
+        <div className="container space-y-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold">Relatório de Transações</h1>
+          </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Filtros</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
-                    <Label htmlFor="startDate">Data Inicial</Label>
-                    <Input
-                      id="startDate"
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="endDate">Data Final</Label>
-                    <Input
-                      id="endDate"
-                      type="date"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="type">Tipo</Label>
-                    <Select
-                      value={typeFilter}
-                      onValueChange={(value: any) => setTypeFilter(value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Todos os tipos" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="todos">Todos</SelectItem>
-                        <SelectItem value="entrada">Entradas</SelectItem>
-                        <SelectItem value="saida">Saídas</SelectItem>
-                        <SelectItem value="sangria">Sangrias</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-end gap-2">
-                    <Button
-                      onClick={generatePDF}
-                      disabled={
-                        !data?.summary?.cashbox_transactions ||
-                        data.summary.cashbox_transactions.length === 0
-                      }
-                      variant="outline"
-                    >
-                      <LucideDownload className="w-4 h-4 mr-2" />
-                      PDF
-                    </Button>
-                    <Button
-                      onClick={generateExcel}
-                      disabled={
-                        !data?.summary?.cashbox_transactions ||
-                        data.summary.cashbox_transactions.length === 0
-                      }
-                      variant="outline"
-                    >
-                      <LucideDownload className="w-4 h-4 mr-2" />
-                      Excel
-                    </Button>
-                  </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Filtros</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label htmlFor="startDate">Data Inicial</Label>
+                  <Input
+                    id="startDate"
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
                 </div>
+                <div>
+                  <Label htmlFor="endDate">Data Final</Label>
+                  <Input
+                    id="endDate"
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="type">Tipo</Label>
+                  <Select
+                    value={typeFilter}
+                    onValueChange={(value: any) => setTypeFilter(value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Todos os tipos" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="todos">Todos</SelectItem>
+                      <SelectItem value="entrada">Entradas</SelectItem>
+                      <SelectItem value="saida">Saídas</SelectItem>
+                      <SelectItem value="sangria">Sangrias</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-end gap-2">
+                  <Button
+                    onClick={generatePDF}
+                    disabled={
+                      !data?.summary?.cashbox_transactions ||
+                      data.summary.cashbox_transactions.length === 0
+                    }
+                    variant="outline"
+                  >
+                    <LucideDownload className="w-4 h-4 mr-2" />
+                    PDF
+                  </Button>
+                  <Button
+                    onClick={generateExcel}
+                    disabled={
+                      !data?.summary?.cashbox_transactions ||
+                      data.summary.cashbox_transactions.length === 0
+                    }
+                    variant="outline"
+                  >
+                    <LucideDownload className="w-4 h-4 mr-2" />
+                    Excel
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {isLoading && (
+            <div className="flex justify-center py-8">
+              <Spinner />
+            </div>
+          )}
+
+          {error && (
+            <Card>
+              <CardContent className="text-center py-8">
+                <p className="text-red-600">
+                  Erro ao carregar dados: {error.message}
+                </p>
               </CardContent>
             </Card>
+          )}
 
-            {isLoading && (
-              <div className="flex justify-center py-8">
-                <Spinner />
+          {data?.summary && (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center">
+                    <LucideTrendingUp className="h-8 w-8 text-green-600" />
+                    <div className="ml-4">
+                      <p className="text-sm font-medium text-gray-600">
+                        Total Entradas
+                      </p>
+                      <p className="text-2xl font-bold text-green-600">
+                        {formatValueToBRL(data.summary.total_entradas)}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center">
+                    <LucideTrendingDown className="h-8 w-8 text-red-600" />
+                    <div className="ml-4">
+                      <p className="text-sm font-medium text-gray-600">
+                        Total Saídas
+                      </p>
+                      <p className="text-2xl font-bold text-red-600">
+                        {formatValueToBRL(data.summary.total_saidas)}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center">
+                    <LucideDroplet className="h-8 w-8 text-orange-600" />
+                    <div className="ml-4">
+                      <p className="text-sm font-medium text-gray-600">
+                        Total Sangrias
+                      </p>
+                      <p className="text-2xl font-bold text-orange-600">
+                        {formatValueToBRL(data.summary.total_sangrias)}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center">
+                    <LucideDollarSign className="h-8 w-8 text-blue-600" />
+                    <div className="ml-4">
+                      <p className="text-sm font-medium text-gray-600">Saldo</p>
+                      <p
+                        className={`text-2xl font-bold ${
+                          data.summary.saldo_final >= 0
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {formatValueToBRL(data.summary.saldo_final)}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {data?.summary && (
+            <>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Transações por Dia</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ChartContainer
+                      config={chartConfig}
+                      className="h-[300px] w-full overflow-auto"
+                    >
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={getChartData()}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="date" />
+                          <YAxis />
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                          <Bar dataKey="entrada" fill="#22c55e" />
+                          <Bar dataKey="saida" fill="#ef4444" />
+                          <Bar dataKey="sangria" fill="#f97316" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Distribuição por Tipo</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ChartContainer
+                      config={chartConfig}
+                      className="h-[300px] w-full"
+                    >
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={getPieChartData()}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            label={({ name, percent }) =>
+                              `${name} ${(percent * 100).toFixed(0)}%`
+                            }
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                          >
+                            {getPieChartData().map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Formas de Pagamento</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ChartContainer
+                      config={chartConfig}
+                      className="h-[300px] w-full"
+                    >
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={getPaymentMethodsData()}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            label={({ name, percent }) =>
+                              `${name} ${(percent * 100).toFixed(0)}%`
+                            }
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                          >
+                            {getPaymentMethodsData().map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
+                  </CardContent>
+                </Card>
               </div>
-            )}
 
-            {error && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Transações Detalhadas</CardTitle>
+                </CardHeader>
+                <CardContent className="w-xs md:w-full">
+                  <DataTable
+                    columns={columns}
+                    data={data.summary.cashbox_transactions}
+                  />
+                </CardContent>
+              </Card>
+            </>
+          )}
+
+          {data?.summary?.cashbox_transactions &&
+            data.summary.cashbox_transactions.length === 0 && (
               <Card>
                 <CardContent className="text-center py-8">
-                  <p className="text-red-600">
-                    Erro ao carregar dados: {error.message}
+                  <p className="text-gray-500">
+                    Nenhuma transação encontrada para o período selecionado.
                   </p>
                 </CardContent>
               </Card>
             )}
-
-            {data?.summary && (
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center">
-                      <LucideTrendingUp className="h-8 w-8 text-green-600" />
-                      <div className="ml-4">
-                        <p className="text-sm font-medium text-gray-600">
-                          Total Entradas
-                        </p>
-                        <p className="text-2xl font-bold text-green-600">
-                          {formatValueToBRL(data.summary.total_entradas)}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center">
-                      <LucideTrendingDown className="h-8 w-8 text-red-600" />
-                      <div className="ml-4">
-                        <p className="text-sm font-medium text-gray-600">
-                          Total Saídas
-                        </p>
-                        <p className="text-2xl font-bold text-red-600">
-                          {formatValueToBRL(data.summary.total_saidas)}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center">
-                      <LucideDroplet className="h-8 w-8 text-orange-600" />
-                      <div className="ml-4">
-                        <p className="text-sm font-medium text-gray-600">
-                          Total Sangrias
-                        </p>
-                        <p className="text-2xl font-bold text-orange-600">
-                          {formatValueToBRL(data.summary.total_sangrias)}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center">
-                      <LucideDollarSign className="h-8 w-8 text-blue-600" />
-                      <div className="ml-4">
-                        <p className="text-sm font-medium text-gray-600">
-                          Saldo
-                        </p>
-                        <p
-                          className={`text-2xl font-bold ${
-                            data.summary.saldo_final >= 0
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }`}
-                        >
-                          {formatValueToBRL(data.summary.saldo_final)}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
-            {data?.summary && (
-              <>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Transações por Dia</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ChartContainer
-                        config={chartConfig}
-                        className="h-[300px] w-full overflow-auto"
-                      >
-                        <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={getChartData()}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="date" />
-                            <YAxis />
-                            <ChartTooltip content={<ChartTooltipContent />} />
-                            <Bar dataKey="entrada" fill="#22c55e" />
-                            <Bar dataKey="saida" fill="#ef4444" />
-                            <Bar dataKey="sangria" fill="#f97316" />
-                          </BarChart>
-                        </ResponsiveContainer>
-                      </ChartContainer>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Distribuição por Tipo</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ChartContainer
-                        config={chartConfig}
-                        className="h-[300px] w-full"
-                      >
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie
-                              data={getPieChartData()}
-                              cx="50%"
-                              cy="50%"
-                              labelLine={false}
-                              label={({ name, percent }) =>
-                                `${name} ${(percent * 100).toFixed(0)}%`
-                              }
-                              outerRadius={80}
-                              fill="#8884d8"
-                              dataKey="value"
-                            >
-                              {getPieChartData().map((entry, index) => (
-                                <Cell
-                                  key={`cell-${index}`}
-                                  fill={entry.color}
-                                />
-                              ))}
-                            </Pie>
-                            <ChartTooltip content={<ChartTooltipContent />} />
-                          </PieChart>
-                        </ResponsiveContainer>
-                      </ChartContainer>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Formas de Pagamento</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ChartContainer
-                        config={chartConfig}
-                        className="h-[300px] w-full"
-                      >
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie
-                              data={getPaymentMethodsData()}
-                              cx="50%"
-                              cy="50%"
-                              labelLine={false}
-                              label={({ name, percent }) =>
-                                `${name} ${(percent * 100).toFixed(0)}%`
-                              }
-                              outerRadius={80}
-                              fill="#8884d8"
-                              dataKey="value"
-                            >
-                              {getPaymentMethodsData().map((entry, index) => (
-                                <Cell
-                                  key={`cell-${index}`}
-                                  fill={entry.color}
-                                />
-                              ))}
-                            </Pie>
-                            <ChartTooltip content={<ChartTooltipContent />} />
-                          </PieChart>
-                        </ResponsiveContainer>
-                      </ChartContainer>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Transações Detalhadas</CardTitle>
-                  </CardHeader>
-                  <CardContent className="w-xs md:w-full">
-                    <DataTable
-                      columns={columns}
-                      data={data.summary.cashbox_transactions}
-                    />
-                  </CardContent>
-                </Card>
-              </>
-            )}
-
-            {data?.summary?.cashbox_transactions &&
-              data.summary.cashbox_transactions.length === 0 && (
-                <Card>
-                  <CardContent className="text-center py-8">
-                    <p className="text-gray-500">
-                      Nenhuma transação encontrada para o período selecionado.
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-          </div>
-        </PermissionGuard>
-      </div>
+        </div>
+      </PermissionGuard>
     </Sidebar>
   );
 }

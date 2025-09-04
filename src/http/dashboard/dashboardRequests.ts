@@ -96,7 +96,8 @@ export function useDashboardDailyRevenue({
         { method: "GET", credentials: "include" }
       );
       if (!response.ok) throw new Error("Erro ao buscar faturamento diário");
-      return response.json();
+      const result = await response.json();
+      return result.data ?? { revenue: null };
     },
     enabled: enabled && !!start && !!end,
     staleTime: 1000 * 60 * 5,

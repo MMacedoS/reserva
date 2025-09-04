@@ -1,12 +1,18 @@
-import { BarChart, Bar, XAxis, YAxis } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
 import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { useNavigate } from "react-router-dom";
-import { useSidebar } from "@/contexts/SidebarContext";
 import {
   useDashboardCheckinToday,
   useDashboardCheckoutToday,
@@ -15,6 +21,7 @@ import {
   useDashboardApartments,
 } from "@/http/dashboard/dashboardRequests";
 import { Spinner } from "@/components/ui/spinner";
+import { formatDate } from "@/lib/utils";
 
 function DashboardPage() {
   const { isAuthenticated } = useAuth();
@@ -28,19 +35,53 @@ function DashboardPage() {
   const { data: guestsRes = {}, isLoading: loadingGuests } =
     useDashboardGuests();
 
-  const endDate = new Date();
-  const startDate = new Date();
-  startDate.setDate(endDate.getDate() - 6);
-  const start = startDate.toISOString().split("T")[0];
-  const end = endDate.toISOString().split("T")[0];
-  const { data: dailyRevenueRes = {}, isLoading: loadingRevenue } =
-    useDashboardDailyRevenue({ start, end });
+  const [start, setStart] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 6);
+    return d.toISOString().split("T")[0];
+  });
+  const [end, setEnd] = useState(() => {
+    const d = new Date();
+    return d.toISOString().split("T")[0];
+  });
+
+  const {
+    data: dailyRevenueRes,
+    isLoading: loadingRevenue,
+    refetch,
+  } = useDashboardDailyRevenue({ start, end });
+  // ...existing code...
+  const handleDateChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "start" | "end"
+  ) => {
+    if (type === "start") setStart(e.target.value);
+    else setEnd(e.target.value);
+  };
+
+  useEffect(() => {
+    refetch && refetch();
+  }, [start, end]);
 
   const apartments = apartmentsRes.data ?? {};
   const checkinToday = checkinTodayRes.data ?? [];
   const checkoutToday = checkoutTodayRes.data ?? [];
   const guests = guestsRes.data ?? 0;
-  const dailyRevenue = dailyRevenueRes.data ?? [];
+
+  const getChartData = () => {
+    if (!dailyRevenueRes?.revenue) return [];
+    return dailyRevenueRes.revenue.map((item: any) => ({
+      date: formatDate(item.date),
+      ...item.types,
+    }));
+  };
+
+  const totalInterval = getChartData().reduce((acc: number, item: any) => {
+    const sum = Object.keys(item)
+      .filter((key) => key !== "date")
+      .reduce((a, k) => a + Number(item[k]), 0);
+    return acc + sum;
+  }, 0);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -113,34 +154,64 @@ function DashboardPage() {
       <Card className="shadow-lg rounded-xl p-4 bg-white">
         <CardHeader>
           <CardTitle className="text-indigo-700">
-            Faturamento Diário (últimos 7 dias)
+            Faturamento Diário (intervalo personalizado)
           </CardTitle>
         </CardHeader>
-        <div className="w-full h-[350px] flex items-center justify-center">
-          <ChartContainer
-            config={{
-              revenue: { label: "Faturamento", color: "#7c3aed" },
-              axis: { color: "#64748b" },
-              background: { color: "#f3f4f6" },
-            }}
-          >
-            {loadingRevenue ? (
-              <div className="flex items-center justify-center w-full h-full">
-                <Spinner />
-              </div>
-            ) : (
-              <BarChart
-                data={dailyRevenue}
-                width={window.innerWidth < 600 ? 300 : 500}
-                height={300}
-              >
+        <div className="flex gap-4 items-center mb-4">
+          <label>
+            Início:
+            <input
+              type="date"
+              value={start}
+              onChange={(e) => handleDateChange(e, "start")}
+              className="ml-2 border rounded px-2 py-1"
+            />
+          </label>
+          <label>
+            Fim:
+            <input
+              type="date"
+              value={end}
+              onChange={(e) => handleDateChange(e, "end")}
+              className="ml-2 border rounded px-2 py-1"
+            />
+          </label>
+          <span className="ml-auto text-2xl font-bold text-green-700 bg-green-100 px-4 py-2 rounded shadow">
+            Total: R${" "}
+            {totalInterval.toLocaleString("pt-BR", {
+              minimumFractionDigits: 2,
+            })}
+          </span>
+        </div>
+        <div>
+          {loadingRevenue ? (
+            <Spinner />
+          ) : (
+            <ChartContainer
+              config={{
+                revenue: { label: "Faturamento", color: "#7c3aed" },
+                axis: { color: "#64748b" },
+                background: { color: "#f3f4f6" },
+              }}
+              className="h-[300px] w-full overflow-auto"
+            >
+              <BarChart data={getChartData()} width={500} height={300}>
+                <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="revenue" fill="var(--color-revenue)" />
+                <Bar dataKey="cash" fill="#22c55e" name="Dinheiro" />
+                <Bar dataKey="debit_card" fill="#a855f7" name="Cartão Debito" />
+                <Bar
+                  dataKey="credit_card"
+                  fill="#f97316"
+                  name="Cartão Crédito"
+                />
+                <Bar dataKey="pix" fill="#3b82f6" name="Pix" />
+                <Bar dataKey="transfer" fill="#f97316" name="Transferência" />
               </BarChart>
-            )}
-          </ChartContainer>
+            </ChartContainer>
+          )}
         </div>
       </Card>
     </Sidebar>

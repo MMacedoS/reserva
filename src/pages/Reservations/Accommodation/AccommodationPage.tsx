@@ -3,25 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAccommodations } from "@/http/reservations/accommodations/getAccommodations";
 import { useCheckinReservation } from "@/http/reservations/checkinReservation";
 import { useCheckoutReservation } from "@/http/reservations/checkoutReservation";
-import { formatDateWithTime } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { AccommodationCard } from "./Components/AccommodationCard";
 import { ConsumptionDialog } from "./Components/ConsumptionDialog";
 import { PaymentsDialog } from "./Components/PaymentsDialog";
 import { PerDiemsDialog } from "./Components/PerDiemsDialog";
 import { ReservationFormDialog } from "@/pages/Reservations/Form/ReservationFormDialog";
 import type { Reservation } from "@/http/types/reservations/Reservation";
+import CheckoutDialog from "./Components/CheckoutDialog";
+import CheckinDialog from "./Components/CheckinDialog";
 
 const AccommodationPage = () => {
   const { data: accommodations, isLoading } = useAccommodations();
@@ -169,54 +160,21 @@ const AccommodationPage = () => {
         </CardContent>
       </Card>
 
-      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar check-in</AlertDialogTitle>
-            <AlertDialogDescription>
-              Deseja confirmar o check-in do apartamento {selected?.aptName}?
-              {selected?.dt_checkin && (
-                <>
-                  <br />
-                  Entrada: {formatDateWithTime(selected.dt_checkin)}
-                  <br />
-                  Hospede: {selected.customerName}
-                </>
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmCheckin} disabled={doingCheckin}>
-              {doingCheckin ? "Processando..." : "Confirmar"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <CheckinDialog
+        confirmCheckin={confirmCheckin}
+        doingCheckin={doingCheckin}
+        confirmOpen={confirmOpen}
+        setConfirmOpen={setConfirmOpen}
+        selected={selected}
+      />
 
-      <AlertDialog
-        open={confirmCheckoutOpen}
-        onOpenChange={setConfirmCheckoutOpen}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar check-out</AlertDialogTitle>
-            <AlertDialogDescription>
-              Deseja confirmar o check-out do apartamento{" "}
-              {selectedCheckout?.aptName}?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmCheckout}
-              disabled={doingCheckout}
-            >
-              {doingCheckout ? "Processando..." : "Confirmar"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <CheckoutDialog
+        confirmCheckout={confirmCheckout}
+        doingCheckout={doingCheckout}
+        confirmCheckoutOpen={confirmCheckoutOpen}
+        setConfirmCheckoutOpen={setConfirmCheckoutOpen}
+        selectedCheckout={selectedCheckout}
+      />
 
       {activeReservation && (
         <>

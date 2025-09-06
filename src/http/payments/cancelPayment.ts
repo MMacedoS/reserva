@@ -4,7 +4,7 @@ import { useApi } from "@/hooks/useApi";
 import { getCashboxByUserId } from "../cashbox/getCashboxByUserId";
 
 type cancelPaymentProps = {
-  id: string;
+  id?: string;
   reference?: string;
 };
 
@@ -38,6 +38,7 @@ export function useCancelPayment() {
       queryClient.invalidateQueries({
         queryKey: ["reservations", variables.reference, "payments"],
       });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-daily-revenue"] });
 
       refetchCashbox();
     },

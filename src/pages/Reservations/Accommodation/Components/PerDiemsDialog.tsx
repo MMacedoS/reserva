@@ -20,14 +20,14 @@ import type { Reservation } from "@/http/types/reservations/Reservation";
 import { useDeletePerDiem } from "@/http/reservations/per-diems/deletePerDiems";
 import { ConfirmPopover } from "@/shared/components/ConfirmPopover";
 
-type Props = { open: boolean; onClose: () => void; reservation: Reservation };
+type Props = { open: boolean; onClose: () => void; reservation?: Reservation };
 type FormData = { dt_daily: string; amount: number; notes?: string };
 
 export function PerDiemsDialog({ open, onClose, reservation }: Props) {
   const { register, handleSubmit, reset } = useForm<FormData>({
     defaultValues: {
       dt_daily: new Date().toISOString().split("T")[0],
-      amount: reservation.amount,
+      amount: reservation?.amount,
       notes: "",
     },
   });
@@ -37,12 +37,12 @@ export function PerDiemsDialog({ open, onClose, reservation }: Props) {
   const [confirmKey, setConfirmKey] = useState<string | null>(null);
 
   const { mutateAsync: save, isPending } = useSaveReservationPerDiem(
-    reservation.id
+    reservation?.id
   );
   const { mutateAsync: remove } = useDeletePerDiem();
 
   const { data, isLoading } = useGetReservationPerDiems(
-    reservation.id,
+    reservation?.id,
     page,
     10,
     open
@@ -95,7 +95,7 @@ export function PerDiemsDialog({ open, onClose, reservation }: Props) {
                     return;
                   }
                   setDeletingKey(key);
-                  await remove({ id: realId, reservationId: reservation.id });
+                  await remove({ id: realId, reservationId: reservation?.id });
                 } finally {
                   setDeletingKey(null);
                   setConfirmKey(null);

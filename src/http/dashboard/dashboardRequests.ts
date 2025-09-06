@@ -1,10 +1,11 @@
 import { useApi } from "@/hooks/useApi";
 import { environment } from "@/environments/environment";
 import { useQuery } from "@tanstack/react-query";
+import type { Reservation } from "../types/reservations/Reservation";
 
 export function useDashboardCheckinToday(enabled = true) {
   const { fetchWithAuth } = useApi();
-  return useQuery({
+  const query = useQuery({
     queryKey: ["dashboard-checkin-today"],
     queryFn: async () => {
       const response = await fetchWithAuth(
@@ -13,17 +14,19 @@ export function useDashboardCheckinToday(enabled = true) {
       );
       if (!response.ok)
         throw new Error("Erro ao buscar reservas de check-in hoje");
-      return response.json();
+      const result = await response.json();
+      return (result.data as Reservation) || [];
     },
     enabled,
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
+  return query;
 }
 
 export function useDashboardApartments(enabled = true) {
   const { fetchWithAuth } = useApi();
-  return useQuery({
+  const query = useQuery({
     queryKey: ["dashboard-apartments"],
     queryFn: async () => {
       const response = await fetchWithAuth(
@@ -38,11 +41,12 @@ export function useDashboardApartments(enabled = true) {
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
+  return query;
 }
 
 export function useDashboardCheckoutToday(enabled = true) {
   const { fetchWithAuth } = useApi();
-  return useQuery({
+  const query = useQuery({
     queryKey: ["dashboard-checkout-today"],
     queryFn: async () => {
       const response = await fetchWithAuth(
@@ -51,17 +55,20 @@ export function useDashboardCheckoutToday(enabled = true) {
       );
       if (!response.ok)
         throw new Error("Erro ao buscar reservas de checkout hoje/atrasadas");
-      return response.json();
+
+      const result = await response.json();
+      return (result.data as Reservation) || [];
     },
     enabled,
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
+  return query;
 }
 
 export function useDashboardGuests(enabled = true) {
   const { fetchWithAuth } = useApi();
-  return useQuery({
+  const query = useQuery({
     queryKey: ["dashboard-guests"],
     queryFn: async () => {
       const response = await fetchWithAuth(
@@ -76,6 +83,7 @@ export function useDashboardGuests(enabled = true) {
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
+  return query;
 }
 
 export function useDashboardDailyRevenue({
@@ -88,7 +96,7 @@ export function useDashboardDailyRevenue({
   enabled?: boolean;
 }) {
   const { fetchWithAuth } = useApi();
-  return useQuery({
+  const query = useQuery({
     queryKey: ["dashboard-daily-revenue", start, end],
     queryFn: async () => {
       const response = await fetchWithAuth(
@@ -103,4 +111,5 @@ export function useDashboardDailyRevenue({
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
+  return query;
 }

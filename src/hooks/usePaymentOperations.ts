@@ -30,7 +30,7 @@ export function usePaymentOperations() {
     try {
       setLoading(true);
       setError(null);
-      const result = await cancelPaymentMutation.mutateAsync(id);
+      const result = await cancelPaymentMutation.mutateAsync({ id });
       return result;
     } catch (err) {
       const errorMessage =

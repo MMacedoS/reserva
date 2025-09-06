@@ -45,6 +45,10 @@ export function useSaveReservationsBatch() {
       showAutoDismissAlert({ message: "Reservas criadas com sucesso!" });
       queryClient.invalidateQueries({ queryKey: ["reservations"] });
       queryClient.invalidateQueries({ queryKey: ["accommodations"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-checkout-today"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-checkin-today"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-guests"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-daily-revenue"] });
     },
     onError: (error) => {
       showAutoDismissAlert({ message: error.message });

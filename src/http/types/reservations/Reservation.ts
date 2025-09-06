@@ -19,10 +19,12 @@ export interface Reservation {
   customer?: Customer;
   checkout: string;
   amount?: number;
+  guests?: number;
   user?: string;
   estimated_value: number;
   consumption_value: number;
   paid_value: number;
+  paid_amount?: number;
   situation: ReservationStatus;
   type?: ReservationType;
   created_at?: string;

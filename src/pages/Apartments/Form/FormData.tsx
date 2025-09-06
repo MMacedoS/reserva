@@ -35,9 +35,8 @@ import {
 import type { Apartment } from "@/http/types/apartments/Apartment";
 import { saveApartment } from "@/http/apartments/saveApartment";
 
-// Schema com Zod
 const schema = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   name: z.string(),
   description: z.string(),
   category: z.string(),
@@ -60,7 +59,6 @@ export function FormData({ open, onClose, apartment }: FormDataProps) {
   useEffect(() => {
     if (apartment) {
       form.reset({
-        id: apartment.uuid || "",
         name: apartment.name || "",
         description: apartment.description || "",
         category: apartment.category || "",
@@ -69,7 +67,6 @@ export function FormData({ open, onClose, apartment }: FormDataProps) {
       return;
     }
     form.reset({
-      id: "",
       name: "",
       description: "",
       category: "",
@@ -81,6 +78,7 @@ export function FormData({ open, onClose, apartment }: FormDataProps) {
   const { mutateAsync: save } = saveApartment();
 
   async function onSubmit(data: FormData) {
+    data.id = apartment?.id || "";
     await save(data);
     onClose();
   }
@@ -100,21 +98,6 @@ export function FormData({ open, onClose, apartment }: FormDataProps) {
             </AlertDialogHeader>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-1 hidden">
-                <FormField
-                  control={form.control}
-                  name="id"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Numero</FormLabel>
-                      <FormControl>
-                        <Input type="text" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
               <div className="col-span-1">
                 <FormField
                   control={form.control}

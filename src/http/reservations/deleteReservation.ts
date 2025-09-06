@@ -25,6 +25,8 @@ export function useDeleteReservation() {
     onSuccess: () => {
       showAutoDismissAlert({ message: "Reserva excluída!" });
       queryClient.invalidateQueries({ queryKey: ["reservations"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-checkout-today"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-checkin-today"] });
     },
     onError: (error) => {
       showAutoDismissAlert({ message: error.message });

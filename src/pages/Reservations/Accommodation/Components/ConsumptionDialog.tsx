@@ -40,7 +40,7 @@ const schema = z.object({
   dt_consumption: z.string().optional(),
 });
 
-type Props = { open: boolean; onClose: () => void; reservation: Reservation };
+type Props = { open: boolean; onClose: () => void; reservation?: Reservation };
 type FormData = z.infer<typeof schema>;
 
 export function ConsumptionDialog({ open, onClose, reservation }: Props) {
@@ -85,7 +85,7 @@ export function ConsumptionDialog({ open, onClose, reservation }: Props) {
   const products = productsData?.data.products || [];
 
   const { data: consumptionsData, isPending: isPendingConsumptions } =
-    useGetReservationConsumption(reservation.id, page, 10, open);
+    useGetReservationConsumption(reservation?.id, page, 10, open);
 
   const addConsumptionMutation = useAddConsumptions();
   const removeConsumptionMutation = useRemoveConsumption();
@@ -182,7 +182,7 @@ export function ConsumptionDialog({ open, onClose, reservation }: Props) {
                   }
                   setDeletingKey(key);
                   await removeConsumptionMutation.mutateAsync({
-                    reservation_id: reservation.id,
+                    reservation_id: reservation?.id,
                     item_id: realId,
                   });
                 } finally {
@@ -212,7 +212,7 @@ export function ConsumptionDialog({ open, onClose, reservation }: Props) {
 
     try {
       await addConsumptionMutation.mutateAsync({
-        reservation_id: reservation.id,
+        reservation_id: reservation?.id,
         product_id: newItem.product_id,
         quantity: newItem.quantity,
         unit_price: newItem.unit_price,

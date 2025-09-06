@@ -51,6 +51,10 @@ import { addDays } from "date-fns";
 import { useAvailableApartments } from "@/http/reservations/getAvailableApartments";
 import { useSaveReservationsBatch } from "@/http/reservations/saveReservationsBatch";
 import { formatLocalDateTimeAt } from "@/lib/utils";
+import {
+  RESERVATION_SITUATIONS,
+  RESERVATION_TYPES,
+} from "@/constants/reservations";
 
 const ReservationStatusSchema = z.enum([
   "Reservada",
@@ -105,6 +109,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
 
   const dataInicialPadrao = formatLocalDateTimeAt(hoje, 12, 0);
   const dataFinalPadrao = formatLocalDateTimeAt(addDays(hoje, 1), 12, 0);
+
   const form = useForm<FormData>({
     resolver: zodResolver(schema) as any,
     mode: "onChange",
@@ -122,6 +127,16 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
     },
   });
 
+  const checkIn = form.watch("check_in");
+  const checkOut = form.watch("check_out");
+  const isEdit = !!reservation;
+
+  const minCheckIn =
+    isEdit && reservation?.checkin
+      ? formatLocalDateTimeAt(new Date(reservation.checkin), 12, 0)
+      : dataInicialPadrao;
+  const minCheckOut = checkIn || minCheckIn;
+
   const { mutateAsync: saveReservation, isPending: saving } =
     useSaveReservation();
 
@@ -129,9 +144,6 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
 
   const { data: customers } = getCustomers({ page: 1, limit: 100 });
 
-  const checkIn = form.watch("check_in");
-  const checkOut = form.watch("check_out");
-  const isEdit = !!reservation;
   const { data: availableFromApi, isLoading: loadingApartments } =
     useAvailableApartments({
       check_in: checkIn,
@@ -171,6 +183,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
         status: reservation.situation,
         type: reservation.type || "diaria",
         notes: "",
+        guests: reservation.guests || 1,
       });
       return;
     }
@@ -188,7 +201,6 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
   }, [reservation, form]);
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    // Somente criação em lote quando NÃO está editando
     if (!isEdit && data.apartment_ids.length > 1) {
       await saveBatchReservations({
         customer_id: data.customer_id,
@@ -254,7 +266,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                         <Input
                           type="datetime-local"
                           step={900}
-                          min={dataInicialPadrao}
+                          min={minCheckIn}
                           value={field.value}
                           onChange={(e) => {
                             const v = e.target.value;
@@ -281,7 +293,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                         <Input
                           type="datetime-local"
                           step={900}
-                          min={checkIn || dataInicialPadrao}
+                          min={minCheckOut}
                           value={field.value}
                           onChange={(e) => {
                             const v = e.target.value;
@@ -332,14 +344,15 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                 <FormField
                   name="apartment_ids"
                   render={({ field }) => {
-                    // Rótulo e texto do botão: em edição, exibe apto selecionado; caso contrário, contagem
                     const selectedFirst = (field.value || [])[0];
                     const selectedApt = availableApartments.find(
                       (a: any) =>
                         String(a.uuid || a.id) === String(selectedFirst)
                     );
                     const buttonText = isEdit
-                      ? selectedApt?.name || "Selecione o apartamento"
+                      ? selectedApt?.name ||
+                        reservation?.apartment?.name ||
+                        "Selecione o apartamento"
                       : field.value?.length
                       ? `${field.value.length} Apt(s) selecionado(s)`
                       : "Selecione os apartamentos";
@@ -380,39 +393,35 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                                   const value = String(
                                     a.uuid || a.id || `${a.name}-${index}`
                                   );
-                                  const checked = (field.value || []).includes(
-                                    value
-                                  );
+                                  const checked = isEdit
+                                    ? field.value && field.value[0] === value
+                                    : (field.value || []).includes(value);
                                   return (
                                     <DropdownMenuCheckboxItem
                                       key={value}
                                       checked={checked}
                                       onCheckedChange={(isChecked) => {
+                                        if (isEdit) {
+                                          if (isChecked) {
+                                            field.onChange([value]);
+                                            return;
+                                          }
+                                          field.onChange([]);
+                                          return;
+                                        }
                                         const current: string[] = Array.isArray(
                                           field.value
                                         )
                                           ? field.value
                                           : [];
-                                        if (isEdit) {
-                                          // No modo edição, restringe a seleção a apenas 1 apartamento
-                                          if (isChecked) {
-                                            field.onChange([value]);
-                                          } else {
-                                            field.onChange([]);
-                                          }
-                                        } else {
-                                          if (isChecked) {
-                                            if (!current.includes(value))
-                                              field.onChange([
-                                                ...current,
-                                                value,
-                                              ]);
-                                          } else {
-                                            field.onChange(
-                                              current.filter((v) => v !== value)
-                                            );
-                                          }
+                                        if (isChecked) {
+                                          if (!current.includes(value))
+                                            field.onChange([...current, value]);
+                                          return;
                                         }
+                                        field.onChange(
+                                          current.filter((v) => v !== value)
+                                        );
                                       }}
                                     >
                                       {a.name} - {a.category}
@@ -433,7 +442,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                   name="guests"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Hóspedes</FormLabel>
+                      <FormLabel>Quantidade de Hóspedes</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -474,7 +483,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                   name="status"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Status</FormLabel>
+                      <FormLabel>Situação</FormLabel>
                       <FormControl>
                         <Select
                           value={field.value}
@@ -484,25 +493,14 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                             <SelectValue placeholder="Selecione o status" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Status</SelectLabel>
-                              <SelectItem value="Reservada">
-                                Reservada
+                            {RESERVATION_SITUATIONS.map((situation) => (
+                              <SelectItem
+                                key={situation.value}
+                                value={situation.value}
+                              >
+                                {situation.label}
                               </SelectItem>
-                              <SelectItem value="Confirmada">
-                                Confirmada
-                              </SelectItem>
-                              <SelectItem value="Hospedada">
-                                Hospedada
-                              </SelectItem>
-                              <SelectItem value="Finalizada">
-                                Finalizada
-                              </SelectItem>
-                              <SelectItem value="Cancelada">
-                                Cancelada
-                              </SelectItem>
-                              <SelectItem value="Apagada">Apagada</SelectItem>
-                            </SelectGroup>
+                            ))}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -525,14 +523,11 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                             <SelectValue placeholder="Selecione o tipo" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Tipo</SelectLabel>
-                              <SelectItem value="promocional">
-                                Promocional
+                            {RESERVATION_TYPES.map((type) => (
+                              <SelectItem key={type.value} value={type.value}>
+                                {type.label}
                               </SelectItem>
-                              <SelectItem value="diaria">Diária</SelectItem>
-                              <SelectItem value="pacote">Pacote</SelectItem>
-                            </SelectGroup>
+                            ))}
                           </SelectContent>
                         </Select>
                       </FormControl>

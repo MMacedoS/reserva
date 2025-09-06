@@ -44,7 +44,7 @@ const schema = z.object({
   reference: z.string().optional(),
 });
 
-type Props = { open: boolean; onClose: () => void; reservation: Reservation };
+type Props = { open: boolean; onClose: () => void; reservation?: Reservation };
 
 type FormData = z.infer<typeof schema>;
 
@@ -58,7 +58,7 @@ export function PaymentsDialog({ open, onClose, reservation }: Props) {
   const [confirmKey, setConfirmKey] = useState<string | null>(null);
   const { mutateAsync: save, isPending } = useProcessPayment();
   const { data: payments = [] } = useGetReservationPayments(
-    reservation.id,
+    reservation?.id,
     open
   );
   const cancelPaymentMutation = useCancelPayment();
@@ -66,7 +66,7 @@ export function PaymentsDialog({ open, onClose, reservation }: Props) {
     try {
       await cancelPaymentMutation.mutateAsync({
         id: paymentId,
-        reference: reservation.id,
+        reference: reservation?.id,
       });
     } catch (error) {}
   };
@@ -74,7 +74,7 @@ export function PaymentsDialog({ open, onClose, reservation }: Props) {
   async function onSubmit(data: FormData) {
     await save({
       cashbox_id: cashbox?.id,
-      reservation_id: reservation.id,
+      reservation_id: reservation?.id,
       amount: parseFloat(data.amount) || 0,
       method: data.method as
         | "cash"

@@ -12,9 +12,12 @@ export function useRemoveConsumption() {
       reservation_id,
       item_id,
     }: {
-      reservation_id: string;
+      reservation_id?: string;
       item_id: string;
     }) => {
+      if (!reservation_id) {
+        throw new Error("ID da reserva é obrigatório");
+      }
       const response = await fetchWithAuth(
         `${environment.apiUrl}/${environment.apiVersion}/reservations/${reservation_id}/consumptions/${item_id}`,
         {

@@ -29,7 +29,10 @@ export function useCheckinReservation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["accommodations"] });
       queryClient.invalidateQueries({ queryKey: ["reservations"] });
-
+      queryClient.invalidateQueries({ queryKey: ["dashboard-checkin-today"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-guests"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-daily-revenue"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-checkout-today"] });
       showAutoDismissAlert({
         message: "Check-in realizado com sucesso!",
         duration: 2000,

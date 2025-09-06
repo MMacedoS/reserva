@@ -5,7 +5,7 @@ import { showAutoDismissAlert } from "@/components/showAutoDismissAlert";
 
 type DeletePerDiemPayload = {
   id: string;
-  reservationId: string;
+  reservationId?: string;
 };
 
 export function useDeletePerDiem() {
@@ -14,6 +14,9 @@ export function useDeletePerDiem() {
 
   return useMutation<{ status: number }, Error, DeletePerDiemPayload>({
     mutationFn: async ({ id, reservationId }) => {
+      if (!reservationId) {
+        throw new Error("ID da reserva é obrigatório");
+      }
       const response = await fetchWithAuth(
         `${environment.apiUrl}/${environment.apiVersion}/reservations/${reservationId}/per-diems/${id}`,
         { method: "DELETE", credentials: "include" }

@@ -3,7 +3,7 @@ import { environment } from "@/environments/environment";
 import { useApi } from "@/hooks/useApi";
 
 type AddConsumptionsParams = {
-  reservation_id: string;
+  reservation_id?: string;
   product_id: string;
   quantity: number;
   unit_price: number;
@@ -16,6 +16,9 @@ export function useAddConsumptions() {
 
   return useMutation({
     mutationFn: async (data: AddConsumptionsParams) => {
+      if (!data.reservation_id) {
+        throw new Error("ID da reserva é obrigatório");
+      }
       const response = await fetchWithAuth(
         `${environment.apiUrl}/${environment.apiVersion}/reservations/${data.reservation_id}/consumptions`,
         {
@@ -45,6 +48,9 @@ export function useAddConsumptions() {
         queryKey: ["reservations", variables.reservation_id, "consumption"],
       });
       queryClient.invalidateQueries({ queryKey: ["accommodations"] });
+
+      queryClient.invalidateQueries({ queryKey: ["accommodations"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-checkout-today"] });
     },
   });
 }

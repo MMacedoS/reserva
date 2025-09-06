@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useSidebar } from "@/contexts/SidebarContext";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -29,6 +28,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  RESERVATION_SITUATIONS,
+  RESERVATION_TYPES,
+} from "@/constants/reservations";
 
 export default function ReservationsPage() {
   const { mutateAsync: deleteReservation } = useDeleteReservation();
@@ -113,10 +116,9 @@ export default function ReservationsPage() {
     [deleteReservation]
   );
   const hoje = new Date();
-  const dataInicialPadrao = hoje.toISOString().split("T")[0];
+  const dataInicialPadrao = addDays(hoje, -5).toISOString().split("T")[0];
   const dataFinalPadrao = addDays(hoje, 7).toISOString().split("T")[0];
 
-  const { sidebarToggle } = useSidebar();
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate, setStartDate] = useState(dataInicialPadrao);
@@ -217,29 +219,30 @@ export default function ReservationsPage() {
                   value={situation}
                   onValueChange={(value) => setSituation(value)}
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className="mt-1 w-full">
                     <SelectValue placeholder="Todos" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Reservada">Reservada</SelectItem>
-                    <SelectItem value="Confirmada">Confirmada</SelectItem>
-                    <SelectItem value="Hospedada">Hospedada</SelectItem>
-                    <SelectItem value="Finalizada">Finalizada</SelectItem>
-                    <SelectItem value="Cancelada">Cancelada</SelectItem>
-                    <SelectItem value="Apagada">Apagada</SelectItem>
+                  <SelectContent className="w-full">
+                    {RESERVATION_SITUATIONS.map((situation) => (
+                      <SelectItem key={situation.value} value={situation.value}>
+                        {situation.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="w-full">
                 <Label className="text-sm">Tipo:</Label>
                 <Select value={type} onValueChange={(value) => setType(value)}>
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className="mt-1 w-full">
                     <SelectValue placeholder="Todos os tipos" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="promocional">Promocional</SelectItem>
-                    <SelectItem value="diaria">Diária</SelectItem>
-                    <SelectItem value="pacote">Pacote</SelectItem>
+                  <SelectContent className="w-full">
+                    {RESERVATION_TYPES.map((type) => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

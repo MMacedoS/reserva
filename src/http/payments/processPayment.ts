@@ -47,6 +47,7 @@ export function useProcessPayment() {
       }
 
       queryClient.invalidateQueries({ queryKey: ["accommodations"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-daily-revenue"] });
 
       refetchCashbox();
     },

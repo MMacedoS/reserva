@@ -30,6 +30,11 @@ export function useSaveReservation() {
 
       if (!response.ok) {
         const errorBody = await response.json();
+        showAutoDismissAlert({
+          message: "Falha ao salvar",
+          description: errorBody.data?.message || "Erro ao salvar reserva",
+          duration: 5000,
+        });
         throw new Error(errorBody.message || "Erro ao salvar reserva");
       }
 
@@ -37,12 +42,16 @@ export function useSaveReservation() {
       return json;
     },
     onSuccess: () => {
-      showAutoDismissAlert({ message: "Reserva salva com sucesso!" });
       queryClient.invalidateQueries({ queryKey: ["reservations"] });
       queryClient.invalidateQueries({ queryKey: ["accommodations"] });
-    },
-    onError: (error) => {
-      showAutoDismissAlert({ message: error.message });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-checkout-today"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-checkin-today"] });
+
+      showAutoDismissAlert({
+        message: "Reserva salva com sucesso!",
+        description: "A lista de reservas foi atualizada.",
+        duration: 3000,
+      });
     },
   });
 }

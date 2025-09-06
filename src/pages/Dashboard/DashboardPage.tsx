@@ -1,15 +1,14 @@
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  CartesianGrid,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
 import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { useNavigate } from "react-router-dom";
@@ -22,11 +21,18 @@ import {
 } from "@/http/dashboard/dashboardRequests";
 import { Spinner } from "@/components/ui/spinner";
 import { formatDate } from "@/lib/utils";
+import ListReservations from "./components/ListReservations";
+import type { Reservation } from "@/http/types/reservations/Reservation";
 
 function DashboardPage() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
+  const [open, setOpen] = useState(false);
+  const [selectReservations, setSelectReservations] = useState<Reservation[]>(
+    []
+  );
+  const [type, setType] = useState<"checkin" | "checkout">("checkin");
   const { data: apartmentsRes = {} } = useDashboardApartments();
   const { data: checkinTodayRes = {}, isLoading: loadingCheckin } =
     useDashboardCheckinToday();
@@ -50,7 +56,7 @@ function DashboardPage() {
     isLoading: loadingRevenue,
     refetch,
   } = useDashboardDailyRevenue({ start, end });
-  // ...existing code...
+
   const handleDateChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     type: "start" | "end"
@@ -64,8 +70,8 @@ function DashboardPage() {
   }, [start, end]);
 
   const apartments = apartmentsRes.data ?? {};
-  const checkinToday = checkinTodayRes.data ?? [];
-  const checkoutToday = checkoutTodayRes.data ?? [];
+  const checkinToday = Array.isArray(checkinTodayRes) ? checkinTodayRes : [];
+  const checkoutToday = Array.isArray(checkoutTodayRes) ? checkoutTodayRes : [];
   const guests = guestsRes.data ?? 0;
 
   const getChartData = () => {
@@ -95,6 +101,14 @@ function DashboardPage() {
         <Card className="shadow-md rounded-xl bg-gradient-to-br from-blue-50 to-blue-100">
           <CardHeader>
             <CardTitle className="text-blue-700">Apartamentos</CardTitle>
+            <CardAction
+              onClick={() => {
+                navigate("/apartments");
+              }}
+              className="bg-blue-700 rounded-3xl text-sm p-2 border-2 shadow-2xl text-white cursor-pointer"
+            >
+              Ver
+            </CardAction>
           </CardHeader>
           <CardContent>
             <p className="text-lg font-semibold">
@@ -108,6 +122,16 @@ function DashboardPage() {
         <Card className="shadow-md rounded-xl bg-gradient-to-br from-green-50 to-green-100">
           <CardHeader>
             <CardTitle className="text-green-700">Check-in Hoje</CardTitle>
+            <CardAction
+              onClick={() => {
+                setOpen(true);
+                setSelectReservations(checkinToday);
+                setType("checkin");
+              }}
+              className="bg-green-700 rounded-3xl text-sm p-2 border-2 shadow-2xl text-white cursor-pointer"
+            >
+              Ver
+            </CardAction>
           </CardHeader>
           <CardContent>
             {loadingCheckin ? (
@@ -124,6 +148,16 @@ function DashboardPage() {
             <CardTitle className="text-yellow-700">
               Checkout Hoje/Atrasados
             </CardTitle>
+            <CardAction
+              onClick={() => {
+                setOpen(true);
+                setSelectReservations(checkoutToday);
+                setType("checkout");
+              }}
+              className="bg-yellow-700 rounded-3xl text-sm p-2 border-2 shadow-2xl text-white cursor-pointer"
+            >
+              Ver
+            </CardAction>
           </CardHeader>
           <CardContent>
             {loadingCheckout ? (
@@ -214,6 +248,12 @@ function DashboardPage() {
           )}
         </div>
       </Card>
+      <ListReservations
+        open={open}
+        onClose={() => setOpen(false)}
+        reservations={selectReservations}
+        type={type}
+      />
     </Sidebar>
   );
 }

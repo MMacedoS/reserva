@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: "https://sistemareserva.localhost:8443",
+  apiUrl: "https://app.encantodasaguasquentes.com.br/",
   apiVersion: "api/v1",
   appVersion: "1.0.40",
   currentYear: "2025",

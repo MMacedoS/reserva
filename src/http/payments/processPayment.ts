@@ -40,6 +40,12 @@ export function useProcessPayment() {
         queryKey: ["cashbox", variables.cashbox_id],
       });
 
+      if (variables.sale_id) {
+        queryClient.invalidateQueries({
+          queryKey: ["payments-by-sale", variables.sale_id],
+        });
+      }
+
       if (variables.reservation_id) {
         queryClient.invalidateQueries({
           queryKey: ["reservations", variables.reservation_id, "payments"],

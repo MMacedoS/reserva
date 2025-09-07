@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Trash2 } from "lucide-react";
+import { MinusIcon, Plus, PlusIcon, Trash2 } from "lucide-react";
 import { getProducts } from "@/http/products/getProducts";
 import { useGetSaleItems } from "@/http/sales/getSaleItems";
 import { useAddSaleItem } from "@/http/sales/addSaleItem";
@@ -28,6 +28,7 @@ import { useSyncSaleAmount } from "@/http/sales/syncSaleAmount";
 import type { Product } from "@/http/types/products/Product";
 import type { SaleItem } from "@/http/types/sales/Sale";
 import { formatValueToBRL } from "@/lib/utils";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 interface SaleItemsManagerProps {
   saleId: string;
@@ -44,6 +45,8 @@ export const SaleItemsManager = ({
     quantity: 1,
     unit_price: 0,
   });
+
+  const { sidebarToggle } = useSidebar();
 
   const { data: saleItemsData, isLoading } = useGetSaleItems(saleId);
   const { data: productsData } = getProducts({
@@ -102,6 +105,8 @@ export const SaleItemsManager = ({
     } catch (error) {}
   };
 
+  const [quantity, setQuantity] = useState(1);
+
   const updateItemQuantity = async (itemId: string, quantity: number) => {
     try {
       await updateItemMutation.mutateAsync({
@@ -143,6 +148,22 @@ export const SaleItemsManager = ({
     );
   }
 
+  const handleDecrement = (itemIndicator: string) => {
+    setQuantity((prev) => {
+      const newValue = prev > 1 ? prev - 1 : prev;
+      updateItemQuantity(itemIndicator, newValue);
+      return newValue === 1 ? 1 : newValue;
+    });
+  };
+
+  const handleIncrement = (itemIndicator: string) => {
+    setQuantity((prev) => {
+      const newValue = prev + 1;
+      updateItemQuantity(itemIndicator, newValue);
+      return newValue === 1 ? 1 : newValue;
+    });
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -158,7 +179,7 @@ export const SaleItemsManager = ({
                   value={newItem.product_id}
                   onValueChange={handleProductSelect}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione um produto" />
                   </SelectTrigger>
                   <SelectContent>
@@ -217,8 +238,8 @@ export const SaleItemsManager = ({
             <TableRow>
               <TableHead>Produto</TableHead>
               <TableHead>Qtd</TableHead>
-              <TableHead>Preço Unit.</TableHead>
-              <TableHead>Total</TableHead>
+              {!sidebarToggle && <TableHead>Preço Unit.</TableHead>}
+              {!sidebarToggle && <TableHead>Total</TableHead>}
               {!readOnly && <TableHead className="w-20">Ações</TableHead>}
             </TableRow>
           </TableHeader>
@@ -230,25 +251,36 @@ export const SaleItemsManager = ({
                   {readOnly ? (
                     item.quantity
                   ) : (
-                    <Input
-                      type="number"
-                      min="1"
-                      value={item.quantity || 1}
-                      onChange={(e) =>
-                        updateItemQuantity(
-                          item.id || "",
-                          parseInt(e.target.value) || 1
-                        )
-                      }
-                      className="w-20"
-                      disabled={updateItemMutation.isPending}
-                    />
+                    <div className="flex w-[100px] items-center justify-between rounded-3xl border">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => handleDecrement(item.id || "")}
+                      >
+                        <MinusIcon />
+                      </Button>
+                      <p>{quantity}</p>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => handleIncrement(item.id || "")}
+                      >
+                        <PlusIcon />
+                      </Button>
+                    </div>
                   )}
                 </TableCell>
-                <TableCell>
-                  {formatValueToBRL(item.product_price) || "0,00"}
-                </TableCell>
-                <TableCell>{formatValueToBRL(item.total) || "0,00"}</TableCell>
+
+                {!sidebarToggle && (
+                  <>
+                    <TableCell>
+                      {formatValueToBRL(item.product_price) || "0,00"}
+                    </TableCell>
+                    <TableCell>
+                      {formatValueToBRL(item.total) || "0,00"}
+                    </TableCell>
+                  </>
+                )}
                 {!readOnly && (
                   <TableCell>
                     <Button

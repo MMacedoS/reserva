@@ -191,7 +191,7 @@ function DashboardPage() {
             Faturamento Diário (intervalo personalizado)
           </CardTitle>
         </CardHeader>
-        <div className="flex gap-4 items-center mb-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-center mb-4">
           <label>
             Início:
             <input
@@ -210,12 +210,14 @@ function DashboardPage() {
               className="ml-2 border rounded px-2 py-1"
             />
           </label>
-          <span className="ml-auto text-2xl font-bold text-green-700 bg-green-100 px-4 py-2 rounded shadow">
-            Total: R${" "}
-            {totalInterval.toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-            })}
-          </span>
+          <div className="col-span-2 justify-end flex">
+            <span className="ml-auto text-2xl font-bold text-green-700 bg-green-100 px-4 py-2 rounded shadow">
+              Total: R${" "}
+              {totalInterval.toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+              })}
+            </span>
+          </div>
         </div>
         <div>
           {loadingRevenue ? (

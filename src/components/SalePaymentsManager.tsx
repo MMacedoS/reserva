@@ -26,6 +26,7 @@ import type { Payment } from "@/http/types/payments/Payment";
 import { formatValueToBRL } from "@/lib/utils";
 import { useCashbox } from "@/hooks/useCashbox";
 import { paymentMethods } from "@/constants/payments";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 interface SalePaymentsManagerProps {
   saleId: string;
@@ -51,6 +52,8 @@ export const SalePaymentsManager = ({
     reference: "",
     notes: "",
   });
+
+  const { sidebarToggle } = useSidebar();
 
   const { cashbox } = useCashbox();
 
@@ -147,8 +150,8 @@ export const SalePaymentsManager = ({
       <CardContent>
         {!readOnly && remainingAmount > 0 && (
           <div className="mb-4 space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 space-y-2">
+              <div className="space-y-2">
                 <Label>Método de Pagamento</Label>
                 <Select
                   value={newPayment.method}
@@ -159,7 +162,7 @@ export const SalePaymentsManager = ({
                     }))
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione o método" />
                   </SelectTrigger>
                   <SelectContent>
@@ -171,7 +174,7 @@ export const SalePaymentsManager = ({
                   </SelectContent>
                 </Select>
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label>Valor</Label>
                 <Input
                   type="number"
@@ -191,7 +194,7 @@ export const SalePaymentsManager = ({
                 />
               </div>
               {newPayment.method === "credit_card" && (
-                <div>
+                <div className="space-y-2">
                   <Label>Parcelas</Label>
                   <Input
                     type="number"
@@ -209,7 +212,7 @@ export const SalePaymentsManager = ({
               )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+              <div className="space-y-2">
                 <Label>Referência (opcional)</Label>
                 <Input
                   value={newPayment.reference}
@@ -222,7 +225,7 @@ export const SalePaymentsManager = ({
                   placeholder="Ex: Número do cartão, código PIX..."
                 />
               </div>
-              <div className="flex items-end">
+              <div className="flex items-end justify-end">
                 <Button
                   onClick={addPayment}
                   className="w-full"
@@ -248,8 +251,8 @@ export const SalePaymentsManager = ({
             <TableRow>
               <TableHead>Método</TableHead>
               <TableHead>Valor</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Referência</TableHead>
+              {!sidebarToggle && <TableHead>Status</TableHead>}
+              {!sidebarToggle && <TableHead>Referência</TableHead>}
               {!readOnly && <TableHead className="w-20">Ações</TableHead>}
             </TableRow>
           </TableHeader>
@@ -258,22 +261,12 @@ export const SalePaymentsManager = ({
               <TableRow key={payment.id}>
                 <TableCell>{getMethodLabel(payment.method)}</TableCell>
                 <TableCell>{formatValueToBRL(payment.amount)}</TableCell>
-                <TableCell>
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      payment.status === "Pago"
-                        ? "bg-green-100 text-green-800"
-                        : payment.status === "Pendente"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : payment.status === "Cancelado"
-                        ? "bg-red-100 text-red-800"
-                        : "bg-gray-100 text-gray-800"
-                    }`}
-                  >
-                    {getStatusLabel(payment.status)}
-                  </span>
-                </TableCell>
-                <TableCell>{payment.reference || "-"}</TableCell>
+                {!sidebarToggle && (
+                  <TableCell>{getStatusLabel(payment.status)}</TableCell>
+                )}
+                {!sidebarToggle && (
+                  <TableCell>{payment.reference || "-"}</TableCell>
+                )}
                 {!readOnly && (
                   <TableCell>
                     {payment.status === "Pago" && (

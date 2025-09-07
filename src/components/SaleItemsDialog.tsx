@@ -37,11 +37,11 @@ export const SaleItemsDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
+        <DialogHeader className="mb-4 text-sm">
+          <DialogTitle className="text-lg font-semibold text-start ps-2">
             Gerenciar Venda - {sale.sale_name || `Venda ${sale.name}`}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="mt-2 text-sm text-start ps-2 text-gray-500">
             Adicione ou remova itens e gerencie os pagamentos desta venda. O
             total será calculado automaticamente.
           </DialogDescription>

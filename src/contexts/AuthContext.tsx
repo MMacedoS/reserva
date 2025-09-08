@@ -125,7 +125,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     showAutoDismissAlert({
       message: "Sessão renovada",
       description:
-        "Sua sessão foi renovada com sucesso. envie novamente sua requisição.",
+        "Sua sessão foi renovada com sucesso. Envie novamente sua requisição.",
       duration: 3000,
     });
   };

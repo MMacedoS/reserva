@@ -181,7 +181,6 @@ export const SalePaymentsManager = ({
                   step="0.01"
                   min="0.01"
                   max={remainingAmount}
-                  value={newPayment.amount}
                   onChange={(e) =>
                     setNewPayment((prev) => ({
                       ...prev,

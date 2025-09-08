@@ -3,6 +3,8 @@ import type { userResponse } from "@/http/types/profile/userResponse";
 import type { Cashbox } from "@/http/types/cashbox/Cashbox";
 import React, { createContext, useState, useEffect } from "react";
 import type { Permission } from "@/http/types/permissions/Permission";
+import { showAutoDismissAlert } from "@/components/showAutoDismissAlert";
+import { title } from "process";
 
 interface AuthContextType {
   user: userResponse | null;
@@ -120,6 +122,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const data = await res.json();
     setToken(data.access_token);
     localStorage.setItem("token", data.access_token);
+    showAutoDismissAlert({
+      message: "Sessão renovada",
+      description:
+        "Sua sessão foi renovada com sucesso. envie novamente sua requisição.",
+      duration: 3000,
+    });
   };
 
   const updateUser = (data: Partial<userResponse>) => {

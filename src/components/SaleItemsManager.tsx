@@ -43,7 +43,7 @@ export const SaleItemsManager = ({
     product_id: "",
     product_name: "",
     quantity: 1,
-    unit_price: 0,
+    unit_price: "",
   });
 
   const { sidebarToggle } = useSidebar();
@@ -67,12 +67,7 @@ export const SaleItemsManager = ({
   const products = productsData?.data.products || [];
 
   const addItem = async () => {
-    if (
-      !newItem.product_id ||
-      !newItem.product_name ||
-      newItem.quantity <= 0 ||
-      newItem.unit_price <= 0
-    ) {
+    if (!newItem.product_id || !newItem.product_name || newItem.quantity <= 0) {
       return;
     }
 
@@ -81,7 +76,7 @@ export const SaleItemsManager = ({
         sale_id: saleId,
         product_id: newItem.product_id,
         quantity: newItem.quantity,
-        unit_price: newItem.unit_price,
+        unit_price: newItem.unit_price as unknown as number,
       });
 
       await syncSaleAmountMutation.mutateAsync(saleId);
@@ -90,7 +85,7 @@ export const SaleItemsManager = ({
         product_id: "",
         product_name: "",
         quantity: 1,
-        unit_price: 0,
+        unit_price: "",
       });
     } catch (error) {}
   };
@@ -125,7 +120,7 @@ export const SaleItemsManager = ({
         product_id: productId,
         product_name: product.name || "",
         quantity: 1,
-        unit_price: product.price || 0,
+        unit_price: (product.price as unknown as string) || "",
       });
     }
   };
@@ -214,7 +209,7 @@ export const SaleItemsManager = ({
                   onChange={(e) =>
                     setNewItem((prev) => ({
                       ...prev,
-                      unit_price: parseFloat(e.target.value) || 0,
+                      unit_price: (e.target.value as string) || "",
                     }))
                   }
                 />

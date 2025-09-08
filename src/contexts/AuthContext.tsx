@@ -4,7 +4,6 @@ import type { Cashbox } from "@/http/types/cashbox/Cashbox";
 import React, { createContext, useState, useEffect } from "react";
 import type { Permission } from "@/http/types/permissions/Permission";
 import { showAutoDismissAlert } from "@/components/showAutoDismissAlert";
-import { title } from "process";
 
 interface AuthContextType {
   user: userResponse | null;

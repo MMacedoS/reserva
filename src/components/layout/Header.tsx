@@ -81,6 +81,15 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
               Apartamentos
             </Link>
           </li>
+          <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
+            <Link
+              to="/reservations/accommodation"
+              className="px-3 py-2 text-white flex items-center"
+            >
+              <LucideConciergeBell className="inline-block w-6 h-6 mr-2 -mt-2" />
+              Hospedagem
+            </Link>
+          </li>
 
           <li className="mb-2 rounded hover:shadow  hover:bg-gray-700 py-2">
             <div
@@ -89,7 +98,7 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
             >
               <div className="flex items-center">
                 <LucideHotel className="inline-block w-6 h-6 mr-2 -mt-2" />
-                Hospedagem
+                Reservas
               </div>
               {openDropdown === "hospedagem" ? (
                 <LucideChevronDown className="w-4 h-4" />
@@ -113,15 +122,7 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                   Cadastrar
                 </Link>
               </li>
-              <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
-                <Link
-                  to="/reservations/accommodation"
-                  className="px-3 py-2 text-white flex items-center"
-                >
-                  <LucideConciergeBell className="inline-block w-6 h-6 mr-2 -mt-2" />
-                  Hospedagem
-                </Link>
-              </li>
+
               <CashboxGuard>
                 <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
                   <Link

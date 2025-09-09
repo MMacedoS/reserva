@@ -16,7 +16,6 @@ import {
   LucideDollarSign,
   LucideDoorClosed,
   LucideDoorClosedLocked,
-  LucideMapMinus,
   LucideConciergeBell,
   LucideTickets,
 } from "lucide-react";

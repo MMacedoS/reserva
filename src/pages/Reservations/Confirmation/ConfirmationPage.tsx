@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Label } from "recharts";
-import { formatDate, formatDateWithTime, formatValueToBRL } from "@/lib/utils";
+import { formatDateWithTime, formatValueToBRL } from "@/lib/utils";
 import { PaymentsDialog } from "../Accommodation/Components/PaymentsDialog";
 import type { Reservation } from "@/http/types/reservations/Reservation";
 

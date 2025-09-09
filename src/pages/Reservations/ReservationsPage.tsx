@@ -12,7 +12,13 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useDebounce } from "@/hooks/useDebounce";
 import { addDays } from "date-fns";
-import { Loader2, LucidePencil, LucidePlus, LucideTrash2 } from "lucide-react";
+import {
+  Loader2,
+  LucideListFilter,
+  LucidePencil,
+  LucidePlus,
+  LucideTrash2,
+} from "lucide-react";
 import { DataTable } from "@/components/ui/DataTable";
 import type { ColumnDef } from "@tanstack/react-table";
 import { formatDateWithTime, formatValueToBRL } from "@/lib/utils";
@@ -32,6 +38,12 @@ import {
   RESERVATION_SITUATIONS,
   RESERVATION_TYPES,
 } from "@/constants/reservations";
+import { Accordion } from "@radix-ui/react-accordion";
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export default function ReservationsPage() {
   const { mutateAsync: deleteReservation } = useDeleteReservation();
@@ -181,87 +193,104 @@ export default function ReservationsPage() {
           </CardAction>
         </CardHeader>
         <CardContent className="h-full">
-          <div className="filter mb-4 space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              <div className="lg:col-span-2 xl:col-span-1">
-                <Label className="text-sm">Buscar:</Label>
-                <Input
-                  type="text"
-                  placeholder="Buscar por cliente, código..."
-                  className="mt-1"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <div className="min-w-[150px]">
-                <Label className="text-sm">Data inicial:</Label>
-                <Input
-                  type="date"
-                  className="mt-1"
-                  value={startDate}
-                  max={endDate || new Date().toISOString().split("T")[0]}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
-              </div>
-              <div className="min-w-[150px]">
-                <Label className="text-sm">Data final:</Label>
-                <Input
-                  type="date"
-                  className="mt-1"
-                  value={endDate}
-                  min={startDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
-              </div>
-              <div className="w-full">
-                <Label className="text-sm">Situação:</Label>
-                <Select
-                  value={situation}
-                  onValueChange={(value) => setSituation(value)}
-                >
-                  <SelectTrigger className="mt-1 w-full">
-                    <SelectValue placeholder="Todos" />
-                  </SelectTrigger>
-                  <SelectContent className="w-full">
-                    {RESERVATION_SITUATIONS.map((situation) => (
-                      <SelectItem key={situation.value} value={situation.value}>
-                        {situation.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="w-full">
-                <Label className="text-sm">Tipo:</Label>
-                <Select value={type} onValueChange={(value) => setType(value)}>
-                  <SelectTrigger className="mt-1 w-full">
-                    <SelectValue placeholder="Todos os tipos" />
-                  </SelectTrigger>
-                  <SelectContent className="w-full">
-                    {RESERVATION_TYPES.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              {hasActiveFilters && (
-                <div className="flex items-end">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={clearFilters}
-                    className="flex items-center gap-2 mt-1"
-                    title="Limpar filtros"
-                  >
-                    <LucideTrash2 className="h-4 w-4" />
-                    <span className="hidden sm:inline">Limpar</span>
-                  </Button>
+          <Accordion type="single" collapsible className="w-full mb-4">
+            <AccordionItem value="item-1" className="w-full">
+              <AccordionTrigger>
+                <div className="flex justify-between w-full">
+                  <span className="flex items-center gap-2">
+                    Filtros <LucideListFilter className="h-4 w-4" />
+                  </span>
+                  {hasActiveFilters && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={clearFilters}
+                      className="flex items-center gap-2"
+                      title="Limpar filtros"
+                    >
+                      <LucideTrash2 className="h-4 w-4" />
+                      <span className="hidden sm:inline">Limpar</span>
+                    </Button>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="filter mb-4 space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    <div className="lg:col-span-2 xl:col-span-1">
+                      <Label className="text-sm">Buscar:</Label>
+                      <Input
+                        type="text"
+                        placeholder="Buscar por cliente, código..."
+                        className="mt-1"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </div>
+                    <div className="min-w-[150px]">
+                      <Label className="text-sm">Data inicial:</Label>
+                      <Input
+                        type="date"
+                        className="mt-1"
+                        value={startDate}
+                        max={endDate || new Date().toISOString().split("T")[0]}
+                        onChange={(e) => setStartDate(e.target.value)}
+                      />
+                    </div>
+                    <div className="min-w-[150px]">
+                      <Label className="text-sm">Data final:</Label>
+                      <Input
+                        type="date"
+                        className="mt-1"
+                        value={endDate}
+                        min={startDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                      />
+                    </div>
+                    <div className="w-full">
+                      <Label className="text-sm">Situação:</Label>
+                      <Select
+                        value={situation}
+                        onValueChange={(value) => setSituation(value)}
+                      >
+                        <SelectTrigger className="mt-1 w-full">
+                          <SelectValue placeholder="Todos" />
+                        </SelectTrigger>
+                        <SelectContent className="w-full">
+                          {RESERVATION_SITUATIONS.map((situation) => (
+                            <SelectItem
+                              key={situation.value}
+                              value={situation.value}
+                            >
+                              {situation.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="w-full">
+                      <Label className="text-sm">Tipo:</Label>
+                      <Select
+                        value={type}
+                        onValueChange={(value) => setType(value)}
+                      >
+                        <SelectTrigger className="mt-1 w-full">
+                          <SelectValue placeholder="Todos os tipos" />
+                        </SelectTrigger>
+                        <SelectContent className="w-full">
+                          {RESERVATION_TYPES.map((type) => (
+                            <SelectItem key={type.value} value={type.value}>
+                              {type.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
 
           <Card className="mt-4">
             <CardContent className="pt-6">

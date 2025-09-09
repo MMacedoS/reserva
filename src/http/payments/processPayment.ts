@@ -50,6 +50,9 @@ export function useProcessPayment() {
         queryClient.invalidateQueries({
           queryKey: ["reservations", variables.reservation_id, "payments"],
         });
+        queryClient.invalidateQueries({
+          queryKey: ["reservations", variables.reservation_id],
+        });
       }
 
       queryClient.invalidateQueries({ queryKey: ["accommodations"] });

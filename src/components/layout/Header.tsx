@@ -116,15 +116,6 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
               </li>
               <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
                 <Link
-                  to="/reservations-map"
-                  className="px-3 py-2 text-white flex items-center"
-                >
-                  <LucideMapMinus className="inline-block w-6 h-6 mr-2 -mt-2" />
-                  Mapa
-                </Link>
-              </li>
-              <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
-                <Link
                   to="/reservations/accommodation"
                   className="px-3 py-2 text-white flex items-center"
                 >
@@ -132,15 +123,17 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                   Hospedagem
                 </Link>
               </li>
-              <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
-                <Link
-                  to="/reservations/confirmations"
-                  className="px-3 py-2 text-white flex items-center"
-                >
-                  <LucideTickets className="inline-block w-6 h-6 mr-2 -mt-2" />
-                  Confirmações
-                </Link>
-              </li>
+              <CashboxGuard>
+                <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
+                  <Link
+                    to="/reservations/confirmations"
+                    className="px-3 py-2 text-white flex items-center"
+                  >
+                    <LucideTickets className="inline-block w-6 h-6 mr-2 -mt-2" />
+                    Confirmações
+                  </Link>
+                </li>
+              </CashboxGuard>
             </ul>
           </li>
           <PermissionGuard requiredPermission={["products.view"]}>

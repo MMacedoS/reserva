@@ -17,6 +17,7 @@ import CustomerPage from "@/pages/Customer/CustomerPage";
 import { ApartmentPage } from "@/pages/Apartments/ApartmentPage";
 import SalesPage from "@/pages/Sales/SalesPage";
 import AccommodationPage from "@/pages/Reservations/Accommodation/AccommodationPage";
+import ConfirmationPage from "@/pages/Reservations/Confirmation/ConfirmationPage";
 
 export function AppRoutes() {
   return (
@@ -71,6 +72,16 @@ export function AppRoutes() {
           </RequireAuth>
         }
       />
+
+      <Route
+        path="/reservations/confirmations"
+        element={
+          <RequireAuth>
+            <ConfirmationPage />
+          </RequireAuth>
+        }
+      />
+
       <Route
         path="/sales"
         element={

@@ -132,9 +132,10 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
   const isEdit = !!reservation;
 
   const minCheckIn =
-    isEdit && reservation?.checkin
+    isEdit && reservation?.checkin && reservation.checkin < dataInicialPadrao
       ? formatLocalDateTimeAt(new Date(reservation.checkin), 12, 0)
       : dataInicialPadrao;
+
   const minCheckOut = checkIn || minCheckIn;
 
   const { mutateAsync: saveReservation, isPending: saving } =
@@ -273,9 +274,9 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                             const d = new Date(v);
                             if (!isNaN(d.getTime())) {
                               field.onChange(formatLocalDateTimeAt(d, 12, 0));
-                            } else {
-                              field.onChange(v);
+                              return;
                             }
+                            field.onChange(v);
                           }}
                         />
                       </FormControl>

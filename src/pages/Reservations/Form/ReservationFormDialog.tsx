@@ -107,8 +107,8 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
   const [availableApartments, setAvailableApartments] = useState<any[]>([]);
   const hoje = new Date();
 
-  const dataInicialPadrao = formatLocalDateTimeAt(hoje, 12, 0);
-  const dataFinalPadrao = formatLocalDateTimeAt(addDays(hoje, 1), 12, 0);
+  const dataInicialPadrao = formatLocalDateTimeAt(hoje, 14, 0);
+  const dataFinalPadrao = formatLocalDateTimeAt(addDays(hoje, 1), 14, 0);
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema) as any,
@@ -163,7 +163,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
     const ci = new Date(checkIn);
     const co = checkOut ? new Date(checkOut) : null;
     if (!co || co <= ci) {
-      const novoCheckout = formatLocalDateTimeAt(addDays(ci, 1), 12, 0);
+      const novoCheckout = formatLocalDateTimeAt(addDays(ci, 1), 14, 0);
       form.setValue("check_out", novoCheckout, { shouldValidate: true });
     }
   }, [checkIn]);
@@ -175,10 +175,10 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
         customer_id: reservation.customer?.id || "",
         apartment_ids: reservation.apartment ? [reservation.apartment.id] : [],
         check_in: reservation.checkin
-          ? formatLocalDateTimeAt(new Date(reservation.checkin), 12, 0)
+          ? formatLocalDateTimeAt(new Date(reservation.checkin), 14, 0)
           : "",
         check_out: reservation.checkout
-          ? formatLocalDateTimeAt(new Date(reservation.checkout), 12, 0)
+          ? formatLocalDateTimeAt(new Date(reservation.checkout), 14, 0)
           : "",
         amount: reservation.amount || 0,
         status: reservation.situation,
@@ -273,7 +273,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                             const v = e.target.value;
                             const d = new Date(v);
                             if (!isNaN(d.getTime())) {
-                              field.onChange(formatLocalDateTimeAt(d, 12, 0));
+                              field.onChange(formatLocalDateTimeAt(d, 14, 0));
                               return;
                             }
                             field.onChange(v);
@@ -300,7 +300,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                             const v = e.target.value;
                             const d = new Date(v);
                             if (!isNaN(d.getTime())) {
-                              field.onChange(formatLocalDateTimeAt(d, 12, 0));
+                              field.onChange(formatLocalDateTimeAt(d, 14, 0));
                             } else {
                               field.onChange(v);
                             }

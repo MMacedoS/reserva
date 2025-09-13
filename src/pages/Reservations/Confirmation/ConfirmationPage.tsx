@@ -18,6 +18,23 @@ import {
 import { RESERVATION_TYPES } from "@/constants/reservations";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useGetReservations } from "@/http/reservations/getReservations";
+import { getReservationsOffline, saveReservationsOffline } from "@/lib/offline";
+import { useEffect, useState } from "react";
+
+function useOnlineStatus() {
+  const [online, setOnline] = useState(navigator.onLine);
+  useEffect(() => {
+    const handleOnline = () => setOnline(true);
+    const handleOffline = () => setOnline(false);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+  return online;
+}
 import { addDays } from "date-fns";
 import {
   Loader2,
@@ -25,7 +42,6 @@ import {
   LucideListFilter,
   LucideTrash2,
 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Label } from "recharts";
 import { formatDateWithTime, formatValueToBRL } from "@/lib/utils";
 import { PaymentsDialog } from "../Accommodation/Components/PaymentsDialog";
@@ -56,6 +72,7 @@ const ConfirmationPage = () => {
     setPage(1);
   }, [startDate, endDate, situation, type]);
 
+  const online = useOnlineStatus();
   const { data: accommodations, isLoading } = useGetReservations({
     page,
     limit: 10,
@@ -65,6 +82,27 @@ const ConfirmationPage = () => {
     situation,
     type,
   });
+
+  const [offlineAccommodations, setOfflineAccommodations] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (
+      online &&
+      accommodations &&
+      Array.isArray(accommodations.data) &&
+      accommodations.data.length > 0
+    ) {
+      saveReservationsOffline(accommodations.data);
+    }
+  }, [online, accommodations]);
+
+  useEffect(() => {
+    if (!online) {
+      getReservationsOffline().then((data) => {
+        setOfflineAccommodations(Array.isArray(data) ? data : []);
+      });
+    }
+  }, [online]);
 
   const clearFilters = () => {
     setSearchQuery("");
@@ -182,71 +220,129 @@ const ConfirmationPage = () => {
                 <div className="flex justify-center py-10">
                   <Loader2 className="animate-spin size-6 text-gray-500" />
                 </div>
-              ) : accommodations && accommodations?.data.length > 0 ? (
+              ) : online ? (
+                accommodations && accommodations?.data.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+                    {accommodations.data.map((apt: any) => {
+                      const reservation = apt;
+                      if (!reservation) return null;
+                      return (
+                        <Card
+                          key={reservation.id}
+                          className="shadow-lg border border-gray-200 rounded-xl p-4 bg-gradient-to-br from-green-50 to-green-100"
+                        >
+                          <CardContent>
+                            <div className="flex items-center gap-3 mb-2">
+                              <div className="flex-shrink-0 w-10 h-10 rounded-full animate-pulse bg-green-200 flex items-center justify-center text-green-700 font-bold text-lg">
+                                {reservation.customer?.name?.[0] || "?"}
+                              </div>
+                              <div>
+                                <div className="font-semibold text-md text-green-900">
+                                  {reservation.customer?.name || "Sem nome"}
+                                </div>
+                                <div className="text-lg text-green-700">
+                                  Apto: {apt.apartment.name || "Sem apto"}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-3 justify-between">
+                              <div className="col-span-2 flex flex-col gap-1 mb-2">
+                                <span className="text-sm text-gray-600">
+                                  <b>Check-in:</b>{" "}
+                                  {formatDateWithTime(reservation.checkin)}
+                                </span>
+                                <span className="text-sm text-gray-600">
+                                  <b>Check-out:</b>{" "}
+                                  {formatDateWithTime(reservation.checkout)}
+                                </span>
+                              </div>
+                              <div className="flex flex-col items-end">
+                                <span className="text-lg font-bold text-green-600 animate-pulse">
+                                  {formatValueToBRL(
+                                    reservation.paid_amount || 0
+                                  )}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="text-sm text-gray-700">
+                              <b>Tipo:</b> {reservation.type || "-"}
+                            </div>
+                            <div className="text-sm text-gray-700">
+                              <b>Situação:</b> {reservation.situation || "-"}
+                            </div>
+                          </CardContent>
+                          <CardAction className="justify-end flex mt-2 w-full">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="bg-green-50 mt-4 hover:bg-green-50/80 shadow-md text-green-700"
+                              onClick={() => {
+                                setActiveReservation(reservation);
+                                setPaymentOpen(true);
+                              }}
+                            >
+                              <LucideDollarSign />
+                              <span>Adicionar Pagamento</span>
+                            </Button>
+                          </CardAction>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="flex justify-center py-10">
+                    <Label className="text-gray-500">
+                      Nenhum resultado encontrado
+                    </Label>
+                  </div>
+                )
+              ) : offlineAccommodations && offlineAccommodations.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-                  {accommodations.data.map((apt: any) => {
-                    const reservation = apt;
-                    if (!reservation) return null;
-                    return (
-                      <Card
-                        key={reservation.id}
-                        className="shadow-lg border border-gray-200 rounded-xl p-4 bg-gradient-to-br from-green-50 to-green-100"
-                      >
-                        <CardContent>
-                          <div className="flex items-center gap-3 mb-2">
-                            <div className="flex-shrink-0 w-10 h-10 rounded-full animate-pulse bg-green-200 flex items-center justify-center text-green-700 font-bold text-lg">
-                              {reservation.customer?.name?.[0] || "?"}
+                  {offlineAccommodations.map((reservation: any) => (
+                    <Card
+                      key={reservation.id}
+                      className="shadow-lg border border-gray-200 rounded-xl p-4 bg-gradient-to-br from-green-50 to-green-100"
+                    >
+                      <CardContent>
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="flex-shrink-0 w-10 h-10 rounded-full animate-pulse bg-green-200 flex items-center justify-center text-green-700 font-bold text-lg">
+                            {reservation.customer?.name?.[0] || "?"}
+                          </div>
+                          <div>
+                            <div className="font-semibold text-md text-green-900">
+                              {reservation.customer?.name || "Sem nome"}
                             </div>
-                            <div>
-                              <div className="font-semibold text-md text-green-900">
-                                {reservation.customer?.name || "Sem nome"}
-                              </div>
-                              <div className="text-lg text-green-700">
-                                Apto: {apt.apartment.name || "Sem apto"}
-                              </div>
+                            <div className="text-lg text-green-700">
+                              Apto: {reservation.apartment?.name || "Sem apto"}
                             </div>
                           </div>
-                          <div className="grid grid-cols-3 justify-between">
-                            <div className="col-span-2 flex flex-col gap-1 mb-2">
-                              <span className="text-sm text-gray-600">
-                                <b>Check-in:</b>{" "}
-                                {formatDateWithTime(reservation.checkin)}
-                              </span>
-                              <span className="text-sm text-gray-600">
-                                <b>Check-out:</b>{" "}
-                                {formatDateWithTime(reservation.checkout)}
-                              </span>
-                            </div>
-                            <div className="flex flex-col items-end">
-                              <span className="text-lg font-bold text-green-600 animate-pulse">
-                                {formatValueToBRL(reservation.paid_amount || 0)}
-                              </span>
-                            </div>
+                        </div>
+                        <div className="grid grid-cols-3 justify-between">
+                          <div className="col-span-2 flex flex-col gap-1 mb-2">
+                            <span className="text-sm text-gray-600">
+                              <b>Check-in:</b>{" "}
+                              {formatDateWithTime(reservation.checkin)}
+                            </span>
+                            <span className="text-sm text-gray-600">
+                              <b>Check-out:</b>{" "}
+                              {formatDateWithTime(reservation.checkout)}
+                            </span>
                           </div>
-                          <div className="text-sm text-gray-700">
-                            <b>Tipo:</b> {reservation.type || "-"}
+                          <div className="flex flex-col items-end">
+                            <span className="text-lg font-bold text-green-600 animate-pulse">
+                              {formatValueToBRL(reservation.paid_amount || 0)}
+                            </span>
                           </div>
-                          <div className="text-sm text-gray-700">
-                            <b>Situação:</b> {reservation.situation || "-"}
-                          </div>
-                        </CardContent>
-                        <CardAction className="justify-end flex mt-2 w-full">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="bg-green-50 mt-4 hover:bg-green-50/80 shadow-md text-green-700"
-                            onClick={() => {
-                              setActiveReservation(reservation);
-                              setPaymentOpen(true);
-                            }}
-                          >
-                            <LucideDollarSign />
-                            <span>Adicionar Pagamento</span>
-                          </Button>
-                        </CardAction>
-                      </Card>
-                    );
-                  })}
+                        </div>
+                        <div className="text-sm text-gray-700">
+                          <b>Tipo:</b> {reservation.type || "-"}
+                        </div>
+                        <div className="text-sm text-gray-700">
+                          <b>Situação:</b> {reservation.situation || "-"}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
               ) : (
                 <div className="flex justify-center py-10">

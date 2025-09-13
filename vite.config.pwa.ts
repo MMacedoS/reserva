@@ -1,7 +1,6 @@
 import { environment } from "./src/environments/environment";
 import path from "path";
 import fs from "fs";
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
@@ -32,9 +31,6 @@ export default defineConfig({
             type: "image/png",
           },
         ],
-      },
-      workbox: {
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB, ajuste conforme necessário
       },
     }),
   ],

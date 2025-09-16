@@ -108,7 +108,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
   const hoje = new Date();
 
   const dataInicialPadrao = formatLocalDateTimeAt(hoje, 14, 0);
-  const dataFinalPadrao = formatLocalDateTimeAt(addDays(hoje, 1), 14, 0);
+  const dataFinalPadrao = formatLocalDateTimeAt(addDays(hoje, 1), 12, 0);
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema) as any,
@@ -178,7 +178,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
           ? formatLocalDateTimeAt(new Date(reservation.checkin), 14, 0)
           : "",
         check_out: reservation.checkout
-          ? formatLocalDateTimeAt(new Date(reservation.checkout), 14, 0)
+          ? formatLocalDateTimeAt(new Date(reservation.checkout), 12, 0)
           : "",
         amount: reservation.amount || 0,
         status: reservation.situation,
@@ -300,7 +300,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                             const v = e.target.value;
                             const d = new Date(v);
                             if (!isNaN(d.getTime())) {
-                              field.onChange(formatLocalDateTimeAt(d, 14, 0));
+                              field.onChange(formatLocalDateTimeAt(d, 12, 0));
                             } else {
                               field.onChange(v);
                             }

@@ -260,11 +260,7 @@ export function FormData({ open, onClose, customer }: FormDataProps) {
             <AlertDialogFooter>
               <AlertDialogCancel onClick={onClose}>Cancelar</AlertDialogCancel>
               <AlertDialogAction asChild>
-                <Button
-                  type="button"
-                  onClick={form.handleSubmit(handleSubmit)}
-                  disabled={!(form.formState.isValid && form.formState.isDirty)}
-                >
+                <Button type="button" onClick={form.handleSubmit(handleSubmit)}>
                   Salvar
                 </Button>
               </AlertDialogAction>

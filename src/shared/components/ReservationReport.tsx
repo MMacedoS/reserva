@@ -50,7 +50,7 @@ export function ReservationReport({
             )
           : undefined;
 
-      const totalReservation = Number(reservation.total_reservation ?? 0);
+      const totalReservation = Number(reservation.total_reservation_value ?? 0);
       const consumption = Number(reservation.consumption_value ?? 0);
       const paid = Number(reservation.paid_amount ?? 0);
       const balance = Math.max(consumption - paid, 0);

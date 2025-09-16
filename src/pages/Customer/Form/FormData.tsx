@@ -30,17 +30,6 @@ import { onlyDigits } from "@/lib/utils";
 const schema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Nome obrigatório"),
-  // doc: z
-  //   .string()
-  //   .optional()
-  //   .refine((v) => (v ? (v.length === 11 ? isValidCPF(v) : true) : true), {
-  //     message: "CPF inválido",
-  //   }),
-  doc: z.string().optional(),
-  type_doc: z.string().optional(),
-  email: z.email("Email inválido").optional(),
-  social_name: z.string().optional(),
-  address: z.string().optional(),
   birthday: z.string().optional(),
   phone: z.string().refine(
     (v) => {
@@ -49,7 +38,6 @@ const schema = z.object({
     },
     { message: "Telefone inválido" }
   ),
-  gender: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -67,14 +55,8 @@ export function FormData({ open, onClose, customer }: FormDataProps) {
     reValidateMode: "onChange",
     defaultValues: {
       name: "",
-      doc: "",
-      type_doc: "",
-      email: "",
-      social_name: "",
-      address: "",
       birthday: "",
       phone: "",
-      gender: "",
     },
   });
 
@@ -83,27 +65,15 @@ export function FormData({ open, onClose, customer }: FormDataProps) {
       form.reset({
         id: customer.id || undefined,
         name: customer.name || "",
-        doc: customer.doc ? onlyDigits(customer.doc) : "",
-        type_doc: customer.type_doc || "",
-        email: customer.email || "",
-        social_name: customer.social_name || "",
-        address: customer.address || "",
         birthday: customer.birthday || "",
         phone: customer.phone ? onlyDigits(customer.phone) : "",
-        gender: customer.gender || "",
       });
       return;
     }
     form.reset({
       name: "",
-      doc: "",
-      type_doc: "",
-      email: "",
-      social_name: "",
-      address: "",
       birthday: "",
       phone: "",
-      gender: "",
     });
     return;
   }, [customer]);
@@ -114,10 +84,6 @@ export function FormData({ open, onClose, customer }: FormDataProps) {
     const payload = {
       ...data,
       phone: onlyDigits(data.phone),
-      doc:
-        data.doc && onlyDigits(data.doc).length === 11
-          ? onlyDigits(data.doc)
-          : undefined,
     };
     await save(payload);
     onClose();
@@ -152,60 +118,7 @@ export function FormData({ open, onClose, customer }: FormDataProps) {
                   )}
                 />
               </div>
-              <div className="col-span-1">
-                <FormField
-                  control={form.control}
-                  name="doc"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Documento</FormLabel>
-                      <FormControl>
-                        <PatternFormat
-                          format="###.###.###-##"
-                          mask="_"
-                          placeholder="000.000.000-00"
-                          customInput={Input}
-                          value={field.value || ""}
-                          onValueChange={(values: NumberFormatValues) =>
-                            field.onChange(values.value)
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="col-span-1">
-                <FormField
-                  control={form.control}
-                  name="type_doc"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tipo de Documento</FormLabel>
-                      <FormControl>
-                        <Input type="text" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="col-span-1">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input type="email" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+
               <div className="col-span-1">
                 <FormField
                   control={form.control}

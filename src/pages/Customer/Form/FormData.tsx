@@ -25,17 +25,18 @@ import { Input } from "@/components/ui/input";
 import { PatternFormat, type NumberFormatValues } from "react-number-format";
 import type { Customer } from "@/http/types/Customer/Customer";
 import { saveCustomer } from "@/http/customers/saveCustomer";
-import { isValidCPF, onlyDigits } from "@/lib/utils";
+import { onlyDigits } from "@/lib/utils";
 
 const schema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Nome obrigatório"),
-  doc: z
-    .string()
-    .optional()
-    .refine((v) => (v ? (v.length === 11 ? isValidCPF(v) : true) : true), {
-      message: "CPF inválido",
-    }),
+  // doc: z
+  //   .string()
+  //   .optional()
+  //   .refine((v) => (v ? (v.length === 11 ? isValidCPF(v) : true) : true), {
+  //     message: "CPF inválido",
+  //   }),
+  doc: z.string().optional(),
   type_doc: z.string().optional(),
   email: z.email("Email inválido").optional(),
   social_name: z.string().optional(),

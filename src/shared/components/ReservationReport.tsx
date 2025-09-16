@@ -33,7 +33,7 @@ export function ReservationReport({
 
   const printRef = useRef<HTMLDivElement>(null);
 
-  const { nights, estimated, consumption, paid, balance, change } =
+  const { nights, totalReservation, consumption, paid, balance, change } =
     useMemo(() => {
       const checkin = reservation.checkin
         ? new Date(reservation.checkin)
@@ -50,7 +50,7 @@ export function ReservationReport({
             )
           : undefined;
 
-      const estimated = Number(reservation.estimated_value ?? 0);
+      const totalReservation = Number(reservation.total_reservation ?? 0);
       const consumption = Number(reservation.consumption_value ?? 0);
       const paid = Number(reservation.paid_amount ?? 0);
       const balance = Math.max(consumption - paid, 0);
@@ -58,7 +58,7 @@ export function ReservationReport({
 
       return {
         nights: rawNights,
-        estimated,
+        totalReservation,
         consumption,
         paid,
         balance,
@@ -105,13 +105,11 @@ export function ReservationReport({
     );
     parts.push("");
     parts.push(`Valores:`);
-    parts.push(`- Estimado: ${formatValueToBRL(estimated)}`);
+    parts.push(`- Total da Reserva: ${formatValueToBRL(totalReservation)}`);
     parts.push(`- Consumido: ${formatValueToBRL(consumption)}`);
     parts.push(`- Pago: ${formatValueToBRL(paid)}`);
     if (balance > 0) {
       parts.push(`- Saldo a pagar: ${formatValueToBRL(balance)}`);
-    } else if (change > 0) {
-      parts.push(`- Troco: ${formatValueToBRL(change)}`);
     }
     if (observation) {
       parts.push("");
@@ -130,7 +128,7 @@ export function ReservationReport({
     reservation,
     observation,
     nights,
-    estimated,
+    totalReservation,
     consumption,
     paid,
     balance,
@@ -307,9 +305,11 @@ export function ReservationReport({
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-gray-700">
                   <div className="flex items-center justify-between sm:justify-start sm:gap-2">
-                    <span className="text-gray-600">Valor estimado</span>
+                    <span className="text-gray-600">
+                      Valor Total da Reserva
+                    </span>
                     <span className="font-medium">
-                      {formatValueToBRL(estimated)}
+                      {formatValueToBRL(totalReservation)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between sm:justify-start sm:gap-2">
@@ -333,10 +333,7 @@ export function ReservationReport({
                     </div>
                   ) : (
                     <div className="flex items-center justify-between sm:justify-start sm:gap-2">
-                      <span className="text-gray-600">Devolução</span>
-                      <span className="font-semibold text-green-700">
-                        {formatValueToBRL((change / 100) * 40)}
-                      </span>
+                      <span className="text-gray-600">...</span>
                     </div>
                   )}
                 </div>

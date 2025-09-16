@@ -14,6 +14,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { addDays } from "date-fns";
 import {
   Loader2,
+  LucideFileText,
   LucideListFilter,
   LucidePencil,
   LucidePlus,
@@ -44,11 +45,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { ReservationReport } from "@/shared/components";
 
 export default function ReservationsPage() {
   const { mutateAsync: deleteReservation } = useDeleteReservation();
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Reservation | null>(null);
+  const [openTicket, setOpenTicket] = useState(false);
 
   const columns: ColumnDef<Reservation>[] = useMemo(
     () => [
@@ -112,12 +115,24 @@ export default function ReservationsPage() {
             },
             {
               label: (
-                <span className="flex items-center gap-2 text-red-600">
-                  <LucideTrash2 className="w-4 h-4" /> Excluir
+                <span className="flex items-center gap-2">
+                  <LucideTrash2 className="w-4 h-4  text-red-600" /> Excluir
                 </span>
               ),
               onClick: async () => {
                 await deleteReservation(r.id);
+              },
+            },
+            {
+              label: (
+                <span className="flex items-center gap-2">
+                  <LucideFileText className="w-4 h-4 text-blue-600 justify-center" />
+                  Comprovante
+                </span>
+              ),
+              onClick: () => {
+                setEditing(r);
+                setOpenTicket(true);
               },
             },
           ];
@@ -321,6 +336,16 @@ export default function ReservationsPage() {
         open={formOpen}
         reservation={editing}
         onClose={() => setFormOpen(false)}
+      />
+
+      <ReservationReport
+        open={openTicket}
+        onOpenChange={(open) => {
+          setOpenTicket(open);
+          if (!open) setEditing(null);
+        }}
+        reservation={editing}
+        observation="Este é um relatório gerado automaticamente pelo sistema."
       />
     </Sidebar>
   );

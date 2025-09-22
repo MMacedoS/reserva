@@ -46,12 +46,15 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ReservationReport } from "@/shared/components";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import HoverCardToReserva from "@/shared/components/HoverCardToReserva";
 
 export default function ReservationsPage() {
   const { mutateAsync: deleteReservation } = useDeleteReservation();
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Reservation | null>(null);
   const [openTicket, setOpenTicket] = useState(false);
+  const isMobile = useIsMobile();
 
   const columns: ColumnDef<Reservation>[] = useMemo(
     () => [
@@ -142,6 +145,67 @@ export default function ReservationsPage() {
     ],
     [deleteReservation]
   );
+
+  const columnsMobile: ColumnDef<Reservation>[] = useMemo(
+    () => [
+      {
+        accessorKey: "customer",
+        header: "Hospede",
+        cell: ({ row }) => (
+          <HoverCardToReserva
+            title={row.original.customer?.name || ""}
+            type="reservation"
+            reservation={row.original}
+          />
+        ),
+      },
+      {
+        id: "actions",
+        header: "Ações",
+        cell: ({ row }) => {
+          const r = row.original as Reservation;
+          const actions = [
+            {
+              label: (
+                <span className="flex items-center gap-2">
+                  <LucidePencil className="w-4 h-4" /> Editar
+                </span>
+              ),
+              onClick: () => {
+                setEditing(r);
+                setFormOpen(true);
+              },
+            },
+            {
+              label: (
+                <span className="flex items-center gap-2">
+                  <LucideTrash2 className="w-4 h-4  text-red-600" /> Excluir
+                </span>
+              ),
+              onClick: async () => {
+                await deleteReservation(r.id);
+              },
+            },
+            {
+              label: (
+                <span className="flex items-center gap-2">
+                  <LucideFileText className="w-4 h-4 text-blue-600 justify-center" />
+                  Comprovante
+                </span>
+              ),
+              onClick: () => {
+                setEditing(r);
+                setOpenTicket(true);
+              },
+            },
+          ];
+          return <MenuButtons actions={actions} />;
+        },
+      },
+    ],
+    [deleteReservation]
+  );
+
   const hoje = new Date();
   const dataInicialPadrao = addDays(hoje, -5).toISOString().split("T")[0];
   const dataFinalPadrao = addDays(hoje, 7).toISOString().split("T")[0];
@@ -191,7 +255,7 @@ export default function ReservationsPage() {
 
   return (
     <Sidebar>
-      <Card>
+      <Card className="w-full">
         <CardHeader>
           <CardTitle className="mt-1">Reservas</CardTitle>
           <CardAction>
@@ -215,18 +279,6 @@ export default function ReservationsPage() {
                   <span className="flex items-center gap-2">
                     Filtros <LucideListFilter className="h-4 w-4" />
                   </span>
-                  {hasActiveFilters && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={clearFilters}
-                      className="flex items-center gap-2"
-                      title="Limpar filtros"
-                    >
-                      <LucideTrash2 className="h-4 w-4" />
-                      <span className="hidden sm:inline">Limpar</span>
-                    </Button>
-                  )}
                 </div>
               </AccordionTrigger>
               <AccordionContent>
@@ -303,6 +355,18 @@ export default function ReservationsPage() {
                     </div>
                   </div>
                 </div>
+                {hasActiveFilters && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={clearFilters}
+                    className="flex items-center gap-2"
+                    title="Limpar filtros"
+                  >
+                    <LucideTrash2 className="h-4 w-4" />
+                    <span className="hidden sm:inline">Limpar</span>
+                  </Button>
+                )}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -315,7 +379,7 @@ export default function ReservationsPage() {
                 </div>
               ) : (
                 <DataTable
-                  columns={columns}
+                  columns={isMobile ? columnsMobile : columns}
                   data={data?.data || []}
                   pagination={
                     data?.pagination && {

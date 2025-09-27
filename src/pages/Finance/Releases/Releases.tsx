@@ -157,7 +157,7 @@ const ReleasesPage = () => {
                 <p className="text-muted-foreground">
                   Aqui serão exibidos os últimos lançamentos financeiros.
                 </p>
-                <div className="w-full h-full overflow-auto">
+                <div className="w-full h-full overflow-auto scrollbar-hide">
                   <DataTable
                     columns={columns}
                     multipleFilters={[

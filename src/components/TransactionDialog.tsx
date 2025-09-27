@@ -138,7 +138,7 @@ export function TransactionDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="mt-4 flex-1 overflow-hidden relative">
+        <div className="mt-4 flex-1 scrollbar-hide relative">
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <Spinner />
@@ -149,7 +149,7 @@ export function TransactionDialog({
               <p>Erro ao carregar transações. Tente novamente.</p>
             </div>
           ) : transactions?.data.length > 0 ? (
-            <div className="w-full h-full overflow-auto">
+            <div className="w-full h-full overflow-auto scrollbar-hide">
               <DataTable
                 columns={columns}
                 multipleFilters={[

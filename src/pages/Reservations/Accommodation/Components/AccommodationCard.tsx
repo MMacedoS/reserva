@@ -65,7 +65,7 @@ export function AccommodationCard({
   return (
     <Card
       key={apt.id}
-      className={`relative overflow-hidden ${
+      className={`relative scrollbar-hide ${
         todayReservation ? "ring-2 ring-amber-500/40" : ""
       }`}
     >

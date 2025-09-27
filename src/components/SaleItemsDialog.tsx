@@ -36,7 +36,7 @@ export const SaleItemsDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto scrollbar-hide">
         <DialogHeader className="mb-4 text-sm">
           <DialogTitle className="text-lg font-semibold text-start ps-2">
             Gerenciar Venda - {sale.sale_name || `Venda ${sale.name}`}

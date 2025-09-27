@@ -163,7 +163,7 @@ export function PerDiemsDialog({ open, onClose, reservation }: Props) {
                 </CardContent>
               </Card>
             </div>
-            <div className="overflow-y-auto col-span-2">
+            <div className="overflow-y-auto scrollbar-hide col-span-2">
               <Card>
                 <CardHeader>
                   <CardTitle>Diárias registradas</CardTitle>

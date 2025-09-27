@@ -229,7 +229,7 @@ function DashboardPage() {
                 axis: { color: "#64748b" },
                 background: { color: "#f3f4f6" },
               }}
-              className="h-[300px] w-full overflow-auto"
+              className="h-[300px] w-full overflow-auto scrollbar-hide"
             >
               <BarChart data={getChartData()} width={500} height={300}>
                 <CartesianGrid strokeDasharray="3 3" />

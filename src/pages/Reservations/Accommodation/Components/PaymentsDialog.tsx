@@ -260,7 +260,7 @@ export function PaymentsDialog({ open, onClose, reservation }: Props) {
                 </CardContent>
               </Card>
             </div>
-            <div className="col-span-2 max-h-[40vh] md:max-h-[80vh] overflow-y-auto">
+            <div className="col-span-2 max-h-[40vh] md:max-h-[80vh] overflow-y-auto scrollbar-hide">
               <Card>
                 <CardHeader>
                   <CardTitle>Pagamentos registrados</CardTitle>

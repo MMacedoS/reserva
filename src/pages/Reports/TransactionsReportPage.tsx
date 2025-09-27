@@ -512,7 +512,7 @@ export function ReportTransactionsPage() {
                   <CardContent>
                     <ChartContainer
                       config={chartConfig}
-                      className="h-[300px] w-full overflow-auto"
+                      className="h-[300px] w-full overflow-auto scrollbar-hide"
                     >
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={getChartData()}>

@@ -166,7 +166,7 @@ export function ReservationReport({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="!max-w-4xl w-[min(90vw,900px)] max-h-[90vh] overflow-scroll">
+      <AlertDialogContent className="!max-w-4xl w-[min(90vw,900px)] max-h-[90vh] overflow-scroll scrollbar-hide">
         <AlertDialogHeader>
           <AlertDialogTitle>Nota de Cliente</AlertDialogTitle>
           <AlertDialogDescription className="mb-4">

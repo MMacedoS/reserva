@@ -237,7 +237,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
       <AlertDialogContent className="max-w-3xl max-h-[90vh]">
-        <div className="max-h-[80vh] overflow-y-auto">
+        <div className="max-h-[80vh] overflow-y-auto scrollbar-hide">
           <Form {...form}>
             <form
               className="space-y-4"
@@ -373,7 +373,7 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
                               <span className="opacity-50">▾</span>
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent className="w-[var(--radix-select-trigger-width)] max-h-64 overflow-auto">
+                          <DropdownMenuContent className="w-[var(--radix-select-trigger-width)] max-h-64 overflow-auto scrollbar-hide">
                             <DropdownMenuLabel>
                               {isEdit
                                 ? "Selecionar apartamento"

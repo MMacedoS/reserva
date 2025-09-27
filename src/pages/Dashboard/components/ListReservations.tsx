@@ -111,7 +111,7 @@ const ListReservations = ({
   return (
     <>
       <AlertDialog open={open} onOpenChange={onClose}>
-        <AlertDialogContent className="max-h-[80vh] !max-w-5xl overflow-y-auto">
+        <AlertDialogContent className="max-h-[80vh] !max-w-5xl overflow-y-auto scrollbar-hide">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-lg font-semibold justify-between flex">
               Listagem de Reservas

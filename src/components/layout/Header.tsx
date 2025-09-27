@@ -107,7 +107,7 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
               )}
             </div>
             <ul
-              className={`ml-4 mt-2 text-xs transition-all duration-300 ease-in-out overflow-hidden ${
+              className={`ml-4 mt-2 text-xs transition-all duration-300 ease-in-out scrollbar-hide ${
                 openDropdown === "hospedagem"
                   ? "max-h-96 opacity-100"
                   : "max-h-0 opacity-0"
@@ -183,7 +183,7 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                 )}
               </div>
               <ul
-                className={`ml-4 mt-2 text-xs transition-all duration-300 ease-in-out overflow-hidden ${
+                className={`ml-4 mt-2 text-xs transition-all duration-300 ease-in-out scrollbar-hide ${
                   openDropdown === "reports"
                     ? "max-h-96 opacity-100"
                     : "max-h-0 opacity-0"
@@ -238,7 +238,7 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                   )}
                 </div>
                 <ul
-                  className={`ml-4 mt-2 text-xs transition-all duration-300 ease-in-out overflow-hidden ${
+                  className={`ml-4 mt-2 text-xs transition-all duration-300 ease-in-out scrollbar-hide ${
                     openDropdown === "finance"
                       ? "max-h-96 opacity-100"
                       : "max-h-0 opacity-0"

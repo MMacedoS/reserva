@@ -215,7 +215,7 @@ const ConfirmationPage = () => {
             </AccordionItem>
           </Accordion>
           <Card>
-            <CardContent className="h-96 flex items-start justify-start flex-wrap overflow-auto">
+            <CardContent className="h-96 flex items-start justify-start flex-wrap overflow-auto scrollbar-hide">
               {isLoading ? (
                 <div className="flex justify-center py-10">
                   <Loader2 className="animate-spin size-6 text-gray-500" />

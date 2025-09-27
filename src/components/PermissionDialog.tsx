@@ -199,7 +199,7 @@ export function PermissionDialog({
               </Button>
             </div>
 
-            <div className="max-h-96 overflow-y-auto pr-4 py-5">
+            <div className="max-h-96 overflow-y-auto scrollbar-hide pr-4 py-5">
               <div className="space-y-6">
                 {groupedPermissions &&
                   Object.entries(groupedPermissions).map(

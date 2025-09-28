@@ -10,6 +10,7 @@ import type { Event, View } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "@/styles/calendar-pt-br.css";
+import { Loader2 } from "lucide-react";
 
 // Configurar moment para português brasileiro
 moment.updateLocale("pt", {
@@ -85,6 +86,7 @@ const MapPage = () => {
       startDate,
       endDate,
       limit: 200,
+      situation: "all",
     });
 
   const reservations: Reservation[] = reservationsData?.data || [];
@@ -136,6 +138,10 @@ const MapPage = () => {
   };
 
   const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
+    if (slotInfo.start <= new Date()) {
+      return; // Não permite criar reservas para datas passadas
+    }
+
     const checkinDate = slotInfo.start.toISOString().slice(0, 10);
     navigate(`/reservations/create?checkin_date=${checkinDate}`);
   };
@@ -166,23 +172,13 @@ const MapPage = () => {
     };
   };
 
-  const getApartmentStatus = (apartment: Apartment) => {
-    const hasReservation = reservations.some(
-      (reservation) =>
-        reservation.apartment?.id === apartment.id &&
-        new Date(reservation.checkin) <= new Date() &&
-        new Date(reservation.checkout) >= new Date()
-    );
-    return hasReservation ? "ocupado" : "disponivel";
-  };
-
   const handleCreateReservation = (apartmentId: string) => {
     navigate(`/reservations/create?apartment_id=${apartmentId}`);
   };
 
   return (
     <Sidebar>
-      <div className="container mx-auto max-w-full px-4 py-6">
+      <div className="container mx-auto max-w-full px-0 py-6">
         <div className="bg-white rounded-lg shadow-md">
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
             <div className="flex items-center gap-3">
@@ -219,7 +215,7 @@ const MapPage = () => {
           <div style={{ height: "600px" }} className="p-4">
             {loadingApartments || loadingReservations ? (
               <div className="flex items-center justify-center h-full">
-                <div className="text-gray-500">Carregando...</div>
+                <Loader2 className="animate-spin text-gray-500" size={48} />
               </div>
             ) : (
               <Calendar
@@ -260,62 +256,6 @@ const MapPage = () => {
             )}
           </div>
 
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex justify-between items-center mb-4 gap-2">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Apartamentos
-              </h3>
-              <div className="flex gap-6 text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded bg-green-500"></span>
-                  <span>Disponível</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded bg-red-500"></span>
-                  <span>Ocupado</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-              {apartments.map((apartment) => {
-                const status = getApartmentStatus(apartment);
-                return (
-                  <div
-                    key={apartment.id}
-                    className={`p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
-                      status === "disponivel"
-                        ? "border-green-300 bg-green-100 hover:bg-green-200"
-                        : "border-red-300 bg-red-100 hover:bg-red-200"
-                    }`}
-                    onClick={() =>
-                      status === "disponivel" &&
-                      handleCreateReservation(apartment.id || "")
-                    }
-                  >
-                    <div className="text-center">
-                      <div className="font-bold text-lg text-gray-800 mb-1">
-                        {apartment.name}
-                      </div>
-                      <div className="text-xs text-gray-600 mb-2">
-                        {apartment.category}
-                      </div>
-                      <div
-                        className={`text-xs font-medium px-2 py-1 rounded-full \${
-                        status === 'disponivel' 
-                          ? 'bg-green-200 text-green-800' 
-                          : 'bg-red-200 text-red-800'
-                      }`}
-                      >
-                        {status === "disponivel" ? "Disponível" : "Ocupado"}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
           <div className="p-4 bg-gray-50 border-t border-gray-200">
             <div className="flex gap-8 text-xs">
               <div>
@@ -353,6 +293,61 @@ const MapPage = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className="p-4 border-t border-gray-200">
+            <div className="flex justify-between items-center mb-4 gap-2">
+              <h3 className="text-lg font-semibold text-gray-800">
+                Apartamentos
+              </h3>
+              <div className="flex gap-6 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded bg-green-500"></span>
+                  <span>Disponível</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded bg-red-500"></span>
+                  <span>Ocupado</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+              {apartments.map((apartment) => {
+                const isAvailable = apartment.situation === "Disponivel";
+                return (
+                  <div
+                    key={apartment.id}
+                    className={`p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
+                      isAvailable
+                        ? "border-green-300 bg-green-100 hover:bg-green-200"
+                        : "border-red-300 bg-red-100 hover:bg-red-200"
+                    }`}
+                    onClick={() =>
+                      isAvailable && handleCreateReservation(apartment.id || "")
+                    }
+                  >
+                    <div className="text-center">
+                      <div className="font-bold text-lg text-gray-800 mb-1">
+                        {apartment.name}
+                      </div>
+                      <div className="text-xs text-gray-600 mb-2">
+                        {apartment.category}
+                      </div>
+                      <div
+                        className={`text-xs font-medium px-2 py-1 rounded-full ${
+                          isAvailable
+                            ? "bg-green-200 text-green-800"
+                            : "bg-red-200 text-red-800"
+                        }`}
+                      >
+                        {apartment.situation}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

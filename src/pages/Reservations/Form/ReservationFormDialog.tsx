@@ -93,6 +93,31 @@ const schema = z
       return co > ci;
     },
     { path: ["check_out"], message: "Check-out deve ser após o check-in" }
+  )
+  .refine(
+    (data) => {
+      if (!data.check_in) return true;
+      const checkInDate = new Date(data.check_in);
+      const today = new Date();
+
+      // Zerar as horas para comparar apenas as datas
+      const checkInDay = new Date(
+        checkInDate.getFullYear(),
+        checkInDate.getMonth(),
+        checkInDate.getDate()
+      );
+      const todayDay = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+
+      return checkInDay >= todayDay;
+    },
+    {
+      path: ["check_in"],
+      message: "A data de check-in não pode ser anterior a hoje",
+    }
   );
 
 type FormData = z.infer<typeof schema>;
@@ -101,9 +126,15 @@ type Props = {
   open: boolean;
   onClose: () => void;
   reservation?: Reservation | null;
+  apartmentId?: string | null;
 };
 
-export function ReservationFormDialog({ open, onClose, reservation }: Props) {
+export function ReservationFormDialog({
+  open,
+  onClose,
+  reservation,
+  apartmentId,
+}: Props) {
   const [availableApartments, setAvailableApartments] = useState<any[]>([]);
   const hoje = new Date();
 
@@ -157,6 +188,13 @@ export function ReservationFormDialog({ open, onClose, reservation }: Props) {
       form.setValue("apartment_ids", []);
     }
   }, [availableFromApi, isEdit]);
+
+  // Effect para pré-selecionar apartamento quando apartmentId for fornecido
+  useEffect(() => {
+    if (apartmentId && !isEdit && !reservation) {
+      form.setValue("apartment_ids", [apartmentId]);
+    }
+  }, [apartmentId, isEdit, reservation, form]);
 
   useEffect(() => {
     if (!checkIn) return;

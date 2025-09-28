@@ -19,6 +19,7 @@ import SalesPage from "@/pages/Sales/SalesPage";
 import AccommodationPage from "@/pages/Reservations/Accommodation/AccommodationPage";
 import ConfirmationPage from "@/pages/Reservations/Confirmation/ConfirmationPage";
 import MapPage from "@/pages/Reservations/Map/MapPage";
+import ReservationCreatePage from "@/pages/Reservations/ReservationCreatePage";
 
 export function AppRoutes() {
   return (
@@ -61,6 +62,15 @@ export function AppRoutes() {
         element={
           <RequireAuth>
             <ReservationsPage />
+          </RequireAuth>
+        }
+      />
+
+      <Route
+        path="/reservations/create"
+        element={
+          <RequireAuth>
+            <ReservationCreatePage />
           </RequireAuth>
         }
       />

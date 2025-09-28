@@ -40,7 +40,7 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
     <div
       className={`transform 
         transition-transform duration-1000 
-        ease-in-out w-50 bg-gray-800 fixed h-full px-4 py-2 
+        ease-in-out w-60 bg-gray-800 fixed h-full px-4 py-2 scrollbar-hide
         overflow-y-auto 
         ${sidebarToggle ? "-translate-x-full" : "translate-x-0"}`}
     >
@@ -120,6 +120,16 @@ export function Header({ sidebarToggle, setSidebarToggle }: NavbarProps) {
                 >
                   <LucideDoorClosedLocked className="inline-block w-6 h-6 mr-2 -mt-2" />
                   Cadastrar
+                </Link>
+              </li>
+
+              <li className="mb-2 rounded hover:shadow hover:bg-gray-700 py-2">
+                <Link
+                  to="/reservations/map"
+                  className="px-3 py-2 text-white flex items-center"
+                >
+                  <LucideDoorClosedLocked className="inline-block w-6 h-6 mr-2 -mt-2" />
+                  Mapa
                 </Link>
               </li>
 

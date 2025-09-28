@@ -1,0 +1,120 @@
+/* Customização do React Big Calendar para Português */
+
+.rbc-calendar {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Cabeçalho dos dias da semana */
+.rbc-header {
+  font-weight: 600;
+  color: #374151;
+  background-color: #f9fafb;
+  padding: 8px 4px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+}
+
+/* Botões de navegação */
+.rbc-btn-group {
+  display: flex;
+  gap: 4px;
+}
+
+.rbc-btn-group button {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  transition: all 0.2s;
+}
+
+.rbc-btn-group button:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.rbc-btn-group button.rbc-active {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+/* Eventos do calendário */
+.rbc-event {
+  border-radius: 4px;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 2px 6px;
+}
+
+.rbc-event:hover {
+  opacity: 1 !important;
+  transform: scale(1.02);
+}
+
+/* Células do calendário */
+.rbc-date-cell {
+  padding: 8px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.rbc-off-range-bg {
+  background-color: #f9fafb;
+}
+
+.rbc-today {
+  background-color: #dbeafe !important;
+}
+
+/* Toolbar personalizada */
+.rbc-toolbar {
+  margin-bottom: 16px;
+  padding: 0;
+}
+
+.rbc-toolbar .rbc-toolbar-label {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Mensagens em português */
+.rbc-show-more {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid #d1d5db;
+}
+
+.rbc-show-more:hover {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .rbc-calendar {
+    font-size: 0.875rem;
+  }
+
+  .rbc-header {
+    font-size: 0.75rem;
+    padding: 6px 2px;
+  }
+
+  .rbc-event {
+    font-size: 0.6875rem;
+    padding: 1px 4px;
+  }
+
+  .rbc-toolbar .rbc-toolbar-label {
+    font-size: 1.125rem;
+  }
+}
